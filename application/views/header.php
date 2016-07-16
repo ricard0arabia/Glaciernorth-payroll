@@ -29,7 +29,8 @@
 @font-face {
     font-family: billabong;
     src: url(assets/font/billabong.woff) format('woff'),
-         url(../assets/font/billabong.woff) format('woff');
+         url(../assets/font/billabong.woff) format('woff'),
+         url(../../assets/font/billabong.woff) format('woff');
 }
 </style>
 <body>
@@ -59,7 +60,7 @@
                         <!-- _______________Profile________________  -->
 
                 <?php if($this->uri->segment(1) == "userprofile" || $this->uri->segment(1) == "settings") { ?> <li  class = "active" > <?php }else { ?>
-                 <li> <?php } ?> <a  class="waves-effect waves-default btn-small"  href="<?php echo site_url()."userprofile"; ?>"> <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Profile</a></li>
+                 <li> <?php } ?> <a  class="waves-effect waves-default btn-small"  href="<?php echo site_url()."userprofile/view/".$this->session->userdata('username'); ?>"> <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Profile</a></li>
 
 
                              <!-- _______________time________________  -->
@@ -121,7 +122,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Options <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                      <li ><a href="<?php echo site_url()."settings"; ?>" class="btn btn-default btn-flat">Settings</a></li>
-                      <li><a href="<?php echo site_url()."userprofile"; ?>" class="btn btn-default btn-flat">Profile</a>
+                      <li><a href="<?php echo site_url()."userprofile/view".$this->session->userdata('username'); ?>" class="btn btn-default btn-flat">Profile</a>
                       <li><a href="<?php echo site_url()."login/logout";?>" class="btn btn-default btn-flat">Sign out</a></li>         
                      </ul>
                     </li>
@@ -137,8 +138,8 @@
 <script src="<?php echo base_url('assets/datatables/js/jquery.dataTables.min.js')?>"></script>
 <script src="<?php echo base_url('assets/datatables/js/dataTables.bootstrap.js')?>"></script>
 <script src= "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/js/bootstrap-datepicker.min.js" > </script>
-  <script src="<?php echo base_url()?>css/blueprint/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
-    <script src="<?php echo base_url()?>css/blueprint/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+  <script src="<?php echo base_url()?>assets/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+    <script src="<?php echo base_url()?>assets/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
     <!-- Page-Level Demo Scripts - Tables - Use for reference -->
     <script>
     $(document).ready(function() {

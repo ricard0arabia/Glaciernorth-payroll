@@ -9,7 +9,7 @@ class Userprofile extends CI_Controller {
 	}
 
 
-	public function index() {		
+	public function view($id) {		
 		 if($this->session->userdata('isLogin') == FALSE)
         {
 
@@ -19,10 +19,10 @@ class Userprofile extends CI_Controller {
        
 			$this->load->helper('url');	
 	        $this->load->view('header');
-	        $data['image'] = $this->profile->get_image_profile($this->session->userdata('username'));
+	        $data['image'] = $this->profile->get_image_profile($id);
 			$data['status'] = $this->profile->exeGetUserStatus();
-			$data['emp'] = $this->profile->exeGetEmpToEdit($this->session->userdata('username'));
-			$data['info'] = $this->profile->exeGetUserInfo($this->session->userdata('username'));	
+			$data['emp'] = $this->profile->exeGetEmpToEdit($id);
+			$data['info'] = $this->profile->exeGetUserInfo($id);	
 	        $this->load->view('pages/profile', $data);
 			$this->load->view('footer');
 	   }
