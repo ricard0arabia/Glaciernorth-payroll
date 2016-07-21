@@ -1769,9 +1769,54 @@ class Contents extends CI_Model {
     }
 
 
+public function insertbranddetials($user_id)
+ {
+     
+    
+   $brandname=$this->input->post("brand_name");
+   $dealername=$this->input->post("dealername");
+   $emailid=$this->input->post("emailid");
+   $webaddress=$this->input->post("webaddress");
+   $city=$this->input->post("city");
+   $contactno=$this->input->post("contactno");
+   $state=$this->input->post("state");
 
+ 
+    $branddet = array(
+    'brand_id' => $user_id,
+    'brandname' => $brandname ,
+    'dealername' => $dealername ,
+    'emailid' =>   $emailid,
+    'wedaddress' => $webaddress,
+    'city' => $city ,
+    'contactno' => $contactno,
+    'state' => $state ,
+    
+     );
+         
+ $insertdet=$this->db->insert('branddetails', $branddet);
+ return $insertdet;
+}
 
-
+public function exeGetBrandToEdit($userid) {
+		$exeGetBrandToEdit = $this->db->query("SELECT *
+										FROM branddetails 
+										WHERE brand_id = '". $userid ."' ");
+										
+		if($exeGetBrandToEdit->num_rows() > 0) {
+			return $exeGetBrandToEdit->result_array();
+		} else {
+			return false;
+		}
+	}
+	public function get_by_brand($id)
+    {
+        $this->db->from('branddetails');
+        $this->db->where('brand_id',$id);
+        $query = $this->db->get();
+ 
+        return $query->row();
+    }
 
 
 

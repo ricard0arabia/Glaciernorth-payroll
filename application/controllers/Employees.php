@@ -71,9 +71,22 @@ class Employees extends CI_Controller {
             $data['status'] = $this->employee->exeGetUserStatus();
             $data['emp'] = $this->employee->exeGetEmpToEdit($id);
             $data['info'] = $this->employee->exeGetUserInfo($id);    
+            $data['brandname'] = $this->employee->exeGetBrandToEdit($id);
             $this->load->view('pages/profile', $data);
             $this->load->view('footer');
     }
+
+
+
+ function branddetailsinsert($id)
+ {
+ 
+  $insertstatus = $this->employee->insertbranddetials($id);
+  if($insertstatus)
+  {
+  echo "Success";
+  }
+}
 
 
 

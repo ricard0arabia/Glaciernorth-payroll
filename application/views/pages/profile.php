@@ -55,7 +55,44 @@ img{
   margin-left: auto;
     margin-right: auto;
 }
+.input {
+  border:0;
+  background:0;
+  outline:none !important;
+}
+.display{
+
+  display:none;
+
+}
 </style>
+<script type="text/javascript">
+$(document).ready(function () {
+
+   
+    $.ajax({
+        url : "<?php echo site_url('userprofile/display')?>",
+        type: "GET",
+        dataType: "JSON",
+        success: function(data)
+        {
+ 
+           
+            $('[name="brand_name"]').val(data.brandname);
+            $('[name="dealername"]').val(data.dealername);
+            $('[name="emailid"]').val(data.emailid);
+            $('[name="webaddress"]').val(data.wedaddress);
+            $('[name="city"]').val(data.city);
+            $('[name="contactno"]').val(data.contactno);
+            $('[name="state"]').val(data.state);
+       
+ 
+        },
+       
+    });
+
+    });
+</script>
  <div class="row">
        <div id="profile-page-sidebar" class="col s12 m4">
         <?php if(!empty($notif)) { ?>
@@ -102,8 +139,8 @@ img{
                    <?php echo form_open_multipart('userprofile/do_upload');?>
                    <?php } ?>
 
-               <input class="pull-left"type="file" id="input" name="userfile" size="20" />
-               <input class="waves-effect waves-light btn"type="submit" value="upload" name="upload" />
+               <input id="res1"class="pull-left"type="file" id="input"  name="userfile" size="20" />
+               <input  id="res2"type="submit" value="upload"  name="upload">
                 </form>
             </div>
        
@@ -152,74 +189,52 @@ img{
                     <div class="tab-content">
                         <div class="tab-pane fade in active" id="201file">
 
-                            <hr>
-                  <form class="form" action="##" method="post" id="registrationForm">
-                      <div class="form-group">
-                          
-                          <div class="col-xs-6">
-                              <label for="first_name"><h4>First name</h4></label>
-                              <input type="text" class="form-control" name="first_name" id="first_name" placeholder="first name" title="enter your first name if any.">
-                          </div>
-                      </div>
-                      <div class="form-group">
-                          
-                          <div class="col-xs-6">
-                            <label for="last_name"><h4>Last name</h4></label>
-                              <input type="text" class="form-control" name="last_name" id="last_name" placeholder="last name" title="enter your last name if any.">
-                          </div>
-                      </div>
-          
-                      <div class="form-group">
-                          
-                          <div class="col-xs-6">
-                              <label for="phone"><h4>Phone</h4></label>
-                              <input type="text" class="form-control" name="phone" id="phone" placeholder="enter phone" title="enter your phone number if any.">
-                          </div>
-                      </div>
-          
-                      <div class="form-group">
-                          <div class="col-xs-6">
-                             <label for="mobile"><h4>Mobile</h4></label>
-                              <input type="text" class="form-control" name="mobile" id="mobile" placeholder="enter mobile number" title="enter your mobile number if any.">
-                          </div>
-                      </div>
-                      <div class="form-group">
-                          
-                          <div class="col-xs-6">
-                              <label for="email"><h4>Email</h4></label>
-                              <input type="email" class="form-control" name="email" id="email" placeholder="you@email.com" title="enter your email.">
-                          </div>
-                      </div>
-                      <div class="form-group">
-                          
-                          <div class="col-xs-6">
-                              <label for="email"><h4>Location</h4></label>
-                              <input type="email" class="form-control" id="location" placeholder="somewhere" title="enter a location">
-                          </div>
-                      </div>
-                      <div class="form-group">
-                          
-                          <div class="col-xs-6">
-                              <label for="password"><h4>Password</h4></label>
-                              <input type="password" class="form-control" name="password" id="password" placeholder="password" title="enter your password.">
-                          </div>
-                      </div>
-                      <div class="form-group">
-                          
-                          <div class="col-xs-6">
-                            <label for="password2"><h4>Verify</h4></label>
-                              <input type="password" class="form-control" name="password2" id="password2" placeholder="password2" title="enter your password2.">
-                          </div>
-                      </div>
-                      <div class="form-group">
-                           <div class="col-xs-12">
-                                <br>
-                                <button class="btn btn-success" type="submit"><i class="glyphicon glyphicon-ok-sign"></i> Save</button>
-                                <button class="btn btn-default" type="reset"><i class="glyphicon glyphicon-repeat"></i> Reset</button>
-                            </div>
-                      </div>
-                </form>
 
+ 
+  <button id="edit" class="btn btn-info pull-right">edit</button>
+   <form id="branddet" name="branddet" method="post" role="form" >  
+
+    <?php if($this->uri->segment(1) == "userprofile") { ?>
+
+    <button id="save" style="display: none;" type="button" name="submit" class=" btn btn-info pull-right" onclick="userprofile()">   Save  </button>
+
+    <?php } else { ?> 
+
+     <button id="save" style="display: none;" type="button" name="submit" class=" btn btn-info pull-right" onclick="employeeprofile(<?php echo $this->uri->segment(3) ?>)">   Save  </button>
+
+    <?php } ?>
+
+
+  <table id="view" class="table table-striped">
+  <tr>
+    <th>brand_name</th>
+    <td><input type="text" id="user_id" class="input"name="brand_name" readonly></td>
+    <th>dealername</th>
+    <td><input type="text" id="birthdate" class="input" name="dealername"  readonly></td>
+  </tr>
+  <tr>
+    <th>emailid</th>
+    <td><input type="text" id="firstname"class="input" name="emailid"  readonly></td>
+    <th>webaddress</th>
+    <td><input type="text" id="gender"  class="input"name="webaddress"  readonly></td>
+  </tr>
+  <tr>
+    <th>city</th>
+    <td><input type="text" id="middlename" class="input" name="city"  readonly></td>
+    <th>contactno</th>
+    <td><input type="text" id="cstatus" class="input" name="contactno" readonly></td>
+  </tr>
+  <tr>
+    <th>state</th>
+    <td><input type="text" id="lastname"class="input" name="state" readonly></td>
+    
+  </tr>
+  </form>
+</table>
+
+
+                   
+    
                         </div>
                         <div class="tab-pane fade" id="tab2primary">Primary 2</div>
                         <div class="tab-pane fade" id="tab3primary">Primary 3</div>
@@ -238,23 +253,136 @@ img{
   </div>           
            
 </div>
+  </div>   
 
-    <script>
-      (
-          function() {
+<script type="text/javascript">
 
-          var URL = window.URL || window.webkitURL;
 
-          var input = document.querySelector('#input');
-          var preview = document.querySelector('#preview');
-          
-          // When the file input changes, create a object URL around the file.
-          input.addEventListener('change', function () {
-              preview.src = URL.createObjectURL(this.files[0]);
-          });
-          
-          // When the image loads, release object URL
+$('#edit').click(function(){
+  $('input').toggleClass('input');
+  $('input').each(function(){
+    var inp = $(this);
+
+   
+    if (inp.attr('readonly')) {
+
+        $.ajax({
+        url : "<?php echo site_url('userprofile/display')?>",
+        type: "GET",
+        dataType: "JSON",
+        success: function(data)
+        {
+ 
+           
+            $('[name="brand_name"]').val(data.brandname);
+            $('[name="dealername"]').val(data.dealername);
+            $('[name="emailid"]').val(data.emailid);
+            $('[name="webaddress"]').val(data.wedaddress);
+            $('[name="city"]').val(data.city);
+            $('[name="contactno"]').val(data.contactno);
+            $('[name="state"]').val(data.state);
+       
+ 
+        },
+       
+    });
+      
+      inp.removeAttr('readonly');   
+
+      document.getElementById("edit").innerHTML = 'cancel';
+      document.getElementById("res1").disabled = true;
+      document.getElementById("res2").disabled = true;  
+      document.getElementById("save").style.display = "block";
+ 
+
          
-      })
-      ();
+    }
+    else {
+
+        $.ajax({
+        url : "<?php echo site_url('userprofile/display')?>",
+        type: "GET",
+        dataType: "JSON",
+        success: function(data)
+        {
+ 
+           
+            $('[name="brand_name"]').val(data.brandname);
+            $('[name="dealername"]').val(data.dealername);
+            $('[name="emailid"]').val(data.emailid);
+            $('[name="webaddress"]').val(data.wedaddress);
+            $('[name="city"]').val(data.city);
+            $('[name="contactno"]').val(data.contactno);
+            $('[name="state"]').val(data.state);
+       
+ 
+        },
+       
+    });
+
+
+      inp.attr('readonly', 'readonly');
+      $('#branddet')[0].reset();
+      document.getElementById("edit").innerHTML = 'edit';
+      document.getElementById("res1").disabled = false;
+      document.getElementById("res2").disabled = false;  
+      document.getElementById("save").style.display = "none";
+
+
+       
+    }
+  });
+});
+ $('#save').click(function(){
+  $('input').toggleClass('input');
+  $('input').each(function(){
+    var inp = $(this);
+
+   
+      inp.attr('readonly', 'readonly');
+      document.getElementById("edit").innerHTML = 'edit';
+      document.getElementById("res1").disabled = false;
+      document.getElementById("res2").disabled = false;  
+      document.getElementById("save").style.display = "none";
+  });
+});
+ function employeeprofile(id)
+ {
+   $.ajax({
+        url :  "<?php echo site_url('employees/branddetailsinsert')?>/"+id,
+        type: "POST",
+        data: $('#branddet').serialize(),
+        dataType: "JSON",
+        success: function(data) 
+        {
+         if(data == "Success")
+         {
+          $('#success_msg').show();
+          $('#success_msg').text(" Record saved successfully");
+         }
+        }
+      }); 
+    
+ }
+ function userprofile()
+ {
+   $.ajax({
+        url :  "<?php echo site_url('userprofile/branddetailsinsert')?>",
+        type: "POST",
+        data: $('#branddet').serialize(),
+        dataType: "JSON",
+        success: function(data) 
+        {
+         if(data == "Success")
+         {
+          $('#success_msg').show();
+          $('#success_msg').text(" Record saved successfully");
+         }
+        }
+      }); 
+    
+ }
+
  </script>
+
+

@@ -6,10 +6,11 @@ class Userprofile extends CI_Controller {
 	public function __construct() {
 		parent::__construct();
 		$this->load->model('Contents','profile');
+		$this->load->library('form_validation');
 	}
 
 
-	public function view($id) {		
+	public function index() {		
 		 if($this->session->userdata('isLogin') == FALSE)
         {
 
@@ -19,16 +20,41 @@ class Userprofile extends CI_Controller {
        
 			$this->load->helper('url');	
 	        $this->load->view('header');
-	        $data['image'] = $this->profile->get_image_profile($id);
+	        $data['image'] = $this->profile->get_image_profile($this->session->userdata('username'));
 			$data['status'] = $this->profile->exeGetUserStatus();
-			$data['emp'] = $this->profile->exeGetEmpToEdit($id);
-			$data['info'] = $this->profile->exeGetUserInfo($id);	
+			$data['emp'] = $this->profile->exeGetEmpToEdit($this->session->userdata('username'));
+			$data['info'] = $this->profile->exeGetUserInfo($this->session->userdata('username'));	
+			$data['brandname'] = $this->profile->exeGetBrandToEdit($this->session->userdata('username'));
 	        $this->load->view('pages/profile', $data);
 			$this->load->view('footer');
 	   }
 	}	
 	
-	
+
+function branddetailsupdate()
+ {
+ 
+  $insertstatus = $this->profile->insertbranddetials($this->session->userdata('username'));
+  if($insertstatus)
+  {
+  echo "Success";
+  }
+}
+
+ function branddetailsinsert()
+ {
+ 
+  $insertstatus = $this->profile->insertbranddetials($this->session->userdata('username'));
+  if($insertstatus)
+  {
+  echo "Success";
+  }
+}
+  public function display()
+    {
+        $data = $this->profile->get_by_brand($this->session->userdata('username'));
+        echo json_encode($data);
+    }
 
 
 		function do_upload(){
