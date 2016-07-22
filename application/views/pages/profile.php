@@ -69,27 +69,57 @@ img{
 <script type="text/javascript">
 $(document).ready(function () {
 
-   
+   <?php if($this->uri->segment(1) == 'userprofile') { ?>
     $.ajax({
-        url : "<?php echo site_url('userprofile/display')?>",
+        url : "<?php echo site_url('userprofile/basicinfo_list')?>",
         type: "GET",
         dataType: "JSON",
         success: function(data)
         {
  
            
-            $('[name="brand_name"]').val(data.brandname);
-            $('[name="dealername"]').val(data.dealername);
-            $('[name="emailid"]').val(data.emailid);
-            $('[name="webaddress"]').val(data.wedaddress);
-            $('[name="city"]').val(data.city);
-            $('[name="contactno"]').val(data.contactno);
-            $('[name="state"]').val(data.state);
+            $('[name="user_id"]').val(data.user_id);
+            $('[name="firstname"]').val(data.firstname);
+            $('[name="middlename"]').val(data.middlename);
+            $('[name="lastname"]').val(data.lastname);
+            $('[name="department"]').val(data.department);
+            $('[name="address"]').val(data.address);
+            $('[name="position"]').val(data.position);
+            $('[name="contact_no"]').val(data.contact_no);
+       
        
  
         },
        
     });
+
+    <?php } else { ?>
+
+
+      $.ajax({
+        url : "<?php echo site_url('employees/basicinfo_list')?>/"+ <?php echo $this->uri->segment(3) ?>,
+        type: "GET",
+        dataType: "JSON",
+        success: function(data)
+        {
+ 
+           
+            $('[name="user_id"]').val(data.user_id);
+            $('[name="firstname"]').val(data.firstname);
+            $('[name="middlename"]').val(data.middlename);
+            $('[name="lastname"]').val(data.lastname);
+            $('[name="department"]').val(data.department);
+            $('[name="address"]').val(data.address);
+            $('[name="position"]').val(data.position);
+            $('[name="contact_no"]').val(data.contact_no);
+       
+       
+ 
+        },
+       
+    });
+
+      <?php } ?>
 
     });
 </script>
@@ -139,7 +169,7 @@ $(document).ready(function () {
                    <?php echo form_open_multipart('userprofile/do_upload');?>
                    <?php } ?>
 
-               <input id="res1"class="pull-left"type="file" id="input"  name="userfile" size="20" />
+               <input id="res1"class="pull-left"type="file"  name="userfile" size="20" />
                <input  id="res2"type="submit" value="upload"  name="upload">
                 </form>
             </div>
@@ -192,7 +222,7 @@ $(document).ready(function () {
 
  
   <button id="edit" class="btn btn-info pull-right">edit</button>
-   <form id="branddet" name="branddet" method="post" role="form" >  
+   <form id="basicinfo" name="basicinfo" method="post" role="form" >  
 
     <?php if($this->uri->segment(1) == "userprofile") { ?>
 
@@ -207,28 +237,31 @@ $(document).ready(function () {
 
   <table id="view" class="table table-striped">
   <tr>
-    <th>brand_name</th>
-    <td><input type="text" id="user_id" class="input"name="brand_name" readonly></td>
-    <th>dealername</th>
-    <td><input type="text" id="birthdate" class="input" name="dealername"  readonly></td>
+    <th>Employee Id</th>
+    <td><input type="text" id="user_id" class="input"name="user_id" readonly></td>
+    <th>Department</th>
+    <td><input type="text" id="department" class="input" name="department"  readonly></td>
   </tr>
   <tr>
-    <th>emailid</th>
-    <td><input type="text" id="firstname"class="input" name="emailid"  readonly></td>
-    <th>webaddress</th>
-    <td><input type="text" id="gender"  class="input"name="webaddress"  readonly></td>
+    <th>First Name</th>
+    <td><input type="text" id="firstname"class="input" name="firstname"  readonly></td>
+    <th>Position</th>
+    <td><input type="text" id="position"  class="input"name="position"  readonly></td>
   </tr>
   <tr>
-    <th>city</th>
-    <td><input type="text" id="middlename" class="input" name="city"  readonly></td>
-    <th>contactno</th>
-    <td><input type="text" id="cstatus" class="input" name="contactno" readonly></td>
+    <th>Middle Name</th>
+    <td><input type="text" id="middlename" class="input" name="middlename"  readonly></td>
+    <th>Address</th>
+    <td><input type="text" id="address" class="input" name="address" readonly></td>
   </tr>
   <tr>
-    <th>state</th>
-    <td><input type="text" id="lastname"class="input" name="state" readonly></td>
+    <th>Last Name</th>
+    <td><input type="text" id="lastname"class="input" name="lastname" readonly></td>
+    <th>Contact No.</th>
+    <td><input type="text" id="contact_no"class="input" name="contact_no" readonly></td>
     
   </tr>
+
   </form>
 </table>
 
@@ -257,7 +290,23 @@ $(document).ready(function () {
 
 <script type="text/javascript">
 
+(
+          function() {
 
+          var URL = window.URL || window.webkitURL;
+
+          var input = document.querySelector('#res1');
+          var preview = document.querySelector('#preview');
+          
+          // When the file input changes, create a object URL around the file.
+          input.addEventListener('change', function () {
+              preview.src = URL.createObjectURL(this.files[0]);
+          });
+          
+          // When the image loads, release object URL
+         
+      })
+      ();
 $('#edit').click(function(){
   $('input').toggleClass('input');
   $('input').each(function(){
@@ -266,29 +315,64 @@ $('#edit').click(function(){
    
     if (inp.attr('readonly')) {
 
-        $.ajax({
-        url : "<?php echo site_url('userprofile/display')?>",
+         <?php if($this->uri->segment(1) == 'userprofile') { ?>
+    $.ajax({
+        url : "<?php echo site_url('userprofile/basicinfo_list')?>",
         type: "GET",
         dataType: "JSON",
         success: function(data)
         {
  
            
-            $('[name="brand_name"]').val(data.brandname);
-            $('[name="dealername"]').val(data.dealername);
-            $('[name="emailid"]').val(data.emailid);
-            $('[name="webaddress"]').val(data.wedaddress);
-            $('[name="city"]').val(data.city);
-            $('[name="contactno"]').val(data.contactno);
-            $('[name="state"]').val(data.state);
+            $('[name="user_id"]').val(data.user_id);
+            $('[name="firstname"]').val(data.firstname);
+            $('[name="middlename"]').val(data.middlename);
+            $('[name="lastname"]').val(data.lastname);
+            $('[name="department"]').val(data.department);
+            $('[name="address"]').val(data.address);
+            $('[name="position"]').val(data.position);
+            $('[name="contact_no"]').val(data.contact_no);
+       
        
  
         },
        
     });
+
+    <?php } else { ?>
+
+
+      $.ajax({
+        url : "<?php echo site_url('employees/basicinfo_list')?>/"+ <?php echo $this->uri->segment(3) ?>,
+        type: "GET",
+        dataType: "JSON",
+        success: function(data)
+        {
+ 
+           
+            $('[name="user_id"]').val(data.user_id);
+            $('[name="firstname"]').val(data.firstname);
+            $('[name="middlename"]').val(data.middlename);
+            $('[name="lastname"]').val(data.lastname);
+            $('[name="department"]').val(data.department);
+            $('[name="address"]').val(data.address);
+            $('[name="position"]').val(data.position);
+            $('[name="contact_no"]').val(data.contact_no);
+       
+       
+ 
+        },
+       
+    });
+
+      <?php } ?>
       
       inp.removeAttr('readonly');   
-
+      document.getElementById('user_id').readOnly = true;
+      document.getElementById("user_id").style.outline = "none";
+      document.getElementById("user_id").style.border = "0";
+      document.getElementById("user_id").style.background = "0";
+     
       document.getElementById("edit").innerHTML = 'cancel';
       document.getElementById("res1").disabled = true;
       document.getElementById("res2").disabled = true;  
@@ -299,30 +383,61 @@ $('#edit').click(function(){
     }
     else {
 
-        $.ajax({
-        url : "<?php echo site_url('userprofile/display')?>",
+        <?php if($this->uri->segment(1) == 'userprofile') { ?>
+    $.ajax({
+        url : "<?php echo site_url('userprofile/basicinfo_list')?>",
         type: "GET",
         dataType: "JSON",
         success: function(data)
         {
  
            
-            $('[name="brand_name"]').val(data.brandname);
-            $('[name="dealername"]').val(data.dealername);
-            $('[name="emailid"]').val(data.emailid);
-            $('[name="webaddress"]').val(data.wedaddress);
-            $('[name="city"]').val(data.city);
-            $('[name="contactno"]').val(data.contactno);
-            $('[name="state"]').val(data.state);
+            $('[name="user_id"]').val(data.user_id);
+            $('[name="firstname"]').val(data.firstname);
+            $('[name="middlename"]').val(data.middlename);
+            $('[name="lastname"]').val(data.lastname);
+            $('[name="department"]').val(data.department);
+            $('[name="address"]').val(data.address);
+            $('[name="position"]').val(data.position);
+            $('[name="contact_no"]').val(data.contact_no);
+       
        
  
         },
        
     });
 
+    <?php } else { ?>
+
+
+      $.ajax({
+        url : "<?php echo site_url('employees/basicinfo_list')?>/"+ <?php echo $this->uri->segment(3) ?>,
+        type: "GET",
+        dataType: "JSON",
+        success: function(data)
+        {
+ 
+           
+            $('[name="user_id"]').val(data.user_id);
+            $('[name="firstname"]').val(data.firstname);
+            $('[name="middlename"]').val(data.middlename);
+            $('[name="lastname"]').val(data.lastname);
+            $('[name="department"]').val(data.department);
+            $('[name="address"]').val(data.address);
+            $('[name="position"]').val(data.position);
+            $('[name="contact_no"]').val(data.contact_no);
+       
+       
+ 
+        },
+       
+    });
+
+      <?php } ?>
+
 
       inp.attr('readonly', 'readonly');
-      $('#branddet')[0].reset();
+      $('#basicinfo')[0].reset();
       document.getElementById("edit").innerHTML = 'edit';
       document.getElementById("res1").disabled = false;
       document.getElementById("res2").disabled = false;  
@@ -349,9 +464,9 @@ $('#edit').click(function(){
  function employeeprofile(id)
  {
    $.ajax({
-        url :  "<?php echo site_url('employees/branddetailsinsert')?>/"+id,
+        url :  "<?php echo site_url('employees/update_basicinfo')?>/"+id,
         type: "POST",
-        data: $('#branddet').serialize(),
+        data: $('#basicinfo').serialize(),
         dataType: "JSON",
         success: function(data) 
         {
@@ -367,9 +482,9 @@ $('#edit').click(function(){
  function userprofile()
  {
    $.ajax({
-        url :  "<?php echo site_url('userprofile/branddetailsinsert')?>",
+        url :  "<?php echo site_url('userprofile/basicinfo_insert')?>",
         type: "POST",
-        data: $('#branddet').serialize(),
+        data: $('#basicinfo').serialize(),
         dataType: "JSON",
         success: function(data) 
         {
@@ -382,6 +497,7 @@ $('#edit').click(function(){
       }); 
     
  }
+
 
  </script>
 

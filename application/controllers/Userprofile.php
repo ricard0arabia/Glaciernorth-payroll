@@ -29,32 +29,23 @@ class Userprofile extends CI_Controller {
 			$this->load->view('footer');
 	   }
 	}	
-	
 
-function branddetailsupdate()
+
+ function basicinfo_insert()
  {
  
   $insertstatus = $this->profile->insertbranddetials($this->session->userdata('username'));
-  if($insertstatus)
-  {
-  echo "Success";
+	  if($insertstatus)
+	  {
+	  echo "Success";
+	  }
   }
-}
-
- function branddetailsinsert()
- {
- 
-  $insertstatus = $this->profile->insertbranddetials($this->session->userdata('username'));
-  if($insertstatus)
+  public function basicinfo_list()
   {
-  echo "Success";
-  }
-}
-  public function display()
-    {
-        $data = $this->profile->get_by_brand($this->session->userdata('username'));
+        $data = $this->profile->emp_get_by_id($this->session->userdata('username'));
         echo json_encode($data);
-    }
+  }
+
 
 
 		function do_upload(){

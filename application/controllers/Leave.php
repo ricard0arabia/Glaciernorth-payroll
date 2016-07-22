@@ -66,6 +66,7 @@ class Leave extends CI_Controller {
 	public function add_leave()
     {
         $this->_validate();
+        
         $data = array(
         		'user_id' => $this->session->userdata('username'),
         		'startdate' => $this->input->post('startdate'),

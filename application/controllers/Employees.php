@@ -31,16 +31,16 @@ class Employees extends CI_Controller {
              public function ajax_list()
     {
         $list = $this->employee->emp_get_datatables();
+
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $employee) {
             $no++;
             $row = array();
             $row[] = '<img height="60" width="60" src="'.base_url().'uploads/'.$employee->thumb_name.$employee->ext.'">';
-
      	  	$row[] = $employee->user_id;
-            $row[] = $employee->lastname;
-            $row[] = $employee->jobtitle;
+            $row[] = ucfirst($employee->firstname).' '.ucfirst(substr($employee->middlename,0,1)).'. '.ucfirst($employee->lastname);
+            $row[] = $employee->position;
             $row[] = $employee->department;
             $row[] = $employee->contact_no;
             $row[] = $employee->address;
@@ -63,6 +63,33 @@ class Employees extends CI_Controller {
         echo json_encode($output);
     }
 
+      public function add_employee()
+    {
+       
+        $this->_validate();
+
+        $data = array(
+                'user_id' => $this->input->post('user_id'),
+                'firstname' => $this->input->post('firstname'),
+                'middlename' => $this->input->post('middlename'),
+                'lastname' => $this->input->post('lastname'),
+                'department' => $this->input->post('department'),
+                'position' => $this->input->post('position'),
+                'contact_no' => $this->input->post('contact_no'),
+                'userlevel' => '3',
+                'emp_pass' => md5($this->input->post('user_id')),
+                'address' => $this->input->post('address'),
+                'date_created' => '1996/10/10',
+                'status' => '1',
+             
+                 
+                
+            );
+   
+        $insert = $this->employee->emp_save($data);
+        echo json_encode(array("status" => TRUE));
+    }
+
     public function profile($id){
 
 
@@ -75,19 +102,49 @@ class Employees extends CI_Controller {
             $this->load->view('pages/profile', $data);
             $this->load->view('footer');
     }
+      public function generate(){
+        $month = date('M');
+        $output = array(
+                               
+                                
+                            "year" => date('Y'),
+                            "month" => date('m',strtotime($month)),
+                            "total" => $this->employee->emp_count_all()+1,
+                        
+                         
+                    );
+            //output to json format
+            echo json_encode($output);
+
+      }
 
 
 
- function branddetailsinsert($id)
- {
- 
-  $insertstatus = $this->employee->insertbranddetials($id);
-  if($insertstatus)
+  public function update_basicinfo()
+    {
+        $this->_validate();
+        $data = array(
+                
+                'firstname' => $this->input->post('firstname'),
+                'middlename' => $this->input->post('middlename'),
+                'lastname' => $this->input->post('lastname'),
+                'department' => $this->input->post('department'),
+                'position' => $this->input->post('position'),
+                'contact_no' => $this->input->post('contact_no'),
+                'address' => $this->input->post('address'),
+               
+                
+            );
+        $this->employee->emp_update(array('user_id' => $this->input->post('user_id')), $data);
+        echo json_encode(array("status" => TRUE));
+    }
+
+  public function basicinfo_list($id)
   {
-  echo "Success";
+        $data = $this->employee->emp_get_by_id($id);
+        echo json_encode($data);
   }
-}
-
+  
 
 
         function do_upload($id){
@@ -173,6 +230,79 @@ class Employees extends CI_Controller {
             return $notif;
         }
     }
+
+       private function _validate()
+    {
+        $data = array();
+        $data['error_string'] = array();
+        $data['inputerror'] = array();
+        $data['status'] = TRUE;
+ 
+        if($this->input->post('user_id') == '')
+        {
+              
+            $data['inputerror'][] = 'user_id';
+            $data['error_string'][] = 'User id is required';
+            $data['status'] = FALSE;
+        }
+ 
+        if($this->input->post('firstname') == '')
+        {
+            $data['inputerror'][] = 'firstname';
+            $data['error_string'][] = 'first name is required';
+            $data['status'] = FALSE;
+        }
+
+          if($this->input->post('middlename') == '')
+        {
+            $data['inputerror'][] = 'middlename';
+            $data['error_string'][] = 'middle name is required';
+            $data['status'] = FALSE;
+        }
+
+         if($this->input->post('lastname') == '')
+        {
+            $data['inputerror'][] = 'lastname';
+            $data['error_string'][] = 'last name is required';
+            $data['status'] = FALSE;
+        }
+ 
+
+        if($this->input->post('department') == '')
+        {
+            $data['inputerror'][] = 'department';
+            $data['error_string'][] = 'department is required';
+            $data['status'] = FALSE;
+        }
+
+         if($this->input->post('position') == '')
+        {
+            $data['inputerror'][] = 'position';
+            $data['error_string'][] = 'position is required';
+            $data['status'] = FALSE;
+        }
+
+          if($this->input->post('contact_no') == '')
+        {
+            $data['inputerror'][] = 'contact_no';
+            $data['error_string'][] = 'contact no. is required';
+            $data['status'] = FALSE;
+        }
+          if($this->input->post('address') == '')
+        {
+            $data['inputerror'][] = 'address';
+            $data['error_string'][] = 'address is required';
+            $data['status'] = FALSE;
+        }
+ 
+        if($data['status'] === FALSE)
+        {
+            echo json_encode($data);
+            exit();
+        }
+    }
+
+
         
 	
 }

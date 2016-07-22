@@ -23,18 +23,14 @@ class Contents extends CI_Model {
     var $shift_column_order = array('id','user_id','startdate','enddate','duration','shift_days','reason','status','sub_department','sub_position','sub_id','mon_start','mon_end','tue_start','tue_end','wed_start','wed_end','thurs_start','thurs_end','fri_start','fri_end','sat_start','sat_end','sun_start','sun_end',null); //set column field database for datatable orderable
     var $shift_column_search = array('sub_department','sub_position','sub_id'); //set column field database for datatable searchable just firstname , lastname , address are searchable
     var $shift_order = array('id' => 'desc'); // default
-
-       var $emp_table = 'emp_workschedule';
-    var $emp_column_order = array('id','user_id','mon_start','mon_end','tue_start','tue_end','wed_start','wed_end','thurs_start','thurs_end','fri_start','fri_end','sat_start','sat_end','sun_start','sun_end',null); //set column field database for datatable orderable
-    var $emp_column_search = array('user_id'); //set column field database for datatable searchable just firstname , lastname , address are searchable
-    var $emp_order = array('id' => 'desc'); // default
+	
 
 
-   	var $emplist_table = 'employee_details';
-    var $emplist_column_order = array('emp_details_id','user_id','birthdate','gender','jobtitle','datehired','address','incase_emergency','emergency_no','cstatus','salary','department','contact_no','hdmf_no','tin_no','sss_no','philhealth_no','img_name','thumb_name','ext','upload_date',null); //set column field database for datatable orderable
-    var $emplist_column_search = array('user_id'); //set column field database for datatable searchable just firstname , lastname , address are searchable
-    var $emplist_order = array('emp_details_id' => 'desc'); // default
-	#build constructor
+
+ 	var $emp_table = 'employees';
+    var $emp_column_order = array('user_id','firstname','middlename','lastname','userlevel','emp_pass','department','position','contact_no','address','status','date_created',null); //set column field database for datatable orderable
+    var $emp_column_search = array('firstname','lastname','position','department','userlevel'); //set column field database for datatable searchable just firstname , lastname , address are searchable
+    var $emp_order = array('user_id' => 'desc'); // def
 
 	public function __construct() {
 		parent::__construct();
@@ -44,12 +40,12 @@ class Contents extends CI_Model {
 
 	function add_image($data,$id) {
 		$this->db->where('user_id', $id);
-		$this->db->update('employee_details', $data); 
+		$this->db->update('employees', $data); 
 	}
 
 	function get_image() {
 			$getimage = $this->db->query("SELECT img_name, ext
-										FROM employee_details
+										FROM employees
 										WHERE user_id  = '".$this->uri->segment(3)."'
 										");
 										
@@ -62,7 +58,7 @@ class Contents extends CI_Model {
 
 	function get_image_profile($id) {
 			$getimage = $this->db->query("SELECT img_name, ext
-										FROM employee_details
+										FROM employees
 										WHERE user_id  = '".$id."'
 										");
 										
@@ -73,22 +69,6 @@ class Contents extends CI_Model {
 		}
 	}
    
-	
-	#this will get the user to login
-	function getLogin() {
-		$exeLogin = $this->db->query("SELECT * 
-									FROM employees 
-									WHERE status 	= 1								
-									AND employeeid 	= ".$this->db->escape($this->input->post('employeeid'))."
-									AND emp_pass 		= ".$this->db->escape(md5($this->input->post('userpass')))." ");									
-
-		if($exeLogin->num_rows() > 0) {
-			return $exeLogin->result_array();
-		} else {
-			return false;		
-		}
-	}
-
 
 	#this will update the user account
 	function exeUpdateAccount($userId) {			
@@ -1677,10 +1657,7 @@ class Contents extends CI_Model {
     	  private function emp_get_datatables_query()
     {
     
-        $this->db->from('emp_workschedule');
-        $this->db->join('employees','employees.user_id = emp_workschedule.user_id');
-        $this->db->join('employee_details','employee_details.user_id = emp_workschedule.user_id');
-    
+       $this->db->from($this->emp_table);
     	
         $i = 0;
      
@@ -1721,7 +1698,7 @@ class Contents extends CI_Model {
         $this->emp_get_datatables_query();
         if($_POST['length'] != -1)
         $this->db->limit($_POST['length'], $_POST['start']);  	
-    	$this->db->where('employee_details.user_id !=', $this->session->userdata('username')); 
+    	$this->db->where('employees.user_id !=', $this->session->userdata('username')); 
         $query = $this->db->get();
         return $query->result();
     }
@@ -1742,9 +1719,7 @@ class Contents extends CI_Model {
     public function emp_get_by_id($id)
     {
         $this->db->from($this->emp_table);
-        $this->db->join('employees','employees.user_id = emp_workschedule.user_id');
-        $this->db->join('employee_details','employee_details.user_id = emp_workschedule.user_id');
-        $this->db->where('employee_details.user_id =', $id); 
+        $this->db->where('user_id =', $id); 
         $query = $this->db->get();
  
         return $query->row();
@@ -1764,9 +1739,20 @@ class Contents extends CI_Model {
  
     public function emp_delete_by_id($id)
     {
-        $this->db->where('id', $id);
+        $this->db->where('user_id', $id);
         $this->db->delete($this->emp_table);
     }
+
+
+
+
+
+
+
+
+
+
+
 
 
 public function insertbranddetials($user_id)
@@ -1820,9 +1806,12 @@ public function exeGetBrandToEdit($userid) {
 
 
 
+
+
+
 //session
 
-    public function takeUser($username, $password, $status, $level)
+    public function takeUser($username, $password, $level)
 
 		{
 
@@ -1834,7 +1823,6 @@ public function exeGetBrandToEdit($userid) {
 
 		$this->db->where('emp_pass', $password);
 
-		$this->db->where('status', $status);
 
 		$this->db->where('userlevel', $level);
 
@@ -1848,7 +1836,6 @@ public function exeGetBrandToEdit($userid) {
 
 		{
 
-		$this->db->select('emp_id');
 
 		$this->db->select('user_id');
 

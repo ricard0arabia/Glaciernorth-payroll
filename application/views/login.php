@@ -209,8 +209,9 @@ label{
                    
                         <select name="level" class="form-control">
                          <option value="">Level</option>
-                        <option value="1">Admin</option>
-                        <option value="2">Operator</option>
+                        <option value="1">Accountant</option>
+                        <option value="2">H.R Supervisor</option>
+                        <option value="3">Employee</option>
                         </select>
                   
                    

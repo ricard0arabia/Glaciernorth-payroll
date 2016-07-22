@@ -81,7 +81,7 @@
         <table id="table" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
-                                <th>Picture</th>
+                                <th>Image</th>
                                 <th>Employee Id</th>
                                 <th>Name</th>
                                 <th>Position</th>
@@ -93,7 +93,25 @@
                         </thead>
                        
                     </table>
-  
+
+
+                </div>
+
+<!--                                                 employee Request                                         -->
+
+                <div class="tab-pane fade" id="tab2default">
+
+
+    
+                </div>
+            </div><!-- tab content-->
+        </div> <!--panel body-->           
+     </div><!-- panel default -->
+   </div>   <!-- container -->      
+
+
+
+
 <script type="text/javascript">
 
 var save_method; //for save method string
@@ -125,48 +143,16 @@ var table;
     });
 
     
-    $("input").change(function(){
-        $(this).parent().parent().removeClass('has-error');
-        $(this).next().empty();
-    });
-    $("textarea").change(function(){
-        $(this).parent().parent().removeClass('has-error');
-        $(this).next().empty();
-    });
-    $("select").change(function(){
-        $(this).parent().parent().removeClass('has-error');
-        $(this).next().empty();
-    });
-
-
-     // set default dates
-            var start = new Date();
-            // set end date to max one year period:
-            var end = new Date(new Date().setYear(start.getFullYear()+1));
-
-            $('#fromDate').datepicker({
-                format: "yyyy-mm-dd",
-                startDate : start,
-                endDate   : end
-            // update "toDate" defaults whenever "fromDate" changes
-            }).on('changeDate', function(){
-                // set the "toDate" start to not be later than "fromDate" ends:
-                $('#toDate').datepicker('setStartDate', new Date($(this).val()));
-                calcDiff();
-            }); 
-
-            $('#toDate').datepicker({
-                format: "yyyy-mm-dd",
-                startDate : start,
-                endDate   : end
-            // update "fromDate" defaults whenever "toDate" changes
-            }).on('changeDate', function(){
-                // set the "fromDate" end to not be later than "toDate" starts:
-                $('#fromDate').datepicker('setEndDate', new Date($(this).val()));
-                calcDiff();
+            $("input").change(function(){
+                $(this).parent().parent().removeClass('has-error');
+                $(this).next().empty();
+            });
+            $("textarea").change(function(){
+                $(this).parent().parent().removeClass('has-error');
+                $(this).next().empty();
             });
 
- 
+
             
     });
 
@@ -175,55 +161,28 @@ function add_employee()
     save_method = 'add';
     $('#form')[0].reset(); // reset form on modals
     $('.form-group').removeClass('has-error'); // clear error class
-    $('.help-block').empty(); // clear error string
-    $('#modal_form').modal('show'); // show bootstrap modal
-    $('.modal-title').text('Add employee Request'); // Set Title to Bootstrap modal title
-}
-
-function edit_employee(id)
-{
-    save_method = 'update';
-    $('#form')[0].reset(); // reset form on modals
-    $('.form-group').removeClass('has-error'); // clear error class
-    $('.help-block').empty(); // clear error string
- 
-    //Ajax Load data from ajax
-    $.ajax({
-        url : "<?php echo site_url('employee/edit_employee')?>/" + id,
+    $('.help-block').empty();
+     $.ajax({
+        url : "<?php echo site_url('employees/generate')?>",
         type: "GET",
         dataType: "JSON",
         success: function(data)
         {
  
-            $('[name="id"]').val(data.id);
-            $('[name="startdate"]').val(data.startdate);
-            $('[name="enddate"]').val(data.enddate);
-            $('[name="duration"]').val(data.duration);
-            $('[name="cause"]').val(data.cause);
-            $('[name="employeetype"]').val(data.employeetype);
-            $('#modal_form').modal('show'); // show bootstrap modal when complete loaded
-            $('.modal-title').text('Edit employee'); // Set title to Bootstrap modal title
+            $('[name="user_id"]').val(data.year+data.month+data.total);
  
         },
         error: function (jqXHR, textStatus, errorThrown)
         {
             alert('Error get data from ajax');
         }
-    });
+    }); // clear error string
+    $('#modal_form').modal('show'); // show bootstrap modal
+    $('.modal-title').text('Add Employee'); 
+
+    
 }
-
-      
- function calcDiff() {
-    var date1 = $('#fromDate').datepicker('getDate');
-    var date2 = $('#toDate').datepicker('getDate');
-    var diff = 0;
-    if (date1 && date2) {
-      diff = Math.floor((date2.getTime() - date1.getTime()) / 86400000); 
-    }
-    $('#calculated').val(diff);
-  }
-        
-
+   
 function reload_table()
 {
     table.ajax.reload(null,false); //reload datatable ajax
@@ -234,17 +193,11 @@ function save()
 {
     $('#btnSave').text('saving...'); //change button text
     $('#btnSave').attr('disabled',true); //set button disable
-    var url;
  
-    if(save_method == 'add') {
-        url = "<?php echo site_url('employee/add_employee')?>";
-    } else {
-        url = "<?php echo site_url('employee/update_employee')?>";
-    }
- 
+   
     // ajax adding data to database
     $.ajax({
-        url : url,
+        url : "<?php echo site_url('employees/add_employee')?>",
         type: "POST",
         data: $('#form').serialize(),
         dataType: "JSON",
@@ -308,87 +261,111 @@ function delete_employee(id)
 
 
 
- 
-
-
-
-
-
-                </div>
-
-<!--                                                 employee Request                                         -->
-
-                <div class="tab-pane fade" id="tab2default">
-
-
-    
-                </div>
-            </div><!-- tab content-->
-        </div> <!--panel body-->           
-     </div><!-- panel default -->
-   </div>   <!-- container -->      
-
-
-
-
-
 <div class="modal fade" id="modal_form" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
-                <h3 class="modal-title">Add Shift Request</h3>
+                <h3 class="modal-title">Add Employee</h3>
                
             </div>
             <div class="modal-body form">
                 <form action="#" id="form" class="form-horizontal">
                     <input type="hidden" value="" name="id"/>
-                     <input type="hidden" value="" name="sub_id"/>
                     <div class="form-body">
-                        <div class="row">
 
-                                      
+                <div class="row">   
+                    <div class="col-md-6">     
+                                 
                          <div class="form-group">
-                            <label class="control-label col-md-3">Start Date</label>
-                            <div class="col-md-5">
-                             <input id="fromDate" name="startdate" placeholder="yyyy-mm-dd" class="form-control" type="text">
+                         <div class="col-md-12">                                                  
+                            <label>Employee Id</label>
+                             <input id="user_id" name="user_id" placeholder="User Id" class="form-control" type="text" readonly>
+                                <span class="help-block"></span>                      
+                        </div>
+                    </div>
+                    </div>
 
+                    <div class="col-md-6">   
+                        
+                            <div class="form-group">
+                                <div class="col-md-12"> 
+                                <label>Department</label>
+                                <input name="department" id="department" placeholder="Department"class="form-control" type="text"></input>
                                 <span class="help-block"></span>
+                            </div>                         
+                        </div>
+                    </div>
+                </div>
+                <div class="row">   
+                         <div class="col-md-6">
+                            
+                            <div class="form-group"> 
+                            <div class="col-md-12">                                             
+                                <label>First Name</label>                           
+                                <input id="firstname" name="firstname" placeholder="First Name" class="form-control" type="text">
+                                <span class="help-block"></span>                    
+                                </div>
                             </div>
                         </div>
-                       
-                       
-                        <div class="form-group">
-                             <label class="control-label col-md-3">End Date</label>
-                            <div class="col-md-5">                           
-                          <input id="toDate" name="enddate" placeholder="yyyy-mm-dd" class="form-control" type="text">
+                        <div class="col-md-6">
+                            
+                             <div class="form-group">
+                                <div class="col-md-12">
+                                <label>Position</label>
+                                <input name="position" id="position" placeholder="position"class="form-control" type="text"></input>
                                 <span class="help-block"></span>
                             </div>
-                        </div>
-                         
-
-                         <div class="form-group">
-                            <label class="control-label col-md-3">Duration</label>
-                            <div class="col-md-5">
-                                <input name="duration" id="calculated" class="form-control"></input>
-                                <span class="help-block"></span>
                             </div>
                         </div>
-
-                  
-                       
-                    
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Reason</label>
-                            <div class="col-md-5">
-                                <textarea name="reason" placeholder="Cause" class="form-control"></textarea>
+                </div>
+                 <div class="row">   
+                        <div class="col-md-6">
+                           
+                           <div class="form-group">
+                            <div class="col-md-12">                                                 
+                                <label>Middle Name</label>
+                                 <input name="middlename" id="middlename" placeholder="Middle Name"class="form-control" type="text"></input>
                                 <span class="help-block"></span>
+                                </div>
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                <label>Contact No.</label>
+                                <input name="contact_no" id="contact_no" placeholder="Contact No."class="form-control" type="text"></input>
+                                <span class="help-block"></span>
+                            </div>
+                            </div>
+                        </div>
+                </div>
+                 <div class="row">   
 
-                         
+                        <div class="col-md-6">
+                           
+                           <div class="form-group">   
+                            <div class="col-md-12">                            
+                                <label>Last Name</label>
+                                <input name="lastname" id="lastname" placeholder="Last Name"class="form-control" type="text"></input>
+                                <span class="help-block"></span>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                           
+                            <div class="form-group"> 
+                             <div class="col-md-12">      
+                                <label>Address</label>
+                                <textarea id="address" name="address" placeholder="Address" class="form-control"></textarea>
+                                <span class="help-block"></span>
+                            </div>
+                            </div>
+                        </div>
                     </div>
                      
+             
                     </div>
                 </form>
             </div>

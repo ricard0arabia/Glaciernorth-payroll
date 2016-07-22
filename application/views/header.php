@@ -46,7 +46,7 @@
               <a href = "<?php echo site_url()."dashboard"; ?>" style="font-family: billabong; font-size: 200%;"class="navbar-brand">Human Resources</a>
                <?php } else { ?>
 
-              <a href = "<?php echo site_url()."dashboard"; ?>" style="font-family: billabong;"class="navbar-brand">Employee Portal</a>
+              <a href = "<?php echo site_url()."dashboard"; ?>" style="font-family: billabong; font-size: 200%;" class="navbar-brand">Employee Portal</a>
 
                <?php } ?>
   </div>

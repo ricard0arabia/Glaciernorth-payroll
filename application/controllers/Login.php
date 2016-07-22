@@ -43,7 +43,7 @@ class Login extends CI_Controller{
 		$username = $this->input->post('username');
 		$password = $this->input->post('password');
 		$level = $this->input->post('level');
-		$cek = $this->Contents->takeUser($username, $password, 1, $level);
+		$cek = $this->Contents->takeUser($username, $password, $level);
 
 		if($cek <> 0)
 		{
