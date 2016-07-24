@@ -55,7 +55,13 @@ img{
   margin-left: auto;
     margin-right: auto;
 }
-.input {
+.input1 {
+  border:0;
+  background:0;
+  outline:none !important;
+}
+
+.input2 {
   border:0;
   background:0;
   outline:none !important;
@@ -220,50 +226,105 @@ $(document).ready(function () {
                         <div class="tab-pane fade in active" id="201file">
 
 
+
+<!-- Basic information -->
+<!-- Basic information -->
+<!-- Basic information -->
+    <h3><span class="glyphicon glyphicon-user" style="color:#5cb85c" aria-hidden="true"> Basic&nbsp;Information</span></h3>
  
-  <button id="edit" class="btn btn-info pull-right">edit</button>
+  <button id="edit1" type="button" class="btn btn-info pull-right">edit</button>
    <form id="basicinfo" name="basicinfo" method="post" role="form" >  
 
     <?php if($this->uri->segment(1) == "userprofile") { ?>
 
-    <button id="save" style="display: none;" type="button" name="submit" class=" btn btn-info pull-right" onclick="userprofile()">   Save  </button>
+    <button id="save1" style="display: none;" type="button" name="submit" class=" btn btn-info pull-right" onclick="userprofile()">   Save  </button>
 
     <?php } else { ?> 
 
-     <button id="save" style="display: none;" type="button" name="submit" class=" btn btn-info pull-right" onclick="employeeprofile(<?php echo $this->uri->segment(3) ?>)">   Save  </button>
+     <button id="save1" style="display: none;" type="button" name="submit" class=" btn btn-info pull-right" onclick="employeeprofile()">   Save  </button>
 
     <?php } ?>
 
 
-  <table id="view" class="table table-striped">
+  <table id="view1" class="table table-striped">
   <tr>
     <th>Employee Id</th>
-    <td><input type="text" id="user_id" class="input"name="user_id" readonly></td>
+    <td><input type="text" id="user_id" class="basic input1"name="user_id" readonly></td>
     <th>Department</th>
-    <td><input type="text" id="department" class="input" name="department"  readonly></td>
+    <td><input type="text" id="department" class="basic input1" name="department"  readonly></td>
   </tr>
   <tr>
     <th>First Name</th>
-    <td><input type="text" id="firstname"class="input" name="firstname"  readonly></td>
+    <td><input type="text" id="firstname"class="basic input1" name="firstname"  readonly></td>
     <th>Position</th>
-    <td><input type="text" id="position"  class="input"name="position"  readonly></td>
+    <td><input type="text" id="position"  class="basic input1"name="position"  readonly></td>
   </tr>
   <tr>
     <th>Middle Name</th>
-    <td><input type="text" id="middlename" class="input" name="middlename"  readonly></td>
+    <td><input type="text" id="middlename" class="basic input1" name="middlename"  readonly></td>
     <th>Address</th>
-    <td><input type="text" id="address" class="input" name="address" readonly></td>
+    <td><input type="text" id="address" class="basic input1" name="address" readonly></td>
   </tr>
   <tr>
     <th>Last Name</th>
-    <td><input type="text" id="lastname"class="input" name="lastname" readonly></td>
+    <td><input type="text" id="lastname"class="basic input1" name="lastname" readonly></td>
     <th>Contact No.</th>
-    <td><input type="text" id="contact_no"class="input" name="contact_no" readonly></td>
+    <td><input type="text" id="contact_no"class="basic input1" name="contact_no" readonly></td>
     
   </tr>
 
   </form>
 </table>
+<!-- Other details -->
+<!-- Other details -->
+<!-- Other details -->
+
+  <h3><span class="glyphicon glyphicon-user" style="color:#5cb85c" aria-hidden="true"> Other&nbsp;Details</span></h3>
+ 
+  <button id="edit2" type="button" class="btn btn-info pull-right">edit</button>
+   <form id="otherdetails" name="otherdetails" method="post" role="form" >  
+
+    <?php if($this->uri->segment(1) == "userprofile") { ?>
+
+    <button id="save2" style="display: none;" type="button" name="submit" class=" btn btn-info pull-right" onclick="userprofile()">   Save  </button>
+
+    <?php } else { ?> 
+
+     <button id="save2" style="display: none;" type="button" name="submit" class=" btn btn-info pull-right" onclick="employeeprofile()">   Save  </button>
+
+    <?php } ?>
+
+
+  <table id="view2" class="table table-striped">
+  <tr>
+    <th>Birthdate</th>
+    <td><input type="text" id="birthdate" class="detailed input2"name="birthdate" readonly></td>
+    <th>HDMF No.</th>
+    <td><input type="text" id="hdmf_no" class="detailed input2" name="hdmf_no"  readonly></td>
+  </tr>
+  <tr>
+    <th>Gender</th>
+    <td><input type="text" id="gender"class="detailed input2" name="gender"  readonly></td>
+    <th>TIN No.</th>
+    <td><input type="text" id="tin_no"  class="detailed input2"name="tin_no"  readonly></td>
+  </tr>
+  <tr>
+    <th>Datehired</th>
+    <td><input type="text" id="datehired" class="detailed input2" name="datehired"  readonly></td>
+    <th>SSS No.</th>
+    <td><input type="text" id="sss_no" class="detailed input2" name="sss_no" readonly></td>
+  </tr>
+  <tr>
+    <th>Civil Status</th>
+    <td><input type="text" id="cstatus" class="detailed input2" name="cstatus" readonly></td>
+    <th>Philhealth No.</th>
+    <td><input type="text" id="philhealth_no" class="detailed input2" name="philhealth_no" readonly></td>
+    
+  </tr>
+
+  </form>
+</table>
+
 
 
                    
@@ -307,13 +368,17 @@ $(document).ready(function () {
          
       })
       ();
-$('#edit').click(function(){
-  $('input').toggleClass('input');
+$('#edit1').click(function(){
+ 
+       
   $('input').each(function(){
     var inp = $(this);
 
+  if($(this).hasClass('basic')){
    
     if (inp.attr('readonly')) {
+
+      $(this).toggleClass('input1');
 
          <?php if($this->uri->segment(1) == 'userprofile') { ?>
     $.ajax({
@@ -373,15 +438,17 @@ $('#edit').click(function(){
       document.getElementById("user_id").style.border = "0";
       document.getElementById("user_id").style.background = "0";
      
-      document.getElementById("edit").innerHTML = 'cancel';
+      document.getElementById("edit1").innerHTML = 'cancel';
       document.getElementById("res1").disabled = true;
       document.getElementById("res2").disabled = true;  
-      document.getElementById("save").style.display = "block";
+      document.getElementById("save1").style.display = "block";
  
 
          
     }
     else {
+   
+      $(this).toggleClass('input1');
 
         <?php if($this->uri->segment(1) == 'userprofile') { ?>
     $.ajax({
@@ -438,33 +505,39 @@ $('#edit').click(function(){
 
       inp.attr('readonly', 'readonly');
       $('#basicinfo')[0].reset();
-      document.getElementById("edit").innerHTML = 'edit';
+      document.getElementById("edit1").innerHTML = 'edit';
       document.getElementById("res1").disabled = false;
       document.getElementById("res2").disabled = false;  
-      document.getElementById("save").style.display = "none";
+      document.getElementById("save1").style.display = "none";
 
 
        
     }
+  }
   });
 });
- $('#save').click(function(){
-  $('input').toggleClass('input');
+ $('#save1').click(function(){
+ 
   $('input').each(function(){
     var inp = $(this);
 
+if($(this).hasClass('basic')){
+
+   $(this).toggleClass('input1');
+
    
       inp.attr('readonly', 'readonly');
-      document.getElementById("edit").innerHTML = 'edit';
+      document.getElementById("edit1").innerHTML = 'edit';
       document.getElementById("res1").disabled = false;
       document.getElementById("res2").disabled = false;  
-      document.getElementById("save").style.display = "none";
+      document.getElementById("save1").style.display = "none";
+    }
   });
 });
- function employeeprofile(id)
+ function employeeprofile()
  {
    $.ajax({
-        url :  "<?php echo site_url('employees/update_basicinfo')?>/"+id,
+        url :  "<?php echo site_url('employees/update_basicinfo')?>",
         type: "POST",
         data: $('#basicinfo').serialize(),
         dataType: "JSON",
@@ -482,7 +555,7 @@ $('#edit').click(function(){
  function userprofile()
  {
    $.ajax({
-        url :  "<?php echo site_url('userprofile/basicinfo_insert')?>",
+        url :  "<?php echo site_url('userprofile/update_basicinfo')?>",
         type: "POST",
         data: $('#basicinfo').serialize(),
         dataType: "JSON",
@@ -497,6 +570,56 @@ $('#edit').click(function(){
       }); 
     
  }
+//
+//
+//
+
+$('#edit2').click(function(){
+  
+
+
+  $('input').each(function(){
+
+    var inp = $(this);
+
+  
+    if($(this).hasClass('detailed')){
+
+    if (inp.attr('readonly')) {
+
+      $(this).toggleClass('input2');
+
+      
+
+         inp.removeAttr('readonly');   
+       
+        document.getElementById("edit2").innerHTML = 'cancel';
+        document.getElementById("res1").disabled = true;
+        document.getElementById("res2").disabled = true;  
+        document.getElementById("save2").style.display = "block";
+   
+
+         
+    }
+    else {
+   
+
+        $(this).toggleClass('input2');
+    
+
+      inp.attr('readonly', 'readonly');
+    
+      document.getElementById("edit2").innerHTML = 'edit';
+      document.getElementById("res1").disabled = false;
+      document.getElementById("res2").disabled = false;  
+      document.getElementById("save2").style.display = "none";
+
+    
+       }
+    }
+  
+  });
+});
 
 
  </script>

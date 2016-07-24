@@ -122,7 +122,7 @@ class Employees extends CI_Controller {
 
   public function update_basicinfo()
     {
-        $this->_validate();
+   
         $data = array(
                 
                 'firstname' => $this->input->post('firstname'),

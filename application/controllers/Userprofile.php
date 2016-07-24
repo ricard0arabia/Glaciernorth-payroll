@@ -31,20 +31,32 @@ class Userprofile extends CI_Controller {
 	}	
 
 
- function basicinfo_insert()
- {
- 
-  $insertstatus = $this->profile->insertbranddetials($this->session->userdata('username'));
-	  if($insertstatus)
-	  {
-	  echo "Success";
-	  }
-  }
+
+
   public function basicinfo_list()
   {
         $data = $this->profile->emp_get_by_id($this->session->userdata('username'));
         echo json_encode($data);
   }
+
+   public function update_basicinfo()
+    {
+ 
+        $data = array(
+                
+                'firstname' => $this->input->post('firstname'),
+                'middlename' => $this->input->post('middlename'),
+                'lastname' => $this->input->post('lastname'),
+                'department' => $this->input->post('department'),
+                'position' => $this->input->post('position'),
+                'contact_no' => $this->input->post('contact_no'),
+                'address' => $this->input->post('address'),
+               
+                
+            );
+        $this->profile->emp_update(array('user_id' => $this->input->post('user_id')), $data);
+        echo json_encode(array("status" => TRUE));
+    }
 
 
 
@@ -131,6 +143,79 @@ class Userprofile extends CI_Controller {
 			return $notif;
 		}
 	}
+
+	private function _validate()
+    {
+        $data = array();
+        $data['error_string'] = array();
+        $data['inputerror'] = array();
+        $data['status'] = TRUE;
+ 
+        if($this->input->post('user_id') == '')
+        {
+              
+            $data['inputerror'][] = 'user_id';
+            $data['error_string'][] = 'User id is required';
+            $data['status'] = FALSE;
+        }
+ 
+        if($this->input->post('firstname') == '')
+        {
+            $data['inputerror'][] = 'firstname';
+            $data['error_string'][] = 'first name is required';
+            $data['status'] = FALSE;
+        }
+
+          if($this->input->post('middlename') == '')
+        {
+            $data['inputerror'][] = 'middlename';
+            $data['error_string'][] = 'middle name is required';
+            $data['status'] = FALSE;
+        }
+
+         if($this->input->post('lastname') == '')
+        {
+            $data['inputerror'][] = 'lastname';
+            $data['error_string'][] = 'last name is required';
+            $data['status'] = FALSE;
+        }
+ 
+
+        if($this->input->post('department') == '')
+        {
+            $data['inputerror'][] = 'department';
+            $data['error_string'][] = 'department is required';
+            $data['status'] = FALSE;
+        }
+
+         if($this->input->post('position') == '')
+        {
+            $data['inputerror'][] = 'position';
+            $data['error_string'][] = 'position is required';
+            $data['status'] = FALSE;
+        }
+
+          if($this->input->post('contact_no') == '')
+        {
+            $data['inputerror'][] = 'contact_no';
+            $data['error_string'][] = 'contact no. is required';
+            $data['status'] = FALSE;
+        }
+          if($this->input->post('address') == '')
+        {
+            $data['inputerror'][] = 'address';
+            $data['error_string'][] = 'address is required';
+            $data['status'] = FALSE;
+        }
+ 
+        if($data['status'] === FALSE)
+        {
+            echo json_encode($data);
+            exit();
+        }
+    }
+
+
 		
 	
 }
