@@ -15,7 +15,7 @@ class Employees extends CI_Controller {
         if($this->session->userdata('isLogin') == FALSE)
         {
 
-        redirect('logins/login_form');
+        redirect('login/login_form');
         }
         else{
 
@@ -95,6 +95,7 @@ class Employees extends CI_Controller {
 
             $this->load->view('header');
             $data['image'] = $this->employee->get_image_profile($id);
+             $data['exist'] = $this->employee->empinfo_count_all($id);
             $data['status'] = $this->employee->exeGetUserStatus();
             $data['emp'] = $this->employee->exeGetEmpToEdit($id);
             $data['info'] = $this->employee->exeGetUserInfo($id);    
@@ -144,6 +145,56 @@ class Employees extends CI_Controller {
         $data = $this->employee->emp_get_by_id($id);
         echo json_encode($data);
   }
+
+  public function otherdetails_list($id)
+  {
+        $data = $this->employee->empinfo_get_by_id($id);
+        echo json_encode($data);
+  }
+
+    public function add_otherdetails($id)
+    {
+     
+        
+        $data = array(
+                'user_id' => $id,
+                'birthdate' => $this->input->post('birthdate'),
+                'gender' => $this->input->post('gender'),
+                'datehired' => $this->input->post('datehired'),
+                'cstatus' => $this->input->post('cstatus'),
+                'hdmf_no' => $this->input->post('hdmf_no'),
+                'tin_no' => $this->input->post('tin_no'),
+                'sss_no' => $this->input->post('sss_no'),
+                'philhealth_no' => $this->input->post('philhealth_no'),
+                'salary' => 0,
+
+                
+                
+            );
+        $insert = $this->employee->empinfo_save($data);
+        echo json_encode(array("status" => TRUE));
+    }
+
+ public function update_otherdetails($id)
+    {
+ 
+        $data = array(
+
+          
+                'birthdate' => $this->input->post('birthdate'),
+                'gender' => $this->input->post('gender'),
+                'datehired' => $this->input->post('datehired'),
+                'cstatus' => $this->input->post('cstatus'),
+                'hdmf_no' => $this->input->post('hdmf_no'),
+                'tin_no' => $this->input->post('tin_no'),
+                'sss_no' => $this->input->post('sss_no'),
+                'philhealth_no' => $this->input->post('philhealth_no'),
+               
+                
+            );
+    $this->employee->empinfo_update(array('user_id' => $id), $data);
+        echo json_encode(array("status" => TRUE));
+    }
   
 
 

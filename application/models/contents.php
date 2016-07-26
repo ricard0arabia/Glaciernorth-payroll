@@ -32,6 +32,11 @@ class Contents extends CI_Model {
     var $emp_column_search = array('firstname','lastname','position','department','userlevel'); //set column field database for datatable searchable just firstname , lastname , address are searchable
     var $emp_order = array('user_id' => 'desc'); // def
 
+    var $empinfo_table = 'employee_details';
+    var $empinfo_column_order = array('emp_details_id','user_id','birthdate','gender','datehired','cstatus','salary','hdmf_no','tin_no','sss_no','philhealth_no',null); //set column field database for datatable orderable
+    var $empinfo_column_search = array('user_id'); //set column field database for datatable searchable just firstname , lastname , address are searchable
+    var $empinfo_order = array('emp_details_id' => 'desc'); // def
+
 	public function __construct() {
 		parent::__construct();
 		  $this->load->database();
@@ -1744,10 +1749,46 @@ class Contents extends CI_Model {
     }
 
 
+// employee details
+// employee details
+// employee details
+// employee details
 
 
 
-
+    public function empinfo_count_all($id)
+    {
+    	$this->db->where('user_id',$id);
+        $this->db->from($this->empinfo_table);
+        return $this->db->count_all_results();
+    }
+ 
+    public function empinfo_get_by_id($id)
+    {
+        $this->db->from($this->empinfo_table);
+        $this->db->where('user_id =', $id); 
+        $query = $this->db->get();
+ 
+        return $query->row();
+    }
+ 
+    public function empinfo_save($data)
+    {
+        $this->db->insert($this->empinfo_table, $data);
+        return $this->db->insert_id();
+    }
+ 
+    public function empinfo_update($where, $data)
+    {
+        $this->db->update($this->empinfo_table, $data, $where);
+        return $this->db->affected_rows();
+    }
+ 
+    public function empinfo_delete_by_id($id)
+    {
+        $this->db->where('user_id', $id);
+        $this->db->delete($this->empinfo_table);
+    }
 
 
 

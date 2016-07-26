@@ -22,6 +22,7 @@ class Userprofile extends CI_Controller {
 	        $this->load->view('header');
 	        $data['image'] = $this->profile->get_image_profile($this->session->userdata('username'));
 			$data['status'] = $this->profile->exeGetUserStatus();
+            $data['exist'] = $this->profile->empinfo_count_all($this->session->userdata('username'));
 			$data['emp'] = $this->profile->exeGetEmpToEdit($this->session->userdata('username'));
 			$data['info'] = $this->profile->exeGetUserInfo($this->session->userdata('username'));	
 			$data['brandname'] = $this->profile->exeGetBrandToEdit($this->session->userdata('username'));
@@ -58,12 +59,62 @@ class Userprofile extends CI_Controller {
         echo json_encode(array("status" => TRUE));
     }
 
+ public function otherdetails_list()
+  {
+        $data = $this->profile->empinfo_get_by_id($this->session->userdata('username'));
+        echo json_encode($data);
+  }
+
+    public function add_otherdetails()
+    {
+     
+        
+        $data = array(
+        		'user_id' => $this->session->userdata('username'),
+        		'birthdate' => $this->input->post('birthdate'),
+        		'gender' => $this->input->post('gender'),
+                'datehired' => $this->input->post('datehired'),
+        		'cstatus' => $this->input->post('cstatus'),
+        		'hdmf_no' => $this->input->post('hdmf_no'),
+                'tin_no' => $this->input->post('tin_no'),
+                'sss_no' => $this->input->post('sss_no'),
+                'philhealth_no' => $this->input->post('philhealth_no'),
+                'salary' => 0,
+
+                
+                
+            );
+        $insert = $this->profile->empinfo_save($data);
+        echo json_encode(array("status" => TRUE));
+    }
+
+ public function update_otherdetails()
+    {
+ 
+        $data = array(
+
+          
+                'birthdate' => $this->input->post('birthdate'),
+                'gender' => $this->input->post('gender'),
+                'datehired' => $this->input->post('datehired'),
+                'cstatus' => $this->input->post('cstatus'),
+                'hdmf_no' => $this->input->post('hdmf_no'),
+                'tin_no' => $this->input->post('tin_no'),
+                'sss_no' => $this->input->post('sss_no'),
+                'philhealth_no' => $this->input->post('philhealth_no'),
+               
+                
+            );
+    $this->profile->empinfo_update(array('user_id' => $this->session->userdata('username')), $data);
+        echo json_encode(array("status" => TRUE));
+    }
+
 
 
 		function do_upload(){
 			if($this->input->post('upload')){
 
-				$config['upload_path'] ='./uploads/';;
+				$config['upload_path'] ='./uploads/';
 				$config['overwrite'] = TRUE;
 				$config['allowed_types'] = 'gif|jpg|png';
 				$config['max_size']    = '20240';

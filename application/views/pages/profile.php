@@ -73,9 +73,12 @@ img{
 }
 </style>
 <script type="text/javascript">
+
+save_method = 'add';
 $(document).ready(function () {
 
    <?php if($this->uri->segment(1) == 'userprofile') { ?>
+
     $.ajax({
         url : "<?php echo site_url('userprofile/basicinfo_list')?>",
         type: "GET",
@@ -98,7 +101,30 @@ $(document).ready(function () {
         },
        
     });
-
+    <?php if($exist == 1){ ?>
+    $.ajax({
+        url : "<?php echo site_url('userprofile/otherdetails_list')?>",
+        type: "GET",
+        dataType: "JSON",
+        success: function(data)
+        {
+ 
+           
+            $('[name="birthdate"]').val(data.birthdate);
+            $('[name="gender"]').val(data.gender);
+            $('[name="datehired"]').val(data.datehired);
+            $('[name="cstatus"]').val(data.cstatus);
+            $('[name="hdmf_no"]').val(data.hdmf_no);
+            $('[name="tin_no"]').val(data.tin_no);
+            $('[name="sss_no"]').val(data.sss_no);
+            $('[name="philhealth_no"]').val(data.philhealth_no);
+       
+       
+ 
+        },
+       
+    });
+      <?php } ?>
     <?php } else { ?>
 
 
@@ -124,6 +150,30 @@ $(document).ready(function () {
         },
        
     });
+      <?php if($exist == 1){ ?>
+      $.ajax({
+        url : "<?php echo site_url('employees/otherdetails_list')?>/"+ <?php echo $this->uri->segment(3) ?>,
+        type: "GET",
+        dataType: "JSON",
+        success: function(data)
+        {
+ 
+           
+            $('[name="birthdate"]').val(data.birthdate);
+            $('[name="gender"]').val(data.gender);
+            $('[name="datehired"]').val(data.datehired);
+            $('[name="cstatus"]').val(data.cstatus);
+            $('[name="hdmf_no"]').val(data.hdmf_no);
+            $('[name="tin_no"]').val(data.tin_no);
+            $('[name="sss_no"]').val(data.sss_no);
+            $('[name="philhealth_no"]').val(data.philhealth_no);
+       
+       
+ 
+        },
+       
+    });
+      <?php } ?>
 
       <?php } ?>
 
@@ -185,7 +235,7 @@ $(document).ready(function () {
                
           <div class="panel panel-default">
             <div class="panel-heading">Website <i class="fa fa-link fa-1x"></i></div>
-            <div class="panel-body"><a href="http://bootply.com">bootply.com</a></div>
+            <div class="panel-body"><a href="http://bootply.com"></a></div>
           </div>
           
           
@@ -237,11 +287,11 @@ $(document).ready(function () {
 
     <?php if($this->uri->segment(1) == "userprofile") { ?>
 
-    <button id="save1" style="display: none;" type="button" name="submit" class=" btn btn-info pull-right" onclick="userprofile()">   Save  </button>
+    <button id="save1" style="display: none;" type="button" name="submit" class=" btn btn-info pull-right" onclick="userprofile1()">   Save  </button>
 
     <?php } else { ?> 
 
-     <button id="save1" style="display: none;" type="button" name="submit" class=" btn btn-info pull-right" onclick="employeeprofile()">   Save  </button>
+     <button id="save1" style="display: none;" type="button" name="submit" class=" btn btn-info pull-right" onclick="employeeprofile1()">   Save  </button>
 
     <?php } ?>
 
@@ -286,11 +336,12 @@ $(document).ready(function () {
 
     <?php if($this->uri->segment(1) == "userprofile") { ?>
 
-    <button id="save2" style="display: none;" type="button" name="submit" class=" btn btn-info pull-right" onclick="userprofile()">   Save  </button>
+
+    <button id="save2" style="display: none;" type="button" name="submit" class=" btn btn-info pull-right" onclick="userprofile2()">   Save  </button>
 
     <?php } else { ?> 
 
-     <button id="save2" style="display: none;" type="button" name="submit" class=" btn btn-info pull-right" onclick="employeeprofile()">   Save  </button>
+     <button id="save2" style="display: none;" type="button" name="submit" class=" btn btn-info pull-right" onclick="employeeprofile2(<?php echo $this->uri->segment(3); ?>)">   Save  </button>
 
     <?php } ?>
 
@@ -380,57 +431,6 @@ $('#edit1').click(function(){
 
       $(this).toggleClass('input1');
 
-         <?php if($this->uri->segment(1) == 'userprofile') { ?>
-    $.ajax({
-        url : "<?php echo site_url('userprofile/basicinfo_list')?>",
-        type: "GET",
-        dataType: "JSON",
-        success: function(data)
-        {
- 
-           
-            $('[name="user_id"]').val(data.user_id);
-            $('[name="firstname"]').val(data.firstname);
-            $('[name="middlename"]').val(data.middlename);
-            $('[name="lastname"]').val(data.lastname);
-            $('[name="department"]').val(data.department);
-            $('[name="address"]').val(data.address);
-            $('[name="position"]').val(data.position);
-            $('[name="contact_no"]').val(data.contact_no);
-       
-       
- 
-        },
-       
-    });
-
-    <?php } else { ?>
-
-
-      $.ajax({
-        url : "<?php echo site_url('employees/basicinfo_list')?>/"+ <?php echo $this->uri->segment(3) ?>,
-        type: "GET",
-        dataType: "JSON",
-        success: function(data)
-        {
- 
-           
-            $('[name="user_id"]').val(data.user_id);
-            $('[name="firstname"]').val(data.firstname);
-            $('[name="middlename"]').val(data.middlename);
-            $('[name="lastname"]').val(data.lastname);
-            $('[name="department"]').val(data.department);
-            $('[name="address"]').val(data.address);
-            $('[name="position"]').val(data.position);
-            $('[name="contact_no"]').val(data.contact_no);
-       
-       
- 
-        },
-       
-    });
-
-      <?php } ?>
       
       inp.removeAttr('readonly');   
       document.getElementById('user_id').readOnly = true;
@@ -447,9 +447,9 @@ $('#edit1').click(function(){
          
     }
     else {
-   
-      $(this).toggleClass('input1');
-
+        
+        $(this).toggleClass('input1');
+      
         <?php if($this->uri->segment(1) == 'userprofile') { ?>
     $.ajax({
         url : "<?php echo site_url('userprofile/basicinfo_list')?>",
@@ -502,6 +502,7 @@ $('#edit1').click(function(){
 
       <?php } ?>
 
+      
 
       inp.attr('readonly', 'readonly');
       $('#basicinfo')[0].reset();
@@ -534,7 +535,7 @@ if($(this).hasClass('basic')){
     }
   });
 });
- function employeeprofile()
+ function employeeprofile1()
  {
    $.ajax({
         url :  "<?php echo site_url('employees/update_basicinfo')?>",
@@ -552,7 +553,7 @@ if($(this).hasClass('basic')){
       }); 
     
  }
- function userprofile()
+ function userprofile1()
  {
    $.ajax({
         url :  "<?php echo site_url('userprofile/update_basicinfo')?>",
@@ -589,7 +590,6 @@ $('#edit2').click(function(){
 
       $(this).toggleClass('input2');
 
-      
 
          inp.removeAttr('readonly');   
        
@@ -605,10 +605,63 @@ $('#edit2').click(function(){
    
 
         $(this).toggleClass('input2');
+
+
+        <?php if($this->uri->segment(1) == 'userprofile') { ?>
+    $.ajax({
+        url : "<?php echo site_url('userprofile/otherdetails_list')?>",
+        type: "GET",
+        dataType: "JSON",
+        success: function(data)
+        {
+ 
+           
+            $('[name="birthdate"]').val(data.birthdate);
+            $('[name="gender"]').val(data.gender);
+            $('[name="datehired"]').val(data.datehired);
+            $('[name="cstatus"]').val(data.cstatus);
+            $('[name="hdmf_no"]').val(data.hdmf_no);
+            $('[name="tin_no"]').val(data.tin_no);
+            $('[name="sss_no"]').val(data.sss_no);
+            $('[name="philhealth_no"]').val(data.philhealth_no);
+       
+       
+ 
+        },
+       
+    });
+
+    <?php } else { ?>
+
+
+       $.ajax({
+        url : "<?php echo site_url('employees/otherdetails_list')?>/"+ <?php echo $this->uri->segment(3) ?>,
+        type: "GET",
+        dataType: "JSON",
+        success: function(data)
+        {
+ 
+           
+            $('[name="birthdate"]').val(data.birthdate);
+            $('[name="gender"]').val(data.gender);
+            $('[name="datehired"]').val(data.datehired);
+            $('[name="cstatus"]').val(data.cstatus);
+            $('[name="hdmf_no"]').val(data.hdmf_no);
+            $('[name="tin_no"]').val(data.tin_no);
+            $('[name="sss_no"]').val(data.sss_no);
+            $('[name="philhealth_no"]').val(data.philhealth_no);
+       
+       
+ 
+        },
+       
+    });
+
+      <?php } ?>
     
 
       inp.attr('readonly', 'readonly');
-    
+      $('#otherdetails')[0].reset();
       document.getElementById("edit2").innerHTML = 'edit';
       document.getElementById("res1").disabled = false;
       document.getElementById("res2").disabled = false;  
@@ -620,6 +673,153 @@ $('#edit2').click(function(){
   
   });
 });
+$('#save2').click(function(){
+ 
+  $('input').each(function(){
+    var inp = $(this);
+
+if($(this).hasClass('detailed')){
+
+   $(this).toggleClass('input2');
+
+   
+      inp.attr('readonly', 'readonly');
+      document.getElementById("edit2").innerHTML = 'edit';
+      document.getElementById("res1").disabled = false;
+      document.getElementById("res2").disabled = false;  
+      document.getElementById("save2").style.display = "none";
+    }
+  });
+});
+
+
+
+
+ function userprofile2()
+ {
+
+   <?php if($exist == 1) { ?>
+    
+   $.ajax({
+        url :  "<?php echo site_url('userprofile/update_otherdetails')?>",
+        type: "POST",
+        data: $('#otherdetails').serialize(),
+        dataType: "JSON",
+        success: function(data) 
+        {
+         if(data == "Success")
+         {
+          $('#success_msg').show();
+          $('#success_msg').text(" Record saved successfully");
+         }
+        }
+      }); 
+
+   
+
+  <?php } else { ?>
+
+      if(save_method == 'add'){
+      save_method = 'update';
+       $.ajax({
+          url :  "<?php echo site_url('userprofile/add_otherdetails')?>",
+          type: "POST",
+          data: $('#otherdetails').serialize(),
+          dataType: "JSON",
+          success: function(data) 
+          {
+           if(data == "Success")
+           {
+            $('#success_msg').show();
+            $('#success_msg').text(" Record saved successfully");
+           }
+          }
+        }); 
+
+      }  else {
+
+        $.ajax({
+          url :  "<?php echo site_url('userprofile/update_otherdetails')?>",
+          type: "POST",
+          data: $('#otherdetails').serialize(),
+          dataType: "JSON",
+          success: function(data) 
+          {
+           if(data == "Success")
+           {
+            $('#success_msg').show();
+            $('#success_msg').text(" Record saved successfully");
+           }
+          }
+        }); 
+
+      }
+
+  <?php } ?>
+ }
+
+ function employeeprofile2(id)
+ {
+
+   <?php if($exist == 1) { ?>
+    
+   $.ajax({
+        url :  "<?php echo site_url('employees/update_otherdetails')?>/" + id,
+        type: "POST",
+        data: $('#otherdetails').serialize(),
+        dataType: "JSON",
+        success: function(data) 
+        {
+         if(data == "Success")
+         {
+          $('#success_msg').show();
+          $('#success_msg').text(" Record saved successfully");
+         }
+        }
+      }); 
+
+   
+
+  <?php } else { ?>
+
+      if(save_method == 'add'){
+      save_method = 'update';
+       $.ajax({
+          url :  "<?php echo site_url('employees/add_otherdetails')?>/" + id,
+          type: "POST",
+          data: $('#otherdetails').serialize(),
+          dataType: "JSON",
+          success: function(data) 
+          {
+           if(data == "Success")
+           {
+            $('#success_msg').show();
+            $('#success_msg').text(" Record saved successfully");
+           }
+          }
+        }); 
+
+      }  else {
+
+        $.ajax({
+          url :  "<?php echo site_url('employees/update_otherdetails')?>/" + id,
+          type: "POST",
+          data: $('#otherdetails').serialize(),
+          dataType: "JSON",
+          success: function(data) 
+          {
+           if(data == "Success")
+           {
+            $('#success_msg').show();
+            $('#success_msg').text(" Record saved successfully");
+           }
+          }
+        }); 
+
+      }
+
+  <?php } ?>
+ }
 
 
  </script>
