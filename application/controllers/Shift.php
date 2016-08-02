@@ -70,9 +70,9 @@ $row[] = date("h:i A", strtotime($shift->sun_start)).' - '.date("h:i A", strtoti
         echo json_encode($output);
     }
 
-        public function emp_list()
+        public function empsched_list()
     {
-        $list = $this->shift->emp_get_datatables();
+        $list = $this->shift->allempsched_get_datatables();
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $shift) {
@@ -80,9 +80,7 @@ $row[] = date("h:i A", strtotime($shift->sun_start)).' - '.date("h:i A", strtoti
             $row = array();
 
             $row[] = $shift->user_id;
-            $row[] = $shift->lastname;
-             $row[] = $shift->jobtitle;
-              $row[] = $shift->department;
+            
              
 
 
@@ -106,8 +104,8 @@ $row[] = date("h:i A", strtotime($shift->sun_start)).' - '.date("h:i A", strtoti
  
         $output = array(
                         "draw" => $_POST['draw'],
-                        "recordsTotal" => $this->shift->emp_count_all(),
-                        "recordsFiltered" => $this->shift->emp_count_filtered(),
+                        "recordsTotal" => $this->shift->empsched_count_all(),
+                        "recordsFiltered" => $this->shift->empsched_count_filtered(),
                         "data" => $data,
                 );
         //output to json format

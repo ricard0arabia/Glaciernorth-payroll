@@ -36,9 +36,6 @@
                         <thead>
                             <tr>
                                 <th>Id</th>
-                                <th>Lastname</th>
-                                <th>position</th>
-                                <th>department</th>        
                                 <th>Monday</th>
                                 <th>Tuesday</th>
                                 <th>Wednesday</th>
@@ -71,7 +68,7 @@ var table;
  
         // Load data for the table's content from an Ajax source
         "ajax": {
-            "url": "<?php echo site_url('shift/emp_list')?>",
+            "url": "<?php echo site_url('shift/empsched_list')?>",
             "type": "POST"
         },
  

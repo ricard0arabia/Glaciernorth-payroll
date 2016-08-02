@@ -71,6 +71,17 @@ img{
   display:none;
 
 }
+.dataTables_info{
+
+  display: none;
+}
+input, select{
+
+  width: 60%;
+}
+.bootstrap-timepicker-widget.dropdown-menu {
+    z-index: 99999!important;
+}
 </style>
 <script type="text/javascript">
 
@@ -266,7 +277,7 @@ $(document).ready(function () {
                 <div class="panel-heading">
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#201file" data-toggle="tab">201 File</a></li>
-                            <li><a href="#tab2primary" data-toggle="tab">Primary 2</a></li>
+                            <li><a href="#schedule" data-toggle="tab">Schedule</a></li>
                             <li><a href="#tab3primary" data-toggle="tab">Primary 3</a></li>
                           
                         </ul>
@@ -296,7 +307,7 @@ $(document).ready(function () {
     <?php } ?>
 
 
-  <table id="view1" class="table table-striped">
+  <table id="view1" class="table table-stripped">
   <tr>
     <th>Employee Id</th>
     <td><input type="text" id="user_id" class="basic input1"name="user_id" readonly></td>
@@ -313,7 +324,7 @@ $(document).ready(function () {
     <th>Middle Name</th>
     <td><input type="text" id="middlename" class="basic input1" name="middlename"  readonly></td>
     <th>Address</th>
-    <td><input type="text" id="address" class="basic input1" name="address" readonly></td>
+    <td><textarea type="text" id="address" class="basic input1" name="address" style="min-width: 100%" readonly></textarea></td>
   </tr>
   <tr>
     <th>Last Name</th>
@@ -346,22 +357,26 @@ $(document).ready(function () {
     <?php } ?>
 
 
-  <table id="view2" class="table table-striped">
+  <table id="view2" class="table table-stripped">
   <tr>
     <th>Birthdate</th>
-    <td><input type="text" id="birthdate" class="detailed input2"name="birthdate" readonly></td>
+    <td><input type="date" id="birthdate" class="detailed input2"name="birthdate" readonly></td>
     <th>HDMF No.</th>
     <td><input type="text" id="hdmf_no" class="detailed input2" name="hdmf_no"  readonly></td>
   </tr>
   <tr>
     <th>Gender</th>
-    <td><input type="text" id="gender"class="detailed input2" name="gender"  readonly></td>
+    <td><select id="gender" name="gender" class="detailed input2" disabled="disabled">
+                                    <option value="">--Select Gender--</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select></td>
     <th>TIN No.</th>
     <td><input type="text" id="tin_no"  class="detailed input2"name="tin_no"  readonly></td>
   </tr>
   <tr>
     <th>Datehired</th>
-    <td><input type="text" id="datehired" class="detailed input2" name="datehired"  readonly></td>
+    <td><input type="date" id="datehired" class="detailed input2" name="datehired"  readonly></td>
     <th>SSS No.</th>
     <td><input type="text" id="sss_no" class="detailed input2" name="sss_no" readonly></td>
   </tr>
@@ -381,7 +396,12 @@ $(document).ready(function () {
                    
     
                         </div>
-                        <div class="tab-pane fade" id="tab2primary">Primary 2</div>
+                        <div class="tab-pane fade" id="schedule">
+
+                          <div id='calendar'></div>
+
+
+                        </div>
                         <div class="tab-pane fade" id="tab3primary">Primary 3</div>
                     </div>
                 </div>
@@ -422,7 +442,7 @@ $(document).ready(function () {
 $('#edit1').click(function(){
  
        
-  $('input').each(function(){
+  $('input, textarea').each(function(){
     var inp = $(this);
 
   if($(this).hasClass('basic')){
@@ -519,7 +539,7 @@ $('#edit1').click(function(){
 });
  $('#save1').click(function(){
  
-  $('input').each(function(){
+  $('input, textarea').each(function(){
     var inp = $(this);
 
 if($(this).hasClass('basic')){
@@ -579,7 +599,7 @@ $('#edit2').click(function(){
   
 
 
-  $('input').each(function(){
+  $('input, select').each(function(){
 
     var inp = $(this);
 
@@ -596,6 +616,7 @@ $('#edit2').click(function(){
         document.getElementById("edit2").innerHTML = 'cancel';
         document.getElementById("res1").disabled = true;
         document.getElementById("res2").disabled = true;  
+        document.getElementById("gender").disabled = false;
         document.getElementById("save2").style.display = "block";
    
 
@@ -665,6 +686,7 @@ $('#edit2').click(function(){
       document.getElementById("edit2").innerHTML = 'edit';
       document.getElementById("res1").disabled = false;
       document.getElementById("res2").disabled = false;  
+      document.getElementById("gender").disabled = true;
       document.getElementById("save2").style.display = "none";
 
     
@@ -675,7 +697,7 @@ $('#edit2').click(function(){
 });
 $('#save2').click(function(){
  
-  $('input').each(function(){
+  $('input, select').each(function(){
     var inp = $(this);
 
 if($(this).hasClass('detailed')){
@@ -687,6 +709,7 @@ if($(this).hasClass('detailed')){
       document.getElementById("edit2").innerHTML = 'edit';
       document.getElementById("res1").disabled = false;
       document.getElementById("res2").disabled = false;  
+      document.getElementById("gender").disabled = true;
       document.getElementById("save2").style.display = "none";
     }
   });

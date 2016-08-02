@@ -17,7 +17,10 @@ class Contents extends CI_Model {
     var $ot_column_search = array('date','cause','status'); //set column field database for datatable searchable just firstname , lastname , address are searchable
     var $ot_order = array('id' => 'desc'); // default
 
-
+    var $empsched_table = 'emp_workschedule';
+    var $empsched_column_order = array('id','user_id','mon_start','mon_end','tue_start','tue_end','wed_start','wed_end','thurs_start','thurs_end','fri_start','fri_end','sat_start','sat_end','sun_start','sun_end',null); //set column field database for datatable orderable
+    var $empsched_column_search = array('mon_start','mon_end','tue_start','tue_end','wed_start','wed_end','thurs_start','thurs_end','fri_start','fri_end','sat_start','sat_end','sun_start','sun_end'); //set column field database for datatable searchable just firstname , lastname , address are searchable
+    var $empsched_order = array('id' => 'desc'); // default
 
     var $shift_table = 'rqst_shift';
     var $shift_column_order = array('id','user_id','startdate','enddate','duration','shift_days','reason','status','sub_department','sub_position','sub_id','mon_start','mon_end','tue_start','tue_end','wed_start','wed_end','thurs_start','thurs_end','fri_start','fri_end','sat_start','sat_end','sun_start','sun_end',null); //set column field database for datatable orderable
@@ -1373,7 +1376,9 @@ class Contents extends CI_Model {
 	  private function _get_datatables_query()
     {
   		
-        $this->db->from($this->leave_table);
+        $this->db->from('rqst_leaves');
+        $this->db->join('employees','employees.user_id = rqst_leaves.user_id');
+
 
 
   
@@ -1410,16 +1415,28 @@ class Contents extends CI_Model {
         }
     }
  
-    function get_datatables()
+    function rqst_get_datatables()
     {
     	
         $this->_get_datatables_query();
         if($_POST['length'] != -1)
         $this->db->limit($_POST['length'], $_POST['start']);   	
-  		$this->db->where('user_id', $this->session->userdata('username')); 
+  		$this->db->where('rqst_leaves.user_id', $this->session->userdata('username')); 
         $query = $this->db->get();
         return $query->result();
     }
+    function approval_get_datatables()
+    {
+    	
+        $this->_get_datatables_query();
+        if($_POST['length'] != -1)
+        $this->db->limit($_POST['length'], $_POST['start']);   	
+  		$this->db->where('rqst_leaves.user_id !=', $this->session->userdata('username')); 
+  		$this->db->where('rqst_leaves.leave_status =', 'requested'); 
+        $query = $this->db->get();
+        return $query->result();
+    }
+ 
  
     function count_filtered()
     {
@@ -1437,7 +1454,7 @@ class Contents extends CI_Model {
     public function get_by_id($id)
     {
         $this->db->from($this->leave_table);
-        $this->db->where('id',$id);
+        $this->db->where('leave_id',$id);
         $query = $this->db->get();
  
         return $query->row();
@@ -1653,6 +1670,108 @@ class Contents extends CI_Model {
         $this->db->delete($this->shift_table);
     }
 
+#emp_schedule
+#emp_schedule
+#emp_schedule
+
+
+    	  private function empsched_get_datatables_query()
+    {
+    
+       $this->db->from($this->empsched_table);
+    	
+        $i = 0;
+     
+        foreach ($this->empsched_column_search as $item) // loop column
+        {
+            if($_POST['search']['value']) // if datatable send POST for search
+            {
+                 
+                if($i===0) // first loop
+                {
+                    $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+                    $this->db->like($item, $_POST['search']['value']);
+                }
+                else
+                {
+                    $this->db->or_like($item, $_POST['search']['value']);
+                }
+ 
+                if(count($this->empsched_column_search) - 1 == $i) //last loop
+                    $this->db->group_end(); //close bracket
+            }
+            $i++;
+        }
+         
+        if(isset($_POST['order'])) // here order processing
+        {
+            $this->db->order_by($this->empsched_column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+        }
+        else if(isset($this->empsched_order))
+        {
+            $order = $this->empsched_order;
+            $this->db->order_by(key($order), $order[key($order)]);
+        }
+    }
+ 
+    function empsched_get_datatables($id)
+    {
+        $this->empsched_get_datatables_query();
+        if($_POST['length'] != -1)
+        $this->db->limit($_POST['length'], $_POST['start']);  	
+    	$this->db->where('user_id =', $id); 
+        $query = $this->db->get();
+        return $query->result();
+    }
+    function allempsched_get_datatables()
+    {
+        $this->empsched_get_datatables_query();
+        if($_POST['length'] != -1)
+        $this->db->limit($_POST['length'], $_POST['start']);  	
+    	$this->db->where('user_id !=', $this->session->userdata('username')); 
+        $query = $this->db->get();
+        return $query->result();
+    }
+ 
+    function empsched_count_filtered()
+    {
+        $this->empsched_get_datatables_query();
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+ 
+    public function empsched_count_all()
+    {
+        $this->db->from($this->empsched_table);
+        return $this->db->count_all_results();
+    }
+ 
+    public function empsched_get_by_id($id)
+    {
+        $this->db->from($this->empsched_table);
+        $this->db->where('user_id =', $id); 
+        $query = $this->db->get();
+ 
+        return $query->row();
+    }
+ 
+    public function empsched_save($data)
+    {
+        $this->db->insert($this->empsched_table, $data);
+        return $this->db->insert_id();
+    }
+ 
+    public function empsched_update($where, $data)
+    {
+        $this->db->update($this->empsched_table, $data, $where);
+        return $this->db->affected_rows();
+    }
+ 
+    public function empsched_delete_by_id($id)
+    {
+        $this->db->where('user_id', $id);
+        $this->db->delete($this->empsched_table);
+    }
 
 #emp_list
 #emp_list
@@ -1887,6 +2006,9 @@ public function exeGetBrandToEdit($userid) {
 		return $query->row();
 
 		}
+
+
+		
  
 	
 }

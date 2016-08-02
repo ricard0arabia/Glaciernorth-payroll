@@ -2,30 +2,58 @@
    <div class="container">
         
  
-        <h3>My Leave Requests</h3>
+            <div class="panel with-nav-tabs panel-default">
+                <div class="panel-heading">
+                        <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab1default" data-toggle="tab">Attendance</a></li>
+                            <li><a href="#tab2default" data-toggle="tab">Leave Requests</a></li>
+                         
+                           
+                        </ul>
+                </div>
+                <div class="panel-body">
+                    <div class="tab-content">
+
+
+<!--                                                 Employee List                                         -->
+<!--                                                 Employee List                                         -->
+<!--                                                 Employee List                                         -->
+<!--                                                 Employee List                                         -->
+<!--                                                 Employee List                                         -->
+<!--                                                 Employee List                                         -->
+
+                        <div class="tab-pane fade in active" id="tab1default">
+
+
+
+
+        <h3>Employee List</h3>
+    <br>
+ <button class="btn btn-default" onclick="reload_table()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
         <br />
-        <button class="btn btn-success" onclick="add_leave()"><i class="glyphicon glyphicon-plus"></i> Add Leave</button>
-        <button class="btn btn-default" onclick="reload_table()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
         <br />
-        <br />
-        <table id="table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+        <table id="table_list" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
-                                
-                                <th>Leave Type</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                                <th>Duration</th>
-                                <th>Cause</th>
-                                <th style="width:100px;">Status</th>
-                                
-                                
-                                <th style="width:155px;">Action</th>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Department</th>
+                                <th>Timesheet Date</th>
+                                <th>Time In</th>
+                                <th>Time Out</th>
+                                <th>Hours Worked</th>
+                                <th>Overtime</th>
+                                <th>Tardiness</th>
+                                <th>Status</th>
+                        
+                                <th style="width:125px;">Action</th>
                             </tr>
                         </thead>
                        
                     </table>
-    </div>
+
+
 
 <script type="text/javascript">
 
@@ -35,7 +63,7 @@ var table;
    $(document).ready(function () {
 
        //datatables
-    table = $('#table').DataTable({
+    table = $('#table_list').DataTable({
  
         "processing": true, //Feature control the processing indicator.
         "serverSide": true, //Feature control DataTables' server-side processing mode.
@@ -43,7 +71,7 @@ var table;
  
         // Load data for the table's content from an Ajax source
         "ajax": {
-            "url": "<?php echo site_url('leave/request_list')?>",
+            "url": "<?php echo site_url('time/attendance')?>",
             "type": "POST"
         },
  
@@ -71,17 +99,13 @@ var table;
         $(this).next().empty();
     });
 
-
-     // set default dates
+    // set default dates
             var start = new Date();
-            start.setDate(start.getDate() + 2);
-
             // set end date to max one year period:
             var end = new Date(new Date().setYear(start.getFullYear()+1));
 
             $('#fromDate').datepicker({
                 format: "yyyy-mm-dd",
-            
                 startDate : start,
                 endDate   : end
             // update "toDate" defaults whenever "fromDate" changes
@@ -102,43 +126,30 @@ var table;
                 calcDiff();
             });
 
- 
             
     });
 
-function add_leave()
-{
-    save_method = 'add';
-    $('#form')[0].reset(); // reset form on modals
-    $('.form-group').removeClass('has-error'); // clear error class
-    $('.help-block').empty(); // clear error string
-    $('#modal_form').modal('show'); // show bootstrap modal
-    $('.modal-title').text('Add Leave Request'); // Set Title to Bootstrap modal title
-}
 
-function edit_leave(id)
+function add_shift(id)
 {
-    save_method = 'update';
+   
+    save_method = 'add';
     $('#form')[0].reset(); // reset form on modals
     $('.form-group').removeClass('has-error'); // clear error class
     $('.help-block').empty(); // clear error string
  
     //Ajax Load data from ajax
     $.ajax({
-        url : "<?php echo site_url('leave/edit_leave')?>/" + id,
+        url : "<?php echo site_url('shift/add_shift')?>/" + id,
         type: "GET",
         dataType: "JSON",
         success: function(data)
         {
- 
+         
             $('[name="id"]').val(data.id);
-            $('[name="startdate"]').val(data.startdate);
-            $('[name="enddate"]').val(data.enddate);
-            $('[name="duration"]').val(data.duration);
-            $('[name="cause"]').val(data.cause);
-            $('[name="leavetype"]').val(data.leavetype);
+            $('[name="sub_id"]').val(id);
             $('#modal_form').modal('show'); // show bootstrap modal when complete loaded
-            $('.modal-title').text('Edit Leave'); // Set title to Bootstrap modal title
+            $('.modal-title').text('Add shift'); // Set title to Bootstrap modal title
  
         },
         error: function (jqXHR, textStatus, errorThrown)
@@ -154,7 +165,7 @@ function edit_leave(id)
     var date2 = $('#toDate').datepicker('getDate');
     var diff = 0;
     if (date1 && date2) {
-      diff = Math.floor((date2.getTime() - date1.getTime()) / 86400000) + 1; 
+      diff = Math.floor((date2.getTime() - date1.getTime()) / 86400000); 
     }
     $('#calculated').val(diff);
   }
@@ -173,9 +184,10 @@ function save()
     var url;
  
     if(save_method == 'add') {
-        url = "<?php echo site_url('leave/add_leave')?>";
+        url = "<?php echo site_url('shift/save_shift')?>";
+      
     } else {
-        url = "<?php echo site_url('leave/update_leave')?>";
+        url = "<?php echo site_url('shift/update_shift')?>";
     }
  
     // ajax adding data to database
@@ -215,7 +227,7 @@ function save()
     });
 }
 
-function delete_leave(id)
+function delete_shift(id)
 {
     if(confirm('Are you sure delete this data?'))
     {
@@ -244,31 +256,116 @@ function delete_leave(id)
 
 
 
+                </div>
+
+<!--                                                 Leave Request                                         -->
+<!--                                                 Leave Request                                         -->
+<!--                                                 Leave Request                                         -->
+<!--                                                 Leave Request                                         -->
+<!--                                                 Leave Request                                         -->
+<!--                                                 Leave Request                                         -->
+<!--                                                 Leave Request                                         -->
+<!--                                                 Leave Request                                         -->
+<!--                                                 Leave Request                                         -->
+<!--                                                 Leave Request                                         -->
+<!--                                                 Leave Request                                         -->
+<!--                                                 Leave Request                                         -->
+                       
+                <div class="tab-pane fade" id="tab2default">
+
+
+        <h3>My leave Requests</h3>
+        <br />
+   
+        <button class="btn btn-default" onclick="reload_table()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
+        <br />
+        <br />
+        <table id="table_rqst" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Monday</th>
+                                <th>Tuesday</th>
+                                <th>Wednesday</th>
+                                <th>Thursday</th>
+                                <th>Friday</th>
+                                <th>Saturday</th>
+                                <th>Sunday</th>
+                                <th>Start date</th>
+                                <th>End date</th>
+                                <th>Reason</th>
+                                <th>Sub. Dept</th>
+                                <th>Sub. Position</th>
+                                <th>Sub. Id</th>
+                                <th style="width:125px;">Action</th>
+                            </tr>
+                        </thead>
+                       
+                    </table>
+
+
+<script type="text/javascript">
+
+var save_method; //for save method string
+var table;
+
+   $(document).ready(function () {
+
+       //datatables
+    table = $('#table_rqst').DataTable({
+ 
+        "processing": true, //Feature control the processing indicator.
+        "serverSide": true, //Feature control DataTables' server-side processing mode.
+        "order": [], //Initial no order.
+ 
+        // Load data for the table's content from an Ajax source
+        "ajax": {
+            "url": "<?php echo site_url('shift/shift_list')?>",
+            "type": "POST"
+        },
+ 
+        //Set column definition initialisation properties.
+        "columnDefs": [
+        {
+            "targets": [ -1 ], //last column
+            "orderable": false, //set not orderable
+        },
+        ],
+ 
+    });
+
+    
+            
+    });
+
+
+ </script>
+
+                </div>
+            </div><!-- tab content-->
+        </div> <!--panel body-->           
+     </div><!-- panel default -->
+   </div>   <!-- container -->      
+
+
+
+
+
 <div class="modal fade" id="modal_form" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
-                <h3 class="modal-title">Add Leave Request</h3>
+                <h3 class="modal-title">Add Shift Request</h3>
                
             </div>
             <div class="modal-body form">
                 <form action="#" id="form" class="form-horizontal">
                     <input type="hidden" value="" name="id"/>
+                     <input type="hidden" value="" name="sub_id"/>
                     <div class="form-body">
                         <div class="row">
 
-                           <div class="form-group">
-                            <label class="control-label col-md-3">Leave Type</label>
-                            <div class="col-md-5">
-                                <select name="leavetype" class="form-control">
-                                    <option value="">--Select Gender--</option>
-                                    <option value="Sick">Sick</option>
-                                    <option value="Vacation">Vacation</option>
-                                </select>
-                                <span class="help-block"></span>
-                            </div>
-                        </div>                  
+                                      
                          <div class="form-group">
                             <label class="control-label col-md-3">Start Date</label>
                             <div class="col-md-5">
@@ -295,11 +392,14 @@ function delete_leave(id)
                                 <span class="help-block"></span>
                             </div>
                         </div>
+
+                  
+                       
                     
                         <div class="form-group">
-                            <label class="control-label col-md-3">Cause</label>
+                            <label class="control-label col-md-3">Reason</label>
                             <div class="col-md-5">
-                                <textarea name="cause" placeholder="Cause" class="form-control"></textarea>
+                                <textarea name="reason" placeholder="Cause" class="form-control"></textarea>
                                 <span class="help-block"></span>
                             </div>
                         </div>

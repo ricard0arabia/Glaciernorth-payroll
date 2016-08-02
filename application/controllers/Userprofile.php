@@ -110,6 +110,41 @@ class Userprofile extends CI_Controller {
     }
 
 
+     public function empsched_list()
+    {
+        $list = $this->profile->empsched_get_datatables($this->session->userdata('username'));
+        $data = array();
+        $no = $_POST['start'];
+        foreach ($list as $profile) {
+            $no++;
+            $row = array();
+             
+
+
+$row[] = date("h:i A", strtotime($profile->mon_start)).' - '.date("h:i A", strtotime($profile->mon_end));
+$row[] = date("h:i A", strtotime($profile->tue_start)).' - '.date("h:i A", strtotime($profile->tue_end));
+$row[] = date("h:i A", strtotime($profile->wed_start)).' - '.date("h:i A", strtotime($profile->wed_end));
+$row[] = date("h:i A", strtotime($profile->thurs_start)).' - '.date("h:i A", strtotime($profile->thurs_end));
+$row[] = date("h:i A", strtotime($profile->fri_start)).' - '.date("h:i A", strtotime($profile->fri_end));
+$row[] = date("h:i A", strtotime($profile->sat_start)).' - '.date("h:i A", strtotime($profile->sat_end));
+$row[] = date("h:i A", strtotime($profile->sun_start)).' - '.date("h:i A", strtotime($profile->sun_end));
+
+
+                  $data[] = $row;
+     
+        }
+ 
+        $output = array(
+                        "draw" => $_POST['draw'],
+                        "recordsTotal" => $this->profile->emp_count_all(),
+                        "recordsFiltered" => $this->profile->emp_count_filtered(),
+                        "data" => $data,
+                );
+        //output to json format
+        echo json_encode($output);
+    }
+
+
 
 		function do_upload(){
 			if($this->input->post('upload')){

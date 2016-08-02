@@ -59,6 +59,7 @@ var table;
     $('.datepicker').datepicker({
         autoclose: true,
         format: "yyyy-mm-dd",
+       startDate: '1d',    
         todayHighlight: true,
         orientation: "bottom auto",
         todayBtn: true,

@@ -10,7 +10,7 @@ class Leave extends CI_Controller {
 		$this->load->model('Contents','leave');
 	}
 
-	public function index() {	
+	public function request() {	
 
         if($this->session->userdata('isLogin') == FALSE)
         {
@@ -28,25 +28,51 @@ class Leave extends CI_Controller {
 	
 	}	
 
-             public function ajax_list()
+    public function approval() { 
+
+        if($this->session->userdata('isLogin') == FALSE)
+        {
+
+        redirect('logins/login_form');
+        }
+        else{
+
+        $this->load->helper('url'); 
+          $this->load->view('header');
+          $data['user'] = $this->session->userdata('username');
+          $this->load->view('pages/approvals/leave',$data);
+          $this->load->view('footer');
+        }
+    
+    }   
+
+             public function request_list()
     {
-        $list = $this->leave->get_datatables();
+
+
+
+
+        $list = $this->leave->rqst_get_datatables();
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $leave) {
+
+             $class = 'label label-success';
+        if ($leave->leave_status === 'requested') {
+            $class = 'label label-info';
+        }
             $no++;
             $row = array();
-            $row[] = $leave->id;
+        $row[] = $leave->leavetype;
             $row[] = $leave->startdate;
             $row[] = $leave->enddate;
              $row[] = $leave->duration;
-             $row[] = $leave->status; 
              $row[] = $leave->cause;
-              $row[] = $leave->status;
+             $row[] = '<h4><span class="'.$class.'">'.$leave->leave_status.'</span></h4>'; 
            
             //add html for action
-            $row[] = '<a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Edit" onclick="edit_leave('."'".$leave->id."'".')"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
-            <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_leave('."'".$leave->id."'".')"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
+            $row[] = '<a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Edit" onclick="edit_leave('."'".$leave->leave_id."'".')"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
+            <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_leave('."'".$leave->leave_id."'".')"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
 
                   $data[] = $row;
      
@@ -63,6 +89,7 @@ class Leave extends CI_Controller {
     }
 
 
+
 	public function add_leave()
     {
         $this->_validate();
@@ -72,7 +99,7 @@ class Leave extends CI_Controller {
         		'startdate' => $this->input->post('startdate'),
                 'enddate' => $this->input->post('enddate'),
         		'leavetype' => $this->input->post('leavetype'),
-        		'status' => '1',
+        		'leave_status' => 'requested',
                 'cause' => $this->input->post('cause'),
                 'duration' => $this->input->post('duration'),
                 
@@ -99,7 +126,7 @@ class Leave extends CI_Controller {
         		'startdate' => $this->input->post('startdate'),
                 'enddate' => $this->input->post('enddate'),
         		'leavetype' => $this->input->post('leavetype'),
-        		'status' => '1',
+        		'leave_status' => '1',
                 'cause' => $this->input->post('cause'),
                 'duration' => $this->input->post('duration'),
             );
@@ -164,6 +191,58 @@ class Leave extends CI_Controller {
         }
     }
 
+// approval
+//
+//
+
+     public function approval_list()
+    {
+        $list = $this->leave->approval_get_datatables();
+        $data = array();
+        $no = $_POST['start'];
+        foreach ($list as $leave) {
+            $no++;
+            $row = array();
+            $row[] = $leave->lastname;
+            $row[] = $leave->position;
+            $row[] = $leave->department;
+            $row[] = $leave->leavetype;
+            $row[] = $leave->startdate;
+            $row[] = $leave->enddate;
+             $row[] = $leave->duration;
+             $row[] = $leave->cause;
+             $row[] = '<h4><span class="label label-info">'.$leave->leave_status.'</span></h4>'; 
+           
+            //add html for action
+            $row[] = '<a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Edit" onclick="accept_leave('."'".$leave->user_id."'".')">Accept</a>
+            <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="decline_leave('."'".$leave->leave_id."'".')">Decline</a>';
+
+                  $data[] = $row;
+     
+        }
+ 
+        $output = array(
+                        "draw" => $_POST['draw'],
+                        "recordsTotal" => $this->leave->count_all(),
+                        "recordsFiltered" => $this->leave->count_filtered(),
+                        "data" => $data,
+                );
+        //output to json format
+        echo json_encode($output);
+    }
+
+     public function accept_leave($id)
+    {
+        
+        $data = array(
+                
+                'leave_status' => 'approved',
+                'date_approved' => date("Y-m-d"),
+                
+            );
+        $this->leave->update(array('user_id' => $id), $data);
+        echo json_encode(array("status" => TRUE));
+    }
 
 
 	

@@ -196,6 +196,41 @@ class Employees extends CI_Controller {
         echo json_encode(array("status" => TRUE));
     }
   
+     public function empsched_list($id)
+    {
+        $list = $this->employee->empsched_get_datatables($id);
+        $data = array();
+        $no = $_POST['start'];
+        foreach ($list as $employee) {
+            $no++;
+            $row = array();
+             
+
+
+$row[] = date("h:i A", strtotime($employee->mon_start)).' - '.date("h:i A", strtotime($employee->mon_end));
+$row[] = date("h:i A", strtotime($employee->tue_start)).' - '.date("h:i A", strtotime($employee->tue_end));
+$row[] = date("h:i A", strtotime($employee->wed_start)).' - '.date("h:i A", strtotime($employee->wed_end));
+$row[] = date("h:i A", strtotime($employee->thurs_start)).' - '.date("h:i A", strtotime($employee->thurs_end));
+$row[] = date("h:i A", strtotime($employee->fri_start)).' - '.date("h:i A", strtotime($employee->fri_end));
+$row[] = date("h:i A", strtotime($employee->sat_start)).' - '.date("h:i A", strtotime($employee->sat_end));
+$row[] = date("h:i A", strtotime($employee->sun_start)).' - '.date("h:i A", strtotime($employee->sun_end));
+
+            
+
+                  $data[] = $row;
+     
+        }
+ 
+        $output = array(
+                        "draw" => $_POST['draw'],
+                        "recordsTotal" => $this->employee->emp_count_all(),
+                        "recordsFiltered" => $this->employee->emp_count_filtered(),
+                        "data" => $data,
+                );
+        //output to json format
+        echo json_encode($output);
+    }
+
 
 
         function do_upload($id){
