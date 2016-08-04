@@ -130,7 +130,7 @@
                   <?php if($this->uri->segment(1) == "compensation" ) { ?> <li  class = "active" > <?php }else { ?>
                 <li> <?php } ?><a  class="waves-effect waves-default btn-small"  href="<?php if($this->session->userdata('level') == 1) {  echo site_url(). "compensation/payperiod"; } else {echo site_url(). "compensation/payslip";} ?>"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Compensation</a></li>
 
-
+ <li><a  class="waves-effect waves-default btn-small"  href="<?php echo site_url()."message"; ?>"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Messages<span class="badge" id="new_count_message"><?php echo $this->db->where('read_status',0)->count_all_results('message');?></span></a></li>
 
                     <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Options</a>
@@ -150,6 +150,7 @@
             <script src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.3/moment.min.js'></script>
   <script src="<?php echo base_url('assets/jquery/jquery-2.1.4.min.js')?>"></script>
 <script src="<?php echo base_url('assets/bootstrap/js/bootstrap.min.js')?>"></script>
+<script src="<?php echo base_url('node_modules/socket.io/node_modules/socket.io-client/socket.io.js');?>"></script>
 
 <script src="<?php echo base_url('assets/datatables/js/jquery.dataTables.min.js')?>"></script>
 <script src="<?php echo base_url('assets/datatables/js/dataTables.bootstrap.js')?>"></script>
@@ -172,6 +173,7 @@
         <script src='<?php echo base_url();?>assets/js/bootstrap-colorpicker.min.js'></script>
         <script src='<?php echo base_url();?>assets/js/bootstrap-timepicker.min.js'></script>
         <script src='<?php echo base_url();?>assets/js/main.js'></script>
+
         
        <div class = "row">
          

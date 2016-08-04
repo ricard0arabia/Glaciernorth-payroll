@@ -1422,9 +1422,22 @@ class Contents extends CI_Model {
         if($_POST['length'] != -1)
         $this->db->limit($_POST['length'], $_POST['start']);   	
   		$this->db->where('rqst_leaves.user_id', $this->session->userdata('username')); 
+  		$this->db->where('rqst_leaves.leave_status =', 'requested');
         $query = $this->db->get();
         return $query->result();
     }
+     function leave_request_history_get_datatables()
+    {
+    	
+        $this->_get_datatables_query();
+        if($_POST['length'] != -1)
+        $this->db->limit($_POST['length'], $_POST['start']);   	
+  		$this->db->where('rqst_leaves.user_id =', $this->session->userdata('username')); 
+  		$this->db->where('rqst_leaves.leave_status !=', 'requested'); 
+        $query = $this->db->get();
+        return $query->result();
+    }
+ 
     function approval_get_datatables()
     {
     	
@@ -1436,7 +1449,18 @@ class Contents extends CI_Model {
         $query = $this->db->get();
         return $query->result();
     }
- 
+    function leave_approval_history_get_datatables()
+    {
+    	
+        $this->_get_datatables_query();
+        if($_POST['length'] != -1)
+        $this->db->limit($_POST['length'], $_POST['start']);   	
+  		$this->db->where('rqst_leaves.user_id !=', $this->session->userdata('username')); 
+  		$this->db->where('rqst_leaves.leave_status !=', 'requested'); 
+        $query = $this->db->get();
+        return $query->result();
+    }
+    
  
     function count_filtered()
     {
@@ -1474,7 +1498,7 @@ class Contents extends CI_Model {
  
     public function delete_by_id($id)
     {
-        $this->db->where('id', $id);
+        $this->db->where('leave_id', $id);
         $this->db->delete($this->leave_table);
     }
  

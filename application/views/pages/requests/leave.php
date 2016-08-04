@@ -1,14 +1,81 @@
 
+   <style>
+   .panel.with-nav-tabs .panel-heading{
+    padding: 5px 5px 0 5px;
+}
+.panel.with-nav-tabs .nav-tabs{
+  border-bottom: none;
+}
+.panel.with-nav-tabs .nav-justified{
+  margin-bottom: -1px;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li > a,
+.with-nav-tabs.panel-primary .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li > a:focus {
+    color: #fff;
+}
+.with-nav-tabs.panel-primary .nav-tabs > .open > a,
+.with-nav-tabs.panel-primary .nav-tabs > .open > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > .open > a:focus,
+.with-nav-tabs.panel-primary .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li > a:focus {
+  color: #fff;
+  background-color: #3071a9;
+  border-color: transparent;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.active > a,
+.with-nav-tabs.panel-primary .nav-tabs > li.active > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li.active > a:focus {
+  color: #428bca;
+  background-color: #fff;
+  border-color: #428bca;
+  border-bottom-color: transparent;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu {
+    background-color: #428bca;
+    border-color: #3071a9;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > li > a {
+    color: #fff;   
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > li > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > li > a:focus {
+    background-color: #3071a9;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > .active > a,
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > .active > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > .active > a:focus {
+    background-color: #4a9fe9;
+}
+   </style>
    <div class="container">
         
  
+            <div class="panel with-nav-tabs panel-info">
+                <div class="panel-heading">
+                        <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab1default" onclick="reload_table1()" data-toggle="tab">Leave Requested</a></li>
+                            <li><a href="#tab2default" onclick="reload_table2()" data-toggle="tab">History of Filings</a></li>
+                         
+                           
+                        </ul>
+                </div>
+                <div class="panel-body">
+                    <div class="tab-content">
+
+
+<!--                                                 Employee List                                         -->
+
+                        <div class="tab-pane fade in active" id="tab1default">
+
+
         <h3>My Leave Requests</h3>
         <br />
         <button class="btn btn-success" onclick="add_leave()"><i class="glyphicon glyphicon-plus"></i> Add Leave</button>
-        <button class="btn btn-default" onclick="reload_table()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
+        <button class="btn btn-default" onclick="reload_table1()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
         <br />
         <br />
-        <table id="table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+        <table id="table1" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
                                 
@@ -25,17 +92,65 @@
                         </thead>
                        
                     </table>
-    </div>
 
+
+
+
+                </div>
+
+<!--                                                 employee Request                                         -->
+
+                <div class="tab-pane fade" id="tab2default">
+
+
+                    <h3>Leave Request History</h3>
+        <br />
+        <button class="btn btn-default" onclick="reload_table2()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
+        <br />
+        <br />
+        <table id="table2" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Leave Type</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Duration</th>
+                                <th>Cause</th>
+                                <th>Date Filed</th>
+                                <th>Date Approved</th>
+                                <th style="width:100px;">Status</th>                  
+                            </tr>
+                        </thead>
+                       
+                    </table>
+
+
+    
+                </div>
+            </div><!-- tab content-->
+        </div> <!--panel body-->           
+     </div><!-- panel default -->
+   </div>   <!-- container -->      
+
+
+
+   
+
+
+
+        
+ 
 <script type="text/javascript">
 
 var save_method; //for save method string
-var table;
+var table1;
+var table2;
+
 
    $(document).ready(function () {
 
        //datatables
-    table = $('#table').DataTable({
+    table1 = $('#table1').DataTable({
  
         "processing": true, //Feature control the processing indicator.
         "serverSide": true, //Feature control DataTables' server-side processing mode.
@@ -44,6 +159,28 @@ var table;
         // Load data for the table's content from an Ajax source
         "ajax": {
             "url": "<?php echo site_url('leave/request_list')?>",
+            "type": "POST"
+        },
+ 
+        //Set column definition initialisation properties.
+        "columnDefs": [
+        {
+            "targets": [ -1 ], //last column
+            "orderable": false, //set not orderable
+        },
+        ],
+ 
+    });
+
+      table2 = $('#table2').DataTable({
+ 
+        "processing": true, //Feature control the processing indicator.
+        "serverSide": true, //Feature control DataTables' server-side processing mode.
+        "order": [], //Initial no order.
+ 
+        // Load data for the table's content from an Ajax source
+        "ajax": {
+            "url": "<?php echo site_url('leave/request_history_list')?>",
             "type": "POST"
         },
  
@@ -158,13 +295,6 @@ function edit_leave(id)
     }
     $('#calculated').val(diff);
   }
-        
-
-function reload_table()
-{
-    table.ajax.reload(null,false); //reload datatable ajax
-}
- 
 
 function save()
 {
@@ -190,7 +320,7 @@ function save()
             if(data.status) //if success close modal and reload ajax table
             {
                 $('#modal_form').modal('hide');
-                reload_table();
+                reload_table1();
             }
             else
             {
@@ -228,7 +358,7 @@ function delete_leave(id)
             {
                 //if success reload ajax table
                 $('#modal_form').modal('hide');
-                reload_table();
+                reload_table1();
             },
             error: function (jqXHR, textStatus, errorThrown)
             {
@@ -240,6 +370,14 @@ function delete_leave(id)
 }
  
 
+function reload_table1()
+{
+    table1.ajax.reload(null,false); //reload datatable ajax
+}
+function reload_table2()
+{
+    table2.ajax.reload(null,false); //reload datatable ajax
+}
  </script>
 
 

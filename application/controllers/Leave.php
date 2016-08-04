@@ -88,6 +88,43 @@ class Leave extends CI_Controller {
         echo json_encode($output);
     }
 
+     public function request_history_list()
+    {
+        $list = $this->leave->leave_request_history_get_datatables();
+        $data = array();
+        $no = $_POST['start'];
+        foreach ($list as $leave) {
+            $class = 'label label-success';
+        if ($leave->leave_status === 'requested') {
+            $class = 'label label-info';
+        }
+            $no++;
+            $row = array();
+            $row[] = $leave->leavetype;
+            $row[] = $leave->startdate;
+            $row[] = $leave->enddate;
+             $row[] = $leave->duration;
+             $row[] = $leave->cause;
+             $row[] = $leave->date_submitted;
+            $row[] = $leave->date_approved;
+               $row[] = '<h4><span class="'.$class.'">'.$leave->leave_status.'</span></h4>';  
+           
+          
+
+                  $data[] = $row;
+     
+        }
+ 
+        $output = array(
+                        "draw" => $_POST['draw'],
+                        "recordsTotal" => $this->leave->count_all(),
+                        "recordsFiltered" => $this->leave->count_filtered(),
+                        "data" => $data,
+                );
+        //output to json format
+        echo json_encode($output);
+    }
+
 
 
 	public function add_leave()
@@ -243,6 +280,45 @@ class Leave extends CI_Controller {
         $this->leave->update(array('user_id' => $id), $data);
         echo json_encode(array("status" => TRUE));
     }
+
+
+
+    public function approval_history_list()
+    {
+        $list = $this->leave->leave_approval_history_get_datatables();
+        $data = array();
+        $no = $_POST['start'];
+        foreach ($list as $leave) {
+            $no++;
+            $row = array();
+            $row[] = $leave->lastname;
+            $row[] = $leave->position;
+            $row[] = $leave->department;
+            $row[] = $leave->leavetype;
+            $row[] = $leave->startdate;
+            $row[] = $leave->enddate;
+             $row[] = $leave->duration;
+             $row[] = $leave->cause;
+             $row[] = $leave->date_submitted;
+            $row[] = $leave->date_approved;
+             $row[] = '<h4><span class="label label-info">'.$leave->leave_status.'</span></h4>'; 
+           
+          
+
+                  $data[] = $row;
+     
+        }
+ 
+        $output = array(
+                        "draw" => $_POST['draw'],
+                        "recordsTotal" => $this->leave->count_all(),
+                        "recordsFiltered" => $this->leave->count_filtered(),
+                        "data" => $data,
+                );
+        //output to json format
+        echo json_encode($output);
+    }
+
 
 
 	
