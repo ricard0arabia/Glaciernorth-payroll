@@ -96,10 +96,6 @@ class Employees extends CI_Controller {
             $this->load->view('header');
             $data['image'] = $this->employee->get_image_profile($id);
              $data['exist'] = $this->employee->empinfo_count_all($id);
-            $data['status'] = $this->employee->exeGetUserStatus();
-            $data['emp'] = $this->employee->exeGetEmpToEdit($id);
-            $data['info'] = $this->employee->exeGetUserInfo($id);    
-            $data['brandname'] = $this->employee->exeGetBrandToEdit($id);
             $this->load->view('pages/profile', $data);
             $this->load->view('footer');
     }
@@ -259,14 +255,8 @@ $row[] = date("h:i A", strtotime($employee->sun_start)).' - '.date("h:i A", strt
                     $this->employee->add_image($file,$id);
                     $data = array('upload_data' => $this->upload->data());
 
-                    $data['notif'] = $this->uploadinfo();
-                    $data['level'] = $this->employee->exeGetUserLevel();
-                     
+                    $data['notif'] = $this->uploadinfo();        
                     $data['image'] = $this->employee->get_image_profile($id);
-                    $data['status'] = $this->employee->exeGetUserStatus();
-                    $data['emp'] = $this->employee->exeGetEmpToEdit($id);
-                    $data['info'] = $this->employee->exeGetUserInfo($id);   
-                    $this->load->view('header');
                     $this->load->view('pages/profile', $data);
                     $this->load->view('footer');
                 
@@ -277,9 +267,6 @@ $row[] = date("h:i A", strtotime($employee->sun_start)).' - '.date("h:i A", strt
                     $data['notif'] = $this->uploadinfo();
                      $this->load->view('header');
             $data['image'] = $this->employee->get_image_profile($id);
-            $data['status'] = $this->employee->exeGetUserStatus();
-            $data['emp'] = $this->employee->exeGetEmpToEdit($id);
-            $data['info'] = $this->employee->exeGetUserInfo($id);   
             $this->load->view('pages/profile', $data);
             $this->load->view('footer');
                 }
@@ -315,6 +302,14 @@ $row[] = date("h:i A", strtotime($employee->sun_start)).' - '.date("h:i A", strt
             $notif = "image upload successful";
             return $notif;
         }
+    }
+
+    public function get_session(){
+        $data = array(
+                'session_id' => $this->session->userdata('username'),
+                
+            );
+        echo json_encode($data);
     }
 
        private function _validate()

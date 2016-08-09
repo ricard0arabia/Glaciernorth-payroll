@@ -21,11 +21,7 @@ class Userprofile extends CI_Controller {
 			$this->load->helper('url');	
 	        $this->load->view('header');
 	        $data['image'] = $this->profile->get_image_profile($this->session->userdata('username'));
-			$data['status'] = $this->profile->exeGetUserStatus();
             $data['exist'] = $this->profile->empinfo_count_all($this->session->userdata('username'));
-			$data['emp'] = $this->profile->exeGetEmpToEdit($this->session->userdata('username'));
-			$data['info'] = $this->profile->exeGetUserInfo($this->session->userdata('username'));	
-			$data['brandname'] = $this->profile->exeGetBrandToEdit($this->session->userdata('username'));
 	        $this->load->view('pages/profile', $data);
 			$this->load->view('footer');
 	   }
@@ -173,12 +169,8 @@ $row[] = date("h:i A", strtotime($profile->sun_start)).' - '.date("h:i A", strto
 					$data = array('upload_data' => $this->upload->data());
 
 					$data['notif'] = $this->uploadinfo();
-					$data['level'] = $this->profile->exeGetUserLevel();
-					 
 			        $data['image'] = $this->profile->get_image_profile($this->session->userdata('username'));
-					$data['status'] = $this->profile->exeGetUserStatus();
-					$data['emp'] = $this->profile->exeGetEmpToEdit($this->session->userdata('username'));
-					$data['info'] = $this->profile->exeGetUserInfo($this->session->userdata('username'));	
+					
 					$this->load->view('header');
 			        $this->load->view('pages/profile', $data);
 					$this->load->view('footer');
@@ -190,9 +182,7 @@ $row[] = date("h:i A", strtotime($profile->sun_start)).' - '.date("h:i A", strto
 					$data['notif'] = $this->uploadinfo();
 					 $this->load->view('header');
 	        $data['image'] = $this->profile->get_image_profile($this->session->userdata('username'));
-			$data['status'] = $this->profile->exeGetUserStatus();
-			$data['emp'] = $this->profile->exeGetEmpToEdit($this->session->userdata('username'));
-			$data['info'] = $this->profile->exeGetUserInfo($this->session->userdata('username'));	
+			
 	        $this->load->view('pages/profile', $data);
 			$this->load->view('footer');
 				}

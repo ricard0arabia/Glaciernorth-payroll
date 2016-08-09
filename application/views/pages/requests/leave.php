@@ -268,7 +268,7 @@ function edit_leave(id)
         success: function(data)
         {
  
-            $('[name="id"]').val(data.id);
+            $('[name="id"]').val(data.leave_id);
             $('[name="startdate"]').val(data.startdate);
             $('[name="enddate"]').val(data.enddate);
             $('[name="duration"]').val(data.duration);

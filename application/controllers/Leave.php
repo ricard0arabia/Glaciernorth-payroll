@@ -163,11 +163,11 @@ class Leave extends CI_Controller {
         		'startdate' => $this->input->post('startdate'),
                 'enddate' => $this->input->post('enddate'),
         		'leavetype' => $this->input->post('leavetype'),
-        		'leave_status' => '1',
+        		'leave_status' => 'requested',
                 'cause' => $this->input->post('cause'),
                 'duration' => $this->input->post('duration'),
             );
-        $this->leave->update(array('id' => $this->input->post('id')), $data);
+        $this->leave->update(array('leave_id' => $this->input->post('id')), $data);
         echo json_encode(array("status" => TRUE));
     }
  
@@ -238,6 +238,10 @@ class Leave extends CI_Controller {
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $leave) {
+              $class = 'label label-success';
+        if ($leave->leave_status === 'requested') {
+            $class = 'label label-info';
+        }
             $no++;
             $row = array();
             $row[] = $leave->lastname;
@@ -248,7 +252,7 @@ class Leave extends CI_Controller {
             $row[] = $leave->enddate;
              $row[] = $leave->duration;
              $row[] = $leave->cause;
-             $row[] = '<h4><span class="label label-info">'.$leave->leave_status.'</span></h4>'; 
+             $row[] = '<h4><span class="'.$class.'">'.$leave->leave_status.'</span></h4>'; 
            
             //add html for action
             $row[] = '<a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Edit" onclick="accept_leave('."'".$leave->user_id."'".')">Accept</a>
@@ -289,6 +293,10 @@ class Leave extends CI_Controller {
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $leave) {
+              $class = 'label label-success';
+        if ($leave->leave_status === 'requested') {
+            $class = 'label label-info';
+        }
             $no++;
             $row = array();
             $row[] = $leave->lastname;
@@ -301,7 +309,7 @@ class Leave extends CI_Controller {
              $row[] = $leave->cause;
              $row[] = $leave->date_submitted;
             $row[] = $leave->date_approved;
-             $row[] = '<h4><span class="label label-info">'.$leave->leave_status.'</span></h4>'; 
+             $row[] = '<h4><span class="'.$class.'">'.$leave->leave_status.'</span></h4>'; 
            
           
 

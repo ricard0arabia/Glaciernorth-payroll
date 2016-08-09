@@ -1,114 +1,219 @@
-<div class="nav-tabs-custom">
-                <ul class="nav nav-tabs">
-                  <li style = "font-weight: bold;" ><a href="<?php echo site_url() ?>approvals/leave" role="tab">Leave</a></li>
-
-                 <li style = "font-weight: bold;" class="active"><a href="" role="tab">Overtime</a></li>
-
-                  <li style = "font-weight: bold;"><a href="<?php echo site_url() ?>approvals/shift"# role="tab">Shift Change</a></li>
-
-            
-
-               
-                        
-                </ul>
-
-                        <div class="tab-content  ">
-
-                            <div class="tab-pane active" id="basic-info">
-                                 <div class="box box-primary">
-                                           
-                                    <div class="box-body">
-
-
-    <a class="waves-effect waves-light btn" href="<?php echo site_url() ?>employees/add" role ="tab">Export this list</a>
-        
-     <a class="waves-effect waves-light btn" href="<?php echo site_url() ?>employees/add" role ="tab">All Request</a>
-
-      <a class="waves-effect waves-light btn" href="<?php echo site_url() ?>employees/add" role ="tab">Pending Request</a>
-
-<!-- /.row -->
-<div class="row">
-
-    <div class="col-lg-12">
-        
-          <div class = "panel-heading"><h5>Overtime Requests submitted to me</h5></div> 
-                <div class="divider"></div>
-
-            <div class="box-body">
-                <?php if(!empty($success) || !empty($_SESSION['success'])) { ?>
-                <div class="alert alert-success alert-dismissable">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <?php echo $_SESSION['success']; $_SESSION['success'] = '';?>
-                </div>
-                <?php } ?>
-            </div>
-
-            <!-- /.panel-heading -->
-            <div class="box-body">
  
-                <div class="dataTables_wrapper">
-             
-                  
-                    <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+   <style>
+   .panel.with-nav-tabs .panel-heading{
+    padding: 5px 5px 0 5px;
+}
+.panel.with-nav-tabs .nav-tabs{
+  border-bottom: none;
+}
+.panel.with-nav-tabs .nav-justified{
+  margin-bottom: -1px;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li > a,
+.with-nav-tabs.panel-primary .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li > a:focus {
+    color: #fff;
+}
+.with-nav-tabs.panel-primary .nav-tabs > .open > a,
+.with-nav-tabs.panel-primary .nav-tabs > .open > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > .open > a:focus,
+.with-nav-tabs.panel-primary .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li > a:focus {
+  color: #fff;
+  background-color: #3071a9;
+  border-color: transparent;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.active > a,
+.with-nav-tabs.panel-primary .nav-tabs > li.active > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li.active > a:focus {
+  color: #428bca;
+  background-color: #fff;
+  border-color: #428bca;
+  border-bottom-color: transparent;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu {
+    background-color: #428bca;
+    border-color: #3071a9;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > li > a {
+    color: #fff;   
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > li > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > li > a:focus {
+    background-color: #3071a9;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > .active > a,
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > .active > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > .active > a:focus {
+    background-color: #4a9fe9;
+}
+   </style>
+   <div class="container">
+        
+ 
+            <div class="panel with-nav-tabs panel-info">
+                <div class="panel-heading">
+                        <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab1default" onclick="reload_table1()" data-toggle="tab">Approvals List</a></li>
+                            <li><a href="#tab2default" onclick="reload_table2()" data-toggle="tab">History of Approvals</a></li>
+                         
+                           
+                        </ul>
+                </div>
+                <div class="panel-body">
+                    <div class="tab-content">
+
+
+<!--                                                 Employee List                                         -->
+
+                        <div class="tab-pane fade in active" id="tab1default">
+
+
+
+        
+ 
+      
+ <h3>Manage Requested Overtimes</h3>
+        <br />
+        <button class="btn btn-default" onclick="reload_table1()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
+        <br />
+        <br />
+        <table id="table1" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
-                                <th class="center">Image</th>
-                            	<th class="center">ID</th>
-                                <th class="center">Name</th>
-                                <th class="center">Department</th>
-                                <th class="center">Position</th>
-                                <th class="center">Gender</th>
-                                <th class="center">Contact Number</th>
-                                <th class="center">Action</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Department</th>
+                                <th>Date</th>
+                                <th>Duration</th>
+                                <th>Cause</th>
+                                <th style="width:100px;">Status</th>
+                                <th style="width:170px;">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                        <?php $j=0;
-                    		if(!empty($emp)) {
-							$i=0;
-							foreach($emp as $_emp) { 					
-								if($i%2==0) { 
-									$style = "odd";
-									$i++;
-								} else {
-									$style = "even"; 
-									$i++;
-								}					
-								$j++; ?>
-                            <tr class="<?php echo $style; ?> gradeX">
-                                <td><img height="60" width="60" src="<?=base_url().'uploads/'.$_emp['thumb_name'].$_emp['ext'];?>"></td>
-                            	<td class="center"><?php echo $_emp['employeeid']; ?></td>
-                                <td class="center"><?php echo $_emp['firstname'].$_emp['lastname'] ; ?></td>
-                               	<td class="center"><?php echo $_emp['department']; ?></td>
-                                <td class="center"><?php echo $_emp['jobtitle']; ?></td>
-                                <td class="center"><?php echo $_emp['gender'];  ?></td>
-                                <td class="center"><?php echo $_emp['contact_no'];  ?></td>
-                                <td class="center"><a class="waves-effect waves-light btn" href="<?php echo site_url()."employees/edit/".$_emp['user_id']; ?>">Edit</a> | <a class="waves-effect waves-light btn" href="<?php echo site_url()."employees/delete/".$_emp['user_id']; ?>" onClick="return confirm('Are you sure you want to remove this employee <?php echo $_emp['employeeid']; ?>')">Delete</a></td>
-                            </tr>
-                            <?php }} ?>
-                            
-                        </tbody>
+                       
                     </table>
-                </div>
-               
-            </div>
-            <!-- /.panel-body -->
-       
-    </div>
-    <!-- /.col-lg-12 -->
-</div>
-<!-- /.row -->
-</div>
-</div>
-</div>
-</div>
-</div>
 
-<!-- <script>
-$(document).ready(function () {
-            $('select.department').change(function(e){
-              // this function runs when a user selects an option from a <select> element
-              window.location.href = $("select.department option:selected").attr('value');
-           });
+
+                </div>
+
+<!--                                                 employee Request                                         -->
+
+                <div class="tab-pane fade" id="tab2default">
+
+ <h3>History of Approvals</h3>
+        <br />
+        <button class="btn btn-default" onclick="reload_table2()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
+        <br />
+        <br />
+        <table id="table2" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Department</th>
+                                <th>Date</th>
+                                <th>Duration</th>
+                                <th>Cause</th>
+                                <th>Date Filed</th>
+                                <th>Date Approved</th>
+                                <th style="width:100px;">Status</th>
+                                
+                            </tr>
+                        </thead>
+                       
+                    </table>
+    
+                </div>
+            </div><!-- tab content-->
+        </div> <!--panel body-->           
+     </div><!-- panel default -->
+   </div>   <!-- container -->      
+
+
+
+
+
+    <script type="text/javascript">
+
+var save_method; //for save method string
+var table1;
+var table2;
+
+   $(document).ready(function () {
+
+       //datatables
+    table1 = $('#table1').DataTable({
+ 
+        "processing": true, //Feature control the processing indicator.
+        "serverSide": true, //Feature control DataTables' server-side processing mode.
+        "order": [], //Initial no order.
+ 
+        // Load data for the table's content from an Ajax source
+        "ajax": {
+            "url": "<?php echo site_url('overtime/approval_list')?>",
+            "type": "POST"
+        },
+ 
+        //Set column definition initialisation properties.
+        "columnDefs": [
+        {
+            "targets": [ -1 ], //last column
+            "orderable": false, //set not orderable
+        },
+        ],
+ 
     });
-</script> --> 
+
+          //datatables
+    table2 = $('#table2').DataTable({
+ 
+        "processing": true, //Feature control the processing indicator.
+        "serverSide": true, //Feature control DataTables' server-side processing mode.
+        "order": [], //Initial no order.
+ 
+        // Load data for the table's content from an Ajax source
+        "ajax": {
+            "url": "<?php echo site_url('overtime/approval_history_list')?>",
+            "type": "POST"
+        },
+ 
+        //Set column definition initialisation properties.
+        "columnDefs": [
+        {
+            "targets": [ -1 ], //last column
+            "orderable": false, //set not orderable
+        },
+        ],
+ 
+    });
+
+    });
+
+function accept_overtime(id)
+{
+    
+    $.ajax({
+            url : "<?php echo site_url('overtime/accept_overtime')?>/"+id,
+            type: "POST",
+            dataType: "JSON",
+            success: function(data)
+            {
+                reload_table1();
+            },
+        });
+}
+
+
+function reload_table1()
+{
+    table1.ajax.reload(null,false); //reload datatable ajax
+}
+ function reload_table2()
+{
+    table2.ajax.reload(null,false); //reload datatable ajax
+}
+
+
+
+ </script>

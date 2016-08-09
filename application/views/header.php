@@ -39,6 +39,7 @@
          url(../assets/font/billabong.woff) format('woff'),
          url(../../assets/font/billabong.woff) format('woff');
 }
+ th, td { text-align: center; }
 </style>
 <body>
 
@@ -86,7 +87,7 @@
             <li><a href="<?php echo site_url()."leave/request"; ?>">List of Leave Requests</a></li>
                    <li role="separator" class="divider"></li>
                     <li class="dropdown-header">Overtime</li>
-          <li><a href="<?php echo site_url()."overtime"; ?>">List of OT Requests</a></li>
+          <li><a href="<?php echo site_url()."overtime/request"; ?>">List of OT Requests</a></li>
           <li role="separator" class="divider"></li>
                     <li class="dropdown-header">Shift Change</li>
           <li><a href="<?php echo site_url()."shift"; ?>">List of Shift requests</a></li>
@@ -110,7 +111,7 @@
                    <ul class="dropdown-menu">
                     
             <li><a href="<?php echo site_url()."leave/approval"; ?>">Leaves</a></li>             
-          <li><a href="<?php echo site_url()."overtime"; ?>">Overtime</a></li>
+          <li><a href="<?php echo site_url()."overtime/approval"; ?>">Overtime</a></li>
          <li><a href="<?php echo site_url()."shift"; ?>">Shift Change</a></li>
                    </ul>
                     </li>
@@ -172,8 +173,62 @@
 
         <script src='<?php echo base_url();?>assets/js/bootstrap-colorpicker.min.js'></script>
         <script src='<?php echo base_url();?>assets/js/bootstrap-timepicker.min.js'></script>
-        <script src='<?php echo base_url();?>assets/js/main.js'></script>
+        <!-- <script src='<?php echo base_url();?>assets/js/main.js'></script> -->
 
         
        <div class = "row">
          
+ <script>
+ var session_id;
+ 
+  $(document).ready(function(){
+  
+    if(<?php echo $this->db->where('read_status',0)->count_all_results('message'); ?> == 0){
+
+      $( "#new_count_message" ).hide();
+    } 
+    $.ajax({
+        url : "<?php echo site_url('employees/get_session')?>",
+        type: "GET",
+        dataType: "JSON",
+        success: function(data)
+        {
+ 
+          session_id = data.session_id;
+
+ 
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            alert('Error get data from ajax');
+        }
+    });
+  });
+   var socket = io.connect( 'http://'+window.location.hostname+':3000' );
+
+socket.on( 'new_message', function( data ) {
+
+          
+       alert('name id  '+ data.name);
+         alert('subject id  '+ data.subject);
+        alert('recipient id  '+ data.recipient_id);
+           $( "#new_count_message" ).show();
+            $( "#new_count_message" ).html( data.new_count_message );
+            $('#notif_audio')[0].play();
+          
+        });
+
+  socket.on( 'new_count_message', function( data ) {
+
+          
+      
+        alert('new count messsage '+ data.new_count_message);
+           $( "#new_count_message" ).show();
+            $( "#new_count_message" ).html( data.new_count_message );
+            $('#notif_audio')[0].play();
+          
+        });
+  
+
+
+    </script>
