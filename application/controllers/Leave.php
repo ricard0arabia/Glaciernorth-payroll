@@ -20,9 +20,11 @@ class Leave extends CI_Controller {
         else{
 
 		$this->load->helper('url');	
-          $this->load->view('header');
-          $data['user'] = $this->session->userdata('username');
+        $this->load->view('header');
+        $data['user'] = $this->session->userdata('username'); 
+        $data['name'] = $this->leave->emp_get_name($this->session->userdata('username'));   
           $this->load->view('pages/requests/leave',$data);
+
 		  $this->load->view('footer');
         }
 	
@@ -64,8 +66,8 @@ class Leave extends CI_Controller {
             $no++;
             $row = array();
         $row[] = $leave->leavetype;
-            $row[] = $leave->startdate;
-            $row[] = $leave->enddate;
+            $row[] = date("F j,Y", strtotime($leave->startdate));
+            $row[] = date("F j,Y", strtotime($leave->enddate));
              $row[] = $leave->duration;
              $row[] = $leave->cause;
              $row[] = '<h4><span class="'.$class.'">'.$leave->leave_status.'</span></h4>'; 
@@ -101,12 +103,12 @@ class Leave extends CI_Controller {
             $no++;
             $row = array();
             $row[] = $leave->leavetype;
-            $row[] = $leave->startdate;
-            $row[] = $leave->enddate;
+            $row[] = date("F j,Y", strtotime($leave->startdate));
+            $row[] = date("F j,Y", strtotime($leave->enddate));
              $row[] = $leave->duration;
              $row[] = $leave->cause;
-             $row[] = $leave->date_submitted;
-            $row[] = $leave->date_approved;
+             $row[] = date("F j,Y", strtotime($leave->date_submitted));
+            $row[] = date("F j,Y", strtotime($leave->date_approved));
                $row[] = '<h4><span class="'.$class.'">'.$leave->leave_status.'</span></h4>';  
            
           
@@ -139,6 +141,7 @@ class Leave extends CI_Controller {
         		'leave_status' => 'requested',
                 'cause' => $this->input->post('cause'),
                 'duration' => $this->input->post('duration'),
+                'date_submitted' => date("Y-m-d"),
                 
                 
             );
@@ -248,8 +251,8 @@ class Leave extends CI_Controller {
             $row[] = $leave->position;
             $row[] = $leave->department;
             $row[] = $leave->leavetype;
-            $row[] = $leave->startdate;
-            $row[] = $leave->enddate;
+            $row[] = date("F j,Y", strtotime($leave->startdate));
+            $row[] = date("F j,Y", strtotime($leave->enddate));
              $row[] = $leave->duration;
              $row[] = $leave->cause;
              $row[] = '<h4><span class="'.$class.'">'.$leave->leave_status.'</span></h4>'; 
@@ -303,12 +306,12 @@ class Leave extends CI_Controller {
             $row[] = $leave->position;
             $row[] = $leave->department;
             $row[] = $leave->leavetype;
-            $row[] = $leave->startdate;
-            $row[] = $leave->enddate;
+            $row[] = date("F j,Y", strtotime($leave->startdate));
+            $row[] = date("F j,Y", strtotime($leave->enddate));
              $row[] = $leave->duration;
              $row[] = $leave->cause;
-             $row[] = $leave->date_submitted;
-            $row[] = $leave->date_approved;
+             $row[] = date("F j,Y", strtotime($leave->date_submitted));
+            $row[] = date("F j,Y", strtotime($leave->date_approved));
              $row[] = '<h4><span class="'.$class.'">'.$leave->leave_status.'</span></h4>'; 
            
           

@@ -631,6 +631,14 @@ class Contents extends CI_Model {
  
         return $query->row();
     }
+
+      function emp_get_name($id) {
+        $emp_get_name = $this->db->query("SELECT lastname, firstname, middlename
+                                        FROM employees
+                                        WHERE user_id = $id");
+                                        
+        return $emp_get_name->result_array();
+    }
  
     public function emp_save($data)
     {

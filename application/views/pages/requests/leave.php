@@ -151,11 +151,47 @@ var table2;
 
        //datatables
     table1 = $('#table1').DataTable({
- 
+         "dom": 'Bfrtip',
         "processing": true, //Feature control the processing indicator.
         "serverSide": true, //Feature control DataTables' server-side processing mode.
         "order": [], //Initial no order.
- 
+        "buttons": [
+        {
+            extend: 'pdf',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5]
+            },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Leave Request Report \n <?php echo ucfirst($name[0]['firstname']).' '.ucfirst(substr($name[0]['middlename'],0,1)).'. '.ucfirst($name[0]['lastname']); ?> ',
+               orientation: 'portrait',
+               customize: function(doc) {
+                  doc.defaultStyle.fontSize = 16; //<-- set fontsize to 16 instead of 10 
+               }  
+       },
+       {
+           extend: 'csv',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5]
+            }
+          
+       },
+       {
+           extend: 'excel',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5]
+            }
+       },
+       {
+           extend: 'print',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5]
+            }
+       }          
+        ],
         // Load data for the table's content from an Ajax source
         "ajax": {
             "url": "<?php echo site_url('leave/request_list')?>",
@@ -177,6 +213,44 @@ var table2;
         "processing": true, //Feature control the processing indicator.
         "serverSide": true, //Feature control DataTables' server-side processing mode.
         "order": [], //Initial no order.
+        "dom": 'Bfrtip',
+         "buttons": [
+        {
+            extend: 'pdf',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5,6]
+            },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Leave Request Report \n <?php echo ucfirst($name[0]['firstname']).' '.ucfirst(substr($name[0]['middlename'],0,1)).'. '.ucfirst($name[0]['lastname']); ?> ',
+               orientation: 'portrait',
+               customize: function(doc) {
+                  doc.defaultStyle.fontSize = 16; //<-- set fontsize to 16 instead of 10 
+               }  
+       },
+       {
+           extend: 'csv',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5,6]
+            }
+          
+       },
+       {
+           extend: 'excel',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5,6]
+            }
+       },
+       {
+           extend: 'print',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5,6]
+            }
+       }          
+        ],
  
         // Load data for the table's content from an Ajax source
         "ajax": {
