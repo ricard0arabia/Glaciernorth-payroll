@@ -152,6 +152,50 @@ var table2;
         "processing": true, //Feature control the processing indicator.
         "serverSide": true, //Feature control DataTables' server-side processing mode.
         "order": [], //Initial no order.
+         "dom": 'Bfrtip',
+         "buttons": [
+        {
+            extend: 'pdf',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5,6,7,8]
+            },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Leave Summary Report \n <?php echo ucfirst($name[0]['firstname']).' '.ucfirst(substr($name[0]['middlename'],0,1)).'. '.ucfirst($name[0]['lastname']); ?> ',
+               orientation: 'landscape',
+               customize: function(doc) {
+                  doc.defaultStyle.fontSize = 16; //<-- set fontsize to 16 instead of 10 
+               }  
+       },
+       {
+           extend: 'csv',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5,6,7,8]
+             },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Leave Summary Report \n <?php echo ucfirst($name[0]['firstname']).' '.ucfirst(substr($name[0]['middlename'],0,1)).'. '.ucfirst($name[0]['lastname']); ?> ',
+          
+       },
+       {
+           extend: 'excel',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5,6,7,8]
+             },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Leave Summary Report \n <?php echo ucfirst($name[0]['firstname']).' '.ucfirst(substr($name[0]['middlename'],0,1)).'. '.ucfirst($name[0]['lastname']); ?> ',
+       },
+       {
+           extend: 'print',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5,6,7,8]
+            },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Leave Summary Report \n <?php echo ucfirst($name[0]['firstname']).' '.ucfirst(substr($name[0]['middlename'],0,1)).'. '.ucfirst($name[0]['lastname']); ?> ',
+       }          
+        ],
  
         // Load data for the table's content from an Ajax source
         "ajax": {
@@ -175,6 +219,50 @@ var table2;
         "processing": true, //Feature control the processing indicator.
         "serverSide": true, //Feature control DataTables' server-side processing mode.
         "order": [], //Initial no order.
+           "dom": 'Bfrtip',
+         "buttons": [
+        {
+            extend: 'pdf',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5,6,7,8,9,10]
+            },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Leave Summary Report \n <?php echo ucfirst($name[0]['firstname']).' '.ucfirst(substr($name[0]['middlename'],0,1)).'. '.ucfirst($name[0]['lastname']); ?> ',
+               orientation: 'portrait',
+               customize: function(doc) {
+                  doc.defaultStyle.fontSize = 12; //<-- set fontsize to 16 instead of 10 
+               }  
+       },
+       {
+           extend: 'csv',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5,6,7,8,9,10]
+             },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Leave Summary Report \n <?php echo ucfirst($name[0]['firstname']).' '.ucfirst(substr($name[0]['middlename'],0,1)).'. '.ucfirst($name[0]['lastname']); ?> ',
+          
+       },
+       {
+           extend: 'excel',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5,6,7,8,9,10]
+             },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Leave Summary Report \n <?php echo ucfirst($name[0]['firstname']).' '.ucfirst(substr($name[0]['middlename'],0,1)).'. '.ucfirst($name[0]['lastname']); ?> ',
+       },
+       {
+           extend: 'print',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5,6,7,8,9,10]
+            },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Leave Summary Report \n <?php echo ucfirst($name[0]['firstname']).' '.ucfirst(substr($name[0]['middlename'],0,1)).'. '.ucfirst($name[0]['lastname']); ?> ',
+       }          
+        ],
  
         // Load data for the table's content from an Ajax source
         "ajax": {

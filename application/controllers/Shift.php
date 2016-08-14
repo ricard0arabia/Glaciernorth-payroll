@@ -36,6 +36,14 @@ class Shift extends CI_Controller {
         foreach ($list as $shift) {
             $no++;
             $row = array();
+
+            $row[] = $shift->startdate;
+            $row[] = $shift->enddate;
+            $row[] = $shift->reason;
+            $row[] = ucfirst($shift->firstname).' '.ucfirst(substr($shift->middlename,0,1)).'. '.ucfirst($shift->lastname);
+            $row[] = $shift->sub_department;
+            $row[] = $shift->sub_position; 
+            
 $row[] = date("h:i A", strtotime($shift->mon_start)).' - '.date("h:i A", strtotime($shift->mon_end))."<br><strong>to</strong>";
 $row[] = date("h:i A", strtotime($shift->tue_start)).' - '.date("h:i A", strtotime($shift->tue_end));
 $row[] = date("h:i A", strtotime($shift->wed_start)).' - '.date("h:i A", strtotime($shift->wed_end));
@@ -43,12 +51,7 @@ $row[] = date("h:i A", strtotime($shift->thurs_start)).' - '.date("h:i A", strto
 $row[] = date("h:i A", strtotime($shift->fri_start)).' - '.date("h:i A", strtotime($shift->fri_end));
 $row[] = date("h:i A", strtotime($shift->sat_start)).' - '.date("h:i A", strtotime($shift->sat_end));
 $row[] = date("h:i A", strtotime($shift->sun_start)).' - '.date("h:i A", strtotime($shift->sun_end));
-             $row[] = $shift->startdate;
-             $row[] = $shift->enddate;
-             $row[] = $shift->reason;
-             $row[] = $shift->sub_department;
-             $row[] = $shift->sub_position; 
-             $row[] = $shift->sub_id;
+     
             
             
            
@@ -79,7 +82,11 @@ $row[] = date("h:i A", strtotime($shift->sun_start)).' - '.date("h:i A", strtoti
             $no++;
             $row = array();
 
-            $row[] = $shift->user_id;
+          $row[] = '<img height="60" width="60" src="'.base_url().'uploads/'.$shift->thumb_name.$shift->ext.'">';
+  
+            $row[] = ucfirst($shift->firstname).' '.ucfirst(substr($shift->middlename,0,1)).'. '.ucfirst($shift->lastname);
+            $row[] = $shift->position;
+            $row[] = $shift->department;
             
              
 

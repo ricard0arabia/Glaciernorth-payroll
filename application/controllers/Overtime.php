@@ -22,6 +22,7 @@ class Overtime extends CI_Controller {
         $this->load->helper('url'); 
           $this->load->view('header');
           $data['user'] = $this->session->userdata('username');
+           $data['name'] = $this->overtime->emp_get_name($this->session->userdata('username'));   
           $this->load->view('pages/requests/overtime',$data);
           $this->load->view('footer');
         }
@@ -60,8 +61,8 @@ class Overtime extends CI_Controller {
         }
             $no++;
             $row = array();
-            $row[] = $overtime->date;
-             $row[] = $overtime->duration;
+            $row[] = date("F j,Y", strtotime($overtime->date));
+             $row[] = $overtime->duration." hrs";
              $row[] = $overtime->cause;
              $row[] = '<h4><span class="'.$class.'">'.$overtime->ot_status.'</span></h4>'; 
            
@@ -95,11 +96,11 @@ class Overtime extends CI_Controller {
         }
             $no++;
             $row = array();
-            $row[] = $overtime->date;
-             $row[] = $overtime->duration;
+            $row[] = date("F j,Y", strtotime($overtime->date));
+             $row[] = $overtime->duration." hrs";
              $row[] = $overtime->cause;
-             $row[] = $overtime->date_submitted;
-            $row[] = $overtime->date_approved;
+             $row[] = date("F j,Y", strtotime($overtime->date_submitted));
+            $row[] = date("F j,Y", strtotime($overtime->date_approved));
                $row[] = '<h4><span class="'.$class.'">'.$overtime->ot_status.'</span></h4>';  
            
           
@@ -224,8 +225,8 @@ class Overtime extends CI_Controller {
             $row[] = $overtime->lastname;
             $row[] = $overtime->position;
             $row[] = $overtime->department;
-            $row[] = $overtime->date;
-             $row[] = $overtime->duration;
+            $row[] = date("F j,Y", strtotime($overtime->date));
+             $row[] = $overtime->duration." hrs";
              $row[] = $overtime->cause;
              $row[] = '<h4><span class="'.$class.'">'.$overtime->ot_status.'</span></h4>'; 
            
@@ -277,11 +278,11 @@ class Overtime extends CI_Controller {
             $row[] = $overtime->lastname;
             $row[] = $overtime->position;
             $row[] = $overtime->department;
-            $row[] = $overtime->date;
-             $row[] = $overtime->duration;
+            $row[] = date("F j,Y", strtotime($overtime->date));
+             $row[] = $overtime->duration." hrs";
              $row[] = $overtime->cause;
-             $row[] = $overtime->date_submitted;
-            $row[] = $overtime->date_approved;
+             $row[] = date("F j,Y", strtotime($overtime->date_submitted));
+            $row[] = date("F j,Y", strtotime($overtime->date_approved));
              $row[] = '<h4><span class="'.$class.'">'.$overtime->ot_status.'</span></h4>'; 
            
           

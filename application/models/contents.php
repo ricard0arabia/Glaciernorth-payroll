@@ -7,14 +7,14 @@ class Contents extends CI_Model {
 //============================= table for leave =========================================
  var $leave_table = 'rqst_leaves';
     var $leave_column_order = array('id','user_id','startdate','enddate','status','cause','duration','leavetype',null); //set column field database for datatable orderable
-    var $leave_column_search = array('leavetype','status','startdate'); //set column field database for datatable searchable just firstname , lastname , address are searchable
+    var $leave_column_search = array('leavetype','duration','leave_status','startdate','department','position','firstname','lastname'); //set column field database for datatable searchable just firstname , lastname , address are searchable
     var $leave_order = array('id' => 'desc'); // default order
 
 //============================== table for overtime ======================================
 
     var $ot_table = 'rqst_overtime';
     var $ot_column_order = array('id','user_id','date','duration','cause','status',null); //set column field database for datatable orderable
-    var $ot_column_search = array('date','cause','status'); //set column field database for datatable searchable just firstname , lastname , address are searchable
+    var $ot_column_search = array('date','cause','overtime_status'); //set column field database for datatable searchable just firstname , lastname , address are searchable
     var $ot_order = array('id' => 'desc'); // default
 
     var $empsched_table = 'emp_workschedule';
@@ -460,17 +460,19 @@ class Contents extends CI_Model {
 
     	  private function empsched_get_datatables_query()
     {
-    
-       $this->db->from($this->empsched_table);
-    	
+        
+        $this->db->from('emp_workschedule');
+        $this->db->join('employees','employees.user_id = emp_workschedule.user_id');
+
+
+  
         $i = 0;
      
         foreach ($this->empsched_column_search as $item) // loop column
         {
             if($_POST['search']['value']) // if datatable send POST for search
-            {
-                 
-                if($i===0) // first loop
+            {             
+              if($i===0) // first loop
                 {
                     $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
                     $this->db->like($item, $_POST['search']['value']);
@@ -502,7 +504,7 @@ class Contents extends CI_Model {
         $this->empsched_get_datatables_query();
         if($_POST['length'] != -1)
         $this->db->limit($_POST['length'], $_POST['start']);  	
-    	$this->db->where('user_id =', $id); 
+    	$this->db->where('emp_workschedule.user_id =', $id); 
         $query = $this->db->get();
         return $query->result();
     }
@@ -511,7 +513,7 @@ class Contents extends CI_Model {
         $this->empsched_get_datatables_query();
         if($_POST['length'] != -1)
         $this->db->limit($_POST['length'], $_POST['start']);  	
-    	$this->db->where('user_id !=', $this->session->userdata('username')); 
+    	$this->db->where('emp_workschedule.user_id !=', $this->session->userdata('username')); 
         $query = $this->db->get();
         return $query->result();
     }
@@ -532,7 +534,7 @@ class Contents extends CI_Model {
     public function empsched_get_by_id($id)
     {
         $this->db->from($this->empsched_table);
-        $this->db->where('user_id =', $id); 
+        $this->db->where('emp_workschedule.user_id =', $id); 
         $query = $this->db->get();
  
         return $query->row();
@@ -552,7 +554,7 @@ class Contents extends CI_Model {
  
     public function empsched_delete_by_id($id)
     {
-        $this->db->where('user_id', $id);
+        $this->db->where('emp_workschedule.user_id', $id);
         $this->db->delete($this->empsched_table);
     }
 
@@ -793,7 +795,13 @@ class Contents extends CI_Model {
     }
 
 
+///
 
+    public function sched_save($data)
+    {
+        $this->db->insert('schedule', $data);
+        return $this->db->insert_id();
+    }
 
 //session
 
@@ -833,6 +841,57 @@ class Contents extends CI_Model {
 
 		}
 
+Public function getEvents()
+    {
+        
+    $sql = "SELECT * FROM schedule WHERE schedule.start BETWEEN ? AND ? ORDER BY schedule.start ASC";
+    return $this->db->query($sql, array($_GET['start'], $_GET['end']))->result();
+
+    }
+
+/*Create new events */
+
+    Public function addEvent()
+    {
+
+    $sql = "INSERT INTO schedule (user_id, color, schedule.start, schedule.end, day, status) VALUES (?,?,?,?,?,?)";
+    $this->db->query($sql, array($_POST['user_id'], '#4c55f2', $_POST['start'], $_POST['end'], $_POST['day'], 'regular'));
+        return ($this->db->affected_rows()!=1)?false:true;
+    }
+
+    /*Update  event */
+
+    Public function updateEvent()
+    {
+
+    $sql = "UPDATE events SET title = ?, events.date = ?, description = ?, color = ? WHERE id = ?";
+    $this->db->query($sql, array($_POST['title'], $_POST['date'], $_POST['description'], $_POST['color'], $_POST['id']));
+        return ($this->db->affected_rows()!=1)?false:true;
+    }
+
+
+    /*Delete event */
+
+    Public function deleteEvent()
+    {
+
+    $sql = "DELETE FROM events WHERE id = ?";
+    $this->db->query($sql, array($_GET['id']));
+        return ($this->db->affected_rows()!=1)?false:true;
+    }
+
+    /*Update  event */
+
+    Public function dragUpdateEvent()
+    {
+            $date=date('Y-m-d h:i:s',strtotime($_POST['date']));
+
+            $sql = "UPDATE events SET  events.date = ? WHERE id = ?";
+            $this->db->query($sql, array($date, $_POST['id']));
+        return ($this->db->affected_rows()!=1)?false:true;
+
+
+    }
 
 		
  

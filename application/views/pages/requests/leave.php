@@ -174,7 +174,9 @@ var table2;
            footer: true,
            exportOptions: {
                 columns: [0,1,2,3,4,5]
-            }
+            },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Leave Request Report \n <?php echo ucfirst($name[0]['firstname']).' '.ucfirst(substr($name[0]['middlename'],0,1)).'. '.ucfirst($name[0]['lastname']); ?> ',
           
        },
        {
@@ -182,14 +184,18 @@ var table2;
            footer: true,
            exportOptions: {
                 columns: [0,1,2,3,4,5]
-            }
+            },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Leave Request Report \n <?php echo ucfirst($name[0]['firstname']).' '.ucfirst(substr($name[0]['middlename'],0,1)).'. '.ucfirst($name[0]['lastname']); ?> ',
        },
        {
            extend: 'print',
            footer: true,
            exportOptions: {
                 columns: [0,1,2,3,4,5]
-            }
+            },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Leave Request Report \n <?php echo ucfirst($name[0]['firstname']).' '.ucfirst(substr($name[0]['middlename'],0,1)).'. '.ucfirst($name[0]['lastname']); ?> ',
        }          
         ],
         // Load data for the table's content from an Ajax source
@@ -233,7 +239,9 @@ var table2;
            footer: true,
            exportOptions: {
                 columns: [0,1,2,3,4,5,6]
-            }
+             },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Leave Request Report \n <?php echo ucfirst($name[0]['firstname']).' '.ucfirst(substr($name[0]['middlename'],0,1)).'. '.ucfirst($name[0]['lastname']); ?> ',
           
        },
        {
@@ -241,14 +249,18 @@ var table2;
            footer: true,
            exportOptions: {
                 columns: [0,1,2,3,4,5,6]
-            }
+             },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Leave Request Report \n <?php echo ucfirst($name[0]['firstname']).' '.ucfirst(substr($name[0]['middlename'],0,1)).'. '.ucfirst($name[0]['lastname']); ?> ',
        },
        {
            extend: 'print',
            footer: true,
            exportOptions: {
                 columns: [0,1,2,3,4,5,6]
-            }
+            },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Leave Request Report \n <?php echo ucfirst($name[0]['firstname']).' '.ucfirst(substr($name[0]['middlename'],0,1)).'. '.ucfirst($name[0]['lastname']); ?> ',
        }          
         ],
  

@@ -82,6 +82,44 @@ input, select{
 .bootstrap-timepicker-widget.dropdown-menu {
     z-index: 99999!important;
 }
+
+
+
+ .fc th {
+                padding: 10px 0px;
+                vertical-align: middle;
+                background:#F2F2F2;
+            }
+            .fc-day-grid-event>.fc-content {
+                padding: 4px;
+            }
+            #calendar {
+                max-width: 900px;
+                margin: 0 auto;
+            }
+            .error {
+                color: #ac2925;
+                margin-bottom: 15px;
+            }
+            .event-tooltip {
+                width:100px;
+                background: rgba(0, 0, 0, 0.85);
+                color:#FFF;
+                padding:10px;
+                position:absolute;
+                z-index:10001;
+                -webkit-border-radius: 4px;
+                -moz-border-radius: 4px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 12px;
+
+            }
+            .modal-header
+            {
+                background-color: #3A87AD;
+                color: #fff;
+            }
 </style>
 <script type="text/javascript">
 
@@ -187,6 +225,8 @@ $(document).ready(function () {
       <?php } ?>
 
       <?php } ?>
+
+
 
     });
 </script>
@@ -397,7 +437,10 @@ $(document).ready(function () {
     
                         </div>
                         <div class="tab-pane fade" id="schedule">
-
+                          <br>
+                          <button class="btn btn-success" onclick="add_sched()"><i class="glyphicon glyphicon-plus"></i> Work Schedule</button>
+                          <br>
+                          <br>
                           <div id='calendar'></div>
 
 
@@ -419,6 +462,195 @@ $(document).ready(function () {
            
 </div>
   </div>   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="modal fade" id="modal_form" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                <h3 class="modal-title">Add Leave Request</h3>
+               
+            </div>
+            <div class="modal-body form">
+                <form action="#" id="form" class="form-horizontal">
+                    <input type="hidden" value="" name="id"/>
+                    <div class="form-body">
+                        <div class="row">
+
+                           <div class="form-group">
+                            <label class="control-label col-md-3">Start Date</label>
+                            <div class="col-md-5">
+                             <input id="fromDate" name="startdate" placeholder="yyyy-mm-dd" class="form-control" type="text">
+
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                       
+                       
+                        <div class="form-group">
+                             <label class="control-label col-md-3">End Date</label>
+                            <div class="col-md-5">                           
+                          <input id="toDate" name="enddate" placeholder="yyyy-mm-dd" class="form-control" type="text">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                           <div class="form-group">
+                            <label class="control-label col-md-3">Monday</label>
+                            <div class="col-md-5">
+                                <select name="mon_sched" class="form-control">
+                                    <option value="">--Select Time--</option>
+                                    <option value="a">6am - 2pm</option>
+                                    <option value="b">2pm - 10pm</option>
+                                    <option value="c">10pm - 6am</option>
+                                    <option value="d">8pm - 5pm</option>
+                                </select>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>  
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Tuesday</label>
+                            <div class="col-md-5">
+                                <select name="tue_sched" class="form-control">
+                                    <option value="">--Select Time--</option>
+                                    <option value="a">6am - 2pm</option>
+                                    <option value="b">2pm - 10pm</option>
+                                    <option value="c">10pm - 6am</option>
+                                    <option value="d">8pm - 5pm</option>
+                                </select>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>  
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Wednesday</label>
+                            <div class="col-md-5">
+                                <select name="wed_sched" class="form-control">
+                                    <option value="">--Select Time--</option>
+                                    <option value="a">6am - 2pm</option>
+                                    <option value="b">2pm - 10pm</option>
+                                    <option value="c">10pm - 6am</option>
+                                    <option value="d">8pm - 5pm</option>
+                                </select>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>  
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Thursday</label>
+                           <div class="col-md-5">
+                                <select name="thurs_sched" class="form-control">
+                                    <option value="">--Select Time--</option>
+                                    <option value="a">6am - 2pm</option>
+                                    <option value="b">2pm - 10pm</option>
+                                    <option value="c">10pm - 6am</option>
+                                    <option value="d">8pm - 5pm</option>
+                                </select>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>  
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Friday</label>
+                            <div class="col-md-5">
+                                <select name="fri_sched" class="form-control">
+                                    <option value="">--Select Time--</option>
+                                    <option value="a">6am - 2pm</option>
+                                    <option value="b">2pm - 10pm</option>
+                                    <option value="c">10pm - 6am</option>
+                                    <option value="d">8pm - 5pm</option>
+                                </select>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>  
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Saturday</label>
+                            <div class="col-md-5">
+                                <select name="sat_sched" class="form-control">
+                                    <option value="">--Select Time--</option>
+                                    <option value="a">6am - 2pm</option>
+                                    <option value="b">2pm - 10pm</option>
+                                    <option value="c">10pm - 6am</option>
+                                    <option value="d">8pm - 5pm</option>
+                                </select>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>  
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Sunday</label>
+                            <div class="col-md-5">
+                                <select name="sun_sched" class="form-control">
+                                    <option value="">--Select Time--</option>
+                                    <option value="a">6am - 2pm</option>
+                                    <option value="b">2pm - 10pm</option>
+                                    <option value="c">10pm - 6am</option>
+                                    <option value="d">8pm - 5pm</option>
+                                </select>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>                  
+                        
+
+                         
+                    </div>
+                     
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnSave" onclick="save()" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+ 
+
+  <!-- Modal Structure -->
+ 
+<div class="modal fade" id="sched_modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title"  id="sched_modal_title" ></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="error"></div>
+                        <form class="form-horizontal" id="crud-form">
+                           
+                            <div class="form-group">
+                               <label class="control-label col-md-4">Time</label>
+                              <div class="col-md-4">
+                                <select name="time" class="form-control">
+                                    <option value="">--Select Time--</option>
+                                    <option value="a">6am - 2pm</option>
+                                    <option value="b">2pm - 10pm</option>
+                                    <option value="c">10pm - 6am</option>
+                                    <option value="d">8pm - 5pm</option>
+                                </select>
+                              </div>
+                          
+                            </div>
+  
+        
+                        </form>
+                    </div>
+                    <div class="modal-footer" id="sched_modal_footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 <script type="text/javascript">
 
@@ -843,6 +1075,308 @@ if($(this).hasClass('detailed')){
 
   <?php } ?>
  }
+
+ // modal
+
+ $(document).ready(function () {
+     // set default dates
+            var start = new Date();
+            start.setDate(start.getDate() + 2);
+
+            // set end date to max one year period:
+            var end = new Date(new Date().setYear(start.getFullYear()+1));
+
+            $('#fromDate').datepicker({
+                format: "yyyy-mm-dd",
+            
+                startDate : start,
+                endDate   : end
+            // update "toDate" defaults whenever "fromDate" changes
+            }).on('changeDate', function(){
+                // set the "toDate" start to not be later than "fromDate" ends:
+                $('#toDate').datepicker('setStartDate', new Date($(this).val()));
+               
+            }); 
+
+            $('#toDate').datepicker({
+                format: "yyyy-mm-dd",
+                startDate : start,
+                endDate   : end
+            // update "fromDate" defaults whenever "toDate" changes
+            }).on('changeDate', function(){
+                // set the "fromDate" end to not be later than "toDate" starts:
+                $('#fromDate').datepicker('setEndDate', new Date($(this).val()));
+                
+            });
+
+ 
+ });
+ function add_sched()
+{
+  
+    $('#form')[0].reset(); // reset form on modals
+    $('.form-group').removeClass('has-error'); // clear error class
+    $('.help-block').empty(); // clear error string
+    $('#modal_form').modal('show'); // show bootstrap modal
+    $('.modal-title').text('Add Employee Work Schedule'); // Set Title to Bootstrap modal title
+}
+function save()
+{
+    $('#btnSave').text('saving...'); //change button text
+    $('#btnSave').attr('disabled',true); //set button disable
+
+  
+    $.ajax({
+
+       <?php if($this->uri->segment(1) == 'employees') { ?>
+
+        url : "<?php echo site_url('employees/add_sched')?>/" +  <?php echo $this->uri->segment(3) ?>,
+        <?php } else { ?>
+        url : "<?php echo site_url('userprofile/add_sched')?>/" +  <?php echo $this->session->userdata('username') ?>,
+        <?php } ?>
+
+
+        type: "POST",
+        data: $('#form').serialize(),
+        dataType: "JSON",
+        success: function(data)
+        {
+ 
+            if(data.status) //if success close modal and reload ajax table
+            {
+                $('#modal_form').modal('hide');
+                reload_table1();
+            }
+            else
+            {
+                for (var i = 0; i < data.inputerror.length; i++)
+                {
+                    $('[name="'+data.inputerror[i]+'"]').parent().parent().addClass('has-error'); //select parent twice to select div form-group class and add has-error class
+                    $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]); //select span help-block class set text error string
+                }
+            }
+            $('#btnSave').text('save'); //change button text
+            $('#btnSave').attr('disabled',false); //set button enable
+ 
+ 
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            alert('Error adding / update data');
+            $('#btnSave').text('save'); //change button text
+            $('#btnSave').attr('disabled',false); //set button enable
+ 
+        }
+    });
+}
+
+
+
+
+// calendar
+
+
+
+
+
+$(function(){
+
+    var currentDate; // Holds the day clicked when adding a new event
+    var currentEvent; // Holds the event object when editing an event
+
+    $('#color').colorpicker(); // Colopicker
+    $('#time').timepicker({
+        minuteStep: 5,
+        showInputs: false,
+        disableFocus: true,
+        showMeridian: false
+    });  // Timepicker
+
+    var base_url='http://localhost:8080/fullcalendar/'; // Here i define the base_url
+
+    // Fullcalendar
+    $('#calendar').fullCalendar({
+        timeFormat: 'hh:mm a',
+        header: {
+            left: 'prev, next, today',
+            center: 'title',
+              right: 'month,agendaWeek,agendaDay'
+        },
+        // Get all events stored in database
+      editable: true,
+        selectable: true,
+      selectHelper: true,
+       displayEventEnd: true,
+        events:"<?php echo site_url('calendar/getEvents')?>",
+     
+         
+       
+        // Handle Day Click
+        dayClick: function(date, event, view) {
+            currentDate = date.format('MMM DD, YYYY');
+            // Open modal to add event
+            modal({
+                // Available buttons when adding
+                buttons: {
+                    add: {
+                        id: 'add-event', // Buttons id
+                        css: 'btn-success', // Buttons class
+                        label: 'Add' // Buttons label
+                    }
+                },
+                title: 'Add Event: ' + date.format('MMM DD, YYYY') // Modal title
+            });
+        },
+   
+          editable: true, // Make the event draggable true 
+         eventDrop: function(event, delta, revertFunc) {  
+
+            
+               $.post(base_url+'calendar/dragUpdateEvent',{                            
+                id:event.id,
+                date: event.start.format()
+            }, function(result){
+                if(result)
+                {
+                alert('Updated');
+                }
+                else
+                {
+                    alert('Try Again later!')
+                }
+
+            });
+
+
+
+          },
+        // Event Mouseover
+         eventMouseover: function(calEvent, jsEvent) {  
+
+                    var durationTime = moment(calEvent.start).format('hh:mm a') + " - " + moment(calEvent.end).format('hh:mm a')
+                    var tooltip = '<div class="event-tooltip">' + durationTime + '</div>';
+                    $("body").append(tooltip);
+                    $(this).mouseover(function(e) {
+                        $(this).css('z-index', 10000);
+                        $('.event-tooltip').fadeIn('500');
+                        $('.event-tooltip').fadeTo('10', 1.9);
+                    }).mousemove(function(e) {
+                        $('.event-tooltip').css('top', e.pageY + 10);
+                        $('.event-tooltip').css('left', e.pageX + 20);
+                    });
+                },
+
+                eventMouseout: function(calEvent, jsEvent) {
+                    $(this).css('z-index', 8);
+                    $('.event-tooltip').remove();
+                },
+        // Handle Existing Event Click
+        eventClick: function(calEvent, jsEvent, view) {
+            // Set currentEvent variable according to the event clicked in the calendar
+            currentEvent = calEvent;
+
+            // Open modal to edit or delete event
+            modal({
+                // Available buttons when editing
+                buttons: {
+                    delete: {
+                        id: 'delete-event',
+                        css: 'btn-danger',
+                        label: 'Delete'
+                    },
+                    update: {
+                        id: 'update-event',
+                        css: 'btn-success',
+                        label: 'Update'
+                    }
+                },
+                title: 'Edit Event' +": "+ moment(calEvent.start).format('MMM DD, YYYY') +" "+ moment(calEvent.start).format('hh:mm a') + " - " + moment(calEvent.end).format('hh:mm a'),
+                event: calEvent
+            });
+        }
+
+    });
+
+    // Prepares the modal window according to data passed
+    function modal(data) {
+        // Set modal title
+        $('#sched_modal_title').html(data.title);
+        // Clear buttons except Cancel
+        $('#sched_modal_footer button:not(".btn-default")').remove();
+        // Set input values
+        $('#title').val(data.event ? data.event.title : '');
+        $('#time').val('b');
+    
+        // Create Butttons
+        $.each(data.buttons, function(index, button){
+            $('#sched_modal_footer').prepend('<button type="button" id="' + button.id  + '" class="btn ' + button.css + '">' + button.label + '</button>')
+        })
+        //Show Modal
+        $('#sched_modal').modal('show');
+    }
+
+    // Handle Click on Add Button
+    $('#sched_modal').on('click', '#add-event',  function(e){
+        if(validator(['title', 'description'])) {
+            $.post("<?php echo site_url('calendar/addEvent')?>", {
+                title: $('#title').val(),
+                description: $('#description').val(),
+                color: $('#color').val(),
+                date: currentDate + ' ' + getTime()
+            }, function(result){
+                $('#sched_modal').modal('hide');
+                $('#calendar').fullCalendar("refetchEvents");
+            });
+        }
+    });
+
+
+    // Handle click on Update Button
+    $('#sched_modal').on('click', '#update-event',  function(e){
+        if(validator(['title', 'description'])) {
+            $.post(base_url+'calendar/updateEvent', {
+                id: currentEvent._id,
+                title: $('#title').val(),
+                description: $('#description').val(),
+                color: $('#color').val(),
+                date: currentEvent.date.split(' ')[0]  + ' ' +  getTime()
+            }, function(result){
+                $('#sched_modal').modal('hide');
+                $('#calendar').fullCalendar("refetchEvents");
+            });
+        }
+    });
+
+
+
+    // Handle Click on Delete Button
+    $('.modal').on('click', '#delete-event',  function(e){
+        $.get(base_url+'calendar/deleteEvent?id=' + currentEvent._id, function(result){
+            $('.modal').modal('hide');
+            $('#calendar').fullCalendar("refetchEvents");
+        });
+    });
+
+
+    // Get Formated Time From Timepicker
+    function getTime() {
+        var time = $('#time').val();
+        return (time.indexOf(':') == 1 ? '0' + time : time) + ':00';
+    }
+
+    // Dead Basic Validation For Inputs
+    function validator(elements) {
+        var errors = 0;
+        $.each(elements, function(index, element){
+            if($.trim($('#' + element).val()) == '') errors++;
+        });
+        if(errors) {
+            $('.error').html('Please insert title and description');
+            return false;
+        }
+        return true;
+    }
+});
 
 
  </script>

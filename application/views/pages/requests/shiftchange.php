@@ -6,7 +6,7 @@
                 <div class="panel-heading">
                         <ul class="nav nav-tabs">
                     <li class="active"><a href="#tab1default" data-toggle="tab">Employee List</a></li>
-                            <li><a href="#tab2default" data-toggle="tab">Leave Requests</a></li>
+                            <li><a href="#tab2default" data-toggle="tab">Shift Change Requests</a></li>
                          
                            
                         </ul>
@@ -15,10 +15,6 @@
                     <div class="tab-content">
 
 
-<!--                                                 Employee List                                         -->
-<!--                                                 Employee List                                         -->
-<!--                                                 Employee List                                         -->
-<!--                                                 Employee List                                         -->
 <!--                                                 Employee List                                         -->
 <!--                                                 Employee List                                         -->
 
@@ -35,7 +31,10 @@
         <table id="table_list" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
-                                <th>Id</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Department</th>
                                 <th>Monday</th>
                                 <th>Tuesday</th>
                                 <th>Wednesday</th>
@@ -271,7 +270,7 @@ function delete_shift(id)
                 <div class="tab-pane fade" id="tab2default">
 
 
-        <h3>My leave Requests</h3>
+        <h3>My Shift Requests</h3>
         <br />
    
         <button class="btn btn-default" onclick="reload_table()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
@@ -280,6 +279,12 @@ function delete_shift(id)
         <table id="table_rqst" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
+                                <th>Start date</th>
+                                <th>End date</th>
+                                <th>Reason</th>
+                                <th>Sub. Name</th>
+                                <th>Sub. Dept</th>
+                                <th>Sub. Position</th>
                                 <th>Monday</th>
                                 <th>Tuesday</th>
                                 <th>Wednesday</th>
@@ -287,12 +292,8 @@ function delete_shift(id)
                                 <th>Friday</th>
                                 <th>Saturday</th>
                                 <th>Sunday</th>
-                                <th>Start date</th>
-                                <th>End date</th>
-                                <th>Reason</th>
-                                <th>Sub. Dept</th>
-                                <th>Sub. Position</th>
-                                <th>Sub. Id</th>
+
+
                                 <th style="width:125px;">Action</th>
                             </tr>
                         </thead>

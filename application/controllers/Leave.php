@@ -42,6 +42,7 @@ class Leave extends CI_Controller {
         $this->load->helper('url'); 
           $this->load->view('header');
           $data['user'] = $this->session->userdata('username');
+          $data['name'] = $this->leave->emp_get_name($this->session->userdata('username'));
           $this->load->view('pages/approvals/leave',$data);
           $this->load->view('footer');
         }
@@ -247,7 +248,7 @@ class Leave extends CI_Controller {
         }
             $no++;
             $row = array();
-            $row[] = $leave->lastname;
+             $row[] = ucfirst($leave->firstname).' '.ucfirst(substr($leave->middlename,0,1)).'. '.ucfirst($leave->lastname);
             $row[] = $leave->position;
             $row[] = $leave->department;
             $row[] = $leave->leavetype;
@@ -302,7 +303,7 @@ class Leave extends CI_Controller {
         }
             $no++;
             $row = array();
-            $row[] = $leave->lastname;
+            $row[] = ucfirst($leave->firstname).' '.ucfirst(substr($leave->middlename,0,1)).'. '.ucfirst($leave->lastname);
             $row[] = $leave->position;
             $row[] = $leave->department;
             $row[] = $leave->leavetype;
