@@ -827,6 +827,13 @@ class Contents extends CI_Model {
         return $query->row();
     }
 
+      public function sched_count_all($id)
+    {
+        $this->db->from('schedule');
+        $this->db->where('user_id', $id);
+        return $this->db->count_all_results();
+    }
+
 //session
 
     public function takeUser($username, $password, $level)

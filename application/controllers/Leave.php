@@ -133,64 +133,80 @@ class Leave extends CI_Controller {
 	public function add_leave()
     {
         $this->_validate();
-        $list = $this->leave->get_sched($this->session->userdata('username'));
-        $start = false;
-        $end = false;
 
-         foreach ($list as $value) {
-        $datetime = date_create($value->start);
-        $date = date_format($datetime,"Y-m-d");
-            if($this->input->post('startdate') == $date){
-                if($value->work_status == 'inactive'){
 
-                    $end = false;
+        $date_now = date("Y-m-d");
+
+        $date = $this->leave->get_leave_date($id);
+
+            if($this->leave->sched_count_all($this->session->userdata('username') == 0 || $date_now > $date->enddate)){
+
+            $list = $this->leave->get_sched($this->session->userdata('username'));
+            $start = false;
+            $end = false;
+
+             foreach ($list as $value) {
+            $datetime = date_create($value->start);
+            $date = date_format($datetime,"Y-m-d");
+                if($this->input->post('startdate') == $date){
+                    if($value->work_status == 'inactive'){
+
+                        $end = false;
+                        break;
+
+                    }else{
+                    $start = true;
                     break;
-
-                }else{
-                $start = true;
-                break;
+                    }
                 }
-            }
-       }
+           }
 
-        foreach ($list as $value) {
-        $datetime = date_create($value->start);
-        $date = date_format($datetime,"Y-m-d");
+            foreach ($list as $value) {
+            $datetime = date_create($value->start);
+            $date = date_format($datetime,"Y-m-d");
 
-            if($this->input->post('enddate') == $date){
-                if($value->work_status == 'inactive'){
+                if($this->input->post('enddate') == $date){
+                    if($value->work_status == 'inactive'){
 
-                    $end = false;
+                        $end = false;
+                        break;
+
+                    }else{
+
+                    $end = true;
                     break;
-
-                }else{
-
-                $end = true;
-                break;
+                    }
                 }
+           }
+             if($start == true && $end == true){
+            $data = array(
+            		'user_id' => $this->session->userdata('username'),
+            		'startdate' => $this->input->post('startdate'),
+                    'enddate' => $this->input->post('enddate'),
+            		'leavetype' => $this->input->post('leavetype'),
+            		'leave_status' => 'requested',
+                    'cause' => $this->input->post('cause'),
+                    'duration' => $this->input->post('duration'),
+                    'date_submitted' => date("Y-m-d"),
+                    
+                    
+                );
+        
+            $insert = $this->leave->save($data);
+
+            echo json_encode(array("status" => TRUE));
+
+               }else{
+
+                echo json_encode(array("status" => true,));
+
             }
-       }
-         if($start == true && $end == true){
-        $data = array(
-        		'user_id' => $this->session->userdata('username'),
-        		'startdate' => $this->input->post('startdate'),
-                'enddate' => $this->input->post('enddate'),
-        		'leavetype' => $this->input->post('leavetype'),
-        		'leave_status' => 'requested',
-                'cause' => $this->input->post('cause'),
-                'duration' => $this->input->post('duration'),
-                'date_submitted' => date("Y-m-d"),
-                
-                
-            );
-    
-        $insert = $this->leave->save($data);
+        }else{
+            $this->_validate();
 
-        echo json_encode(array("status" => TRUE, "start" => $start, "end" => $end));
+            $status = "You still have remaining leave";
+            echo json_encode(array("status" => true, "check" => $status));
 
-           }else{
-
-            echo json_encode(array("status" => true, "start" => $start, "end" => $end));
 
         }
     }

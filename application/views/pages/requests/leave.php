@@ -408,10 +408,11 @@ function save()
             {
               if(data.start == false || data.end == false){
 
-                  alert('Stardate or leave date not valid! Kingina mo');
+                  alert('Start date or End date not valid!');
 
                 }
                 else{
+                   alert(data.start + " " + data.end);
                 $('#modal_form').modal('hide');
                 reload_table1();
               }
