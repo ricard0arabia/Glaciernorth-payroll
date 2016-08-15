@@ -20,6 +20,7 @@ class Userprofile extends CI_Controller {
        
 			$this->load->helper('url');	
 	        $this->load->view('header');
+            $data['level'] = $this->session->userdata('level');
 	        $data['image'] = $this->profile->get_image_profile($this->session->userdata('username'));
             $data['exist'] = $this->profile->empinfo_count_all($this->session->userdata('username'));
 	        $this->load->view('pages/profile', $data);
@@ -290,8 +291,357 @@ $row[] = date("h:i A", strtotime($profile->sun_start)).' - '.date("h:i A", strto
             exit();
         }
     }
+//
+//
 
 
+public function add_sched($id){
+
+$this->_validate1();
+date_default_timezone_set('UTC');
+
+
+
+
+
+$start_date = $this->input->post('startdate');
+$end_date = $this->input->post('enddate');
+
+    if($this->input->post('mon_sched') == 'a'){
+
+        $mon_start = '06:00:00';
+        $mon_end = '14:00:00';
+
+    }
+    else if ($this->input->post('mon_sched') == 'b'){
+        $mon_start = '14:00:00';
+        $mon_end = '22:00:00';
+    }
+    else if ($this->input->post('mon_sched') == 'c'){
+        $mon_start = '22:00:00';
+        $mon_end = '06:00:00';
+    }
+    else if ($this->input->post('mon_sched') == 'd'){
+        $mon_start = '08:00:00';
+        $mon_end = '17:00:00';
+    }
+
+//
+    if($this->input->post('tue_sched') == 'a'){
+
+        $tue_start = '06:00:00';
+        $tue_end = '14:00:00';
+
+    }
+    else if ($this->input->post('tue_sched') == 'b'){
+        $tue_start = '14:00:00';
+        $tue_end = '22:00:00';
+    }
+    else if ($this->input->post('tue_sched') == 'c'){
+        $tue_start = '22:00:00';
+        $tue_end = '06:00:00';
+    }
+    else if ($this->input->post('tue_sched') == 'd'){
+        $tue_start = '08:00:00';
+        $tue_end = '17:00:00';
+    }
+
+    if($this->input->post('wed_sched') == 'a'){
+
+        $wed_start = '06:00:00';
+        $wed_end = '14:00:00';
+
+    }
+    else if ($this->input->post('wed_sched') == 'b'){
+        $wed_start = '14:00:00';
+        $wed_end = '22:00:00';
+    }
+    else if ($this->input->post('wed_sched') == 'c'){
+        $wed_start = '22:00:00';
+        $wed_end = '06:00:00';
+    }
+    else if ($this->input->post('wed_sched') == 'd'){
+        $wed_start = '08:00:00';
+        $wed_end = '17:00:00';
+    }
+
+//
+    if($this->input->post('thurs_sched') == 'a'){
+
+        $thurs_start = '06:00:00';
+        $thurs_end = '14:00:00';
+
+    }
+    else if ($this->input->post('thurs_sched') == 'b'){
+        $thurs_start = '14:00:00';
+        $thurs_end = '22:00:00';
+    }
+    else if ($this->input->post('thurs_sched') == 'c'){
+        $thurs_start = '22:00:00';
+        $thurs_end = '06:00:00';
+    }
+    else if ($this->input->post('thurs_sched') == 'd'){
+        $thurs_start = '08:00:00';
+        $thurs_end = '17:00:00';
+    }
+
+//
+
+    if($this->input->post('fri_sched') == 'a'){
+
+        $fri_start = '06:00:00';
+        $fri_end = '14:00:00';
+
+    }
+    else if ($this->input->post('fri_sched') == 'b'){
+        $fri_start = '14:00:00';
+        $fri_end = '22:00:00';
+    }
+    else if ($this->input->post('fri_sched') == 'c'){
+        $fri_start = '22:00:00';
+        $fri_end = '06:00:00';
+    }
+    else if ($this->input->post('fri_sched') == 'd'){
+        $fri_start = '08:00:00';
+        $fri_end = '17:00:00';
+    }
+//
+    if($this->input->post('sat_sched') == 'a'){
+
+        $sat_start = '06:00:00';
+        $sat_end = '14:00:00';
+
+    }
+    else if ($this->input->post('sat_sched') == 'b'){
+        $sat_start = '14:00:00';
+        $sat_end = '22:00:00';
+    }
+    else if ($this->input->post('sat_sched') == 'c'){
+        $sat_start = '22:00:00';
+        $sat_end = '06:00:00';
+    }
+    else if ($this->input->post('sat_sched') == 'd'){
+        $sat_start = '08:00:00';
+        $sat_end = '17:00:00';
+    }
+//
+
+    if($this->input->post('sun_sched') == 'a'){
+
+        $sun_start = '06:00:00';
+        $sun_end = '14:00:00';
+
+    }
+    else if ($this->input->post('sun_sched') == 'b'){
+        $sun_start = '14:00:00';
+        $sun_end = '22:00:00';
+    }
+    else if ($this->input->post('sun_sched') == 'c'){
+        $sun_start = '22:00:00';
+        $sun_end = '06:00:00';
+    }
+    else if ($this->input->post('sun_sched') == 'd'){
+        $sun_start = '08:00:00';
+        $sun_end = '17:00:00';
+    }
+
+
+
+while (strtotime($start_date) <= strtotime($end_date)) {
+
+    $timestamp = strtotime($start_date);
+    $day = date('D', $timestamp);
+
+    if($day == 'Mon'){
+    $temp_startdate =  "$start_date"." $mon_start";
+    $temp_day = $day;
+
+    if($mon_end == '06:00:00'){
+
+    $temp_enddate = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)))." $mon_end ";
+    $temp_day = date('D', strtotime(date("Y-m-d",strtotime("+1 days", strtotime($start_date)))));
+    }
+
+    else{
+         $temp_enddate = "$start_date"." $mon_end ";
+        }
+    }
+
+    else if($day == 'Tue'){
+    $temp_startdate =  "$start_date"." $tue_start";
+    $temp_day = $day;
+
+    if($tue_end == '06:00:00'){
+    $temp_enddate = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)))." $tue_end ";
+    $temp_day = date('D', strtotime(date("Y-m-d",strtotime("+1 days", strtotime($start_date)))));
+    }
+        else{
+           $temp_enddate =  "$start_date"." $tue_end ";
+            }
+    }
+
+    else if($day == 'Wed'){
+    $temp_startdate = "$start_date"." $wed_start";
+    $temp_day = $day;
+
+     if($wed_end == '06:00:00'){
+    $temp_enddate = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)))." $wed_end ";
+    $temp_day = date('D', strtotime(date("Y-m-d",strtotime("+1 days", strtotime($start_date)))));
+    }
+    else{
+            $temp_enddate =  "$start_date"." $wed_end ";
+            }
+    }
+
+    else if($day == 'Thu'){
+    $temp_startdate = "$start_date"." $thurs_start";
+    $temp_day = $day;
+
+     if($thurs_end == '06:00:00'){
+     $temp_enddate = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)))." $thurs_end ";
+    $temp_day = date('D', strtotime(date("Y-m-d",strtotime("+1 days", strtotime($start_date)))));
+    }
+    else{
+            $temp_enddate =  "$start_date"." $thurs_end ";
+            }
+    }
+
+    else if($day == 'Fri'){
+    $temp_startdate = "$start_date"." $fri_start";
+    $temp_day = $day;
+
+    if($fri_end == '06:00:00'){
+    $temp_enddate = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)))." $fri_end ";
+     $temp_day = date('D', strtotime(date("Y-m-d",strtotime("+1 days", strtotime($start_date)))));
+    }
+        
+    else{
+            $temp_enddate =  "$start_date"." $fri_end ";
+            }
+    }
+
+    else if($day == 'Sat'){
+     $temp_startdate = "$start_date"." $sat_start";
+    $temp_day = $day;
+
+     if($sat_end == '06:00:00'){
+     $temp_enddate = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)))." $sat_end ";
+    $temp_day = date('D', strtotime(date("Y-m-d",strtotime("+1 days", strtotime($start_date)))));
+    }
+        else{
+          $temp_enddate =  "$start_date"." $sat_end ";
+            }
+    }
+
+
+    else if($day == 'Sun'){
+    $temp_startdate = "$start_date"." $sun_start";
+    $temp_day = $day;
+
+     if($sun_end == '06:00:00'){
+    $temp_enddate = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)))." $sun_end ";
+    $temp_day = date('D', strtotime(date("Y-m-d",strtotime("+1 days", strtotime($start_date)))));
+    }
+    else{
+            $temp_enddate =  "$start_date"." $sun_end ";
+            }
+    }
+
+    $data = array(
+
+        'user_id' => $id,
+        'start' => $temp_startdate,
+        'end' => $temp_enddate,
+        'day' => $temp_day,
+        'status' => 'regular',
+        'color' => '#264281',
+
+
+        );
+    $insert = $this->profile->sched_save($data);
+    $start_date = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)));
+  }
+
+        echo json_encode(array("status" => TRUE));
+    }
+
+
+private function _validate1()
+    {
+        $data = array();
+        $data['error_string'] = array();
+        $data['inputerror'] = array();
+        $data['status'] = TRUE;
+ 
+        if($this->input->post('startdate') == '')
+        {
+              
+            $data['inputerror'][] = 'startdate';
+            $data['error_string'][] = 'Start date is required';
+            $data['status'] = FALSE;
+        }
+ 
+        if($this->input->post('enddate') == '')
+        {
+            $data['inputerror'][] = 'enddate';
+            $data['error_string'][] = 'End date is required';
+            $data['status'] = FALSE;
+        }
+
+          if($this->input->post('mon_sched') == '')
+        {
+            $data['inputerror'][] = 'mon_sched';
+            $data['error_string'][] = 'Monday sched is required';
+            $data['status'] = FALSE;
+        }
+
+         if($this->input->post('tue_sched') == '')
+        {
+            $data['inputerror'][] = 'tue_sched';
+            $data['error_string'][] = 'Tuesday sched is required';
+            $data['status'] = FALSE;
+        }
+ 
+
+        if($this->input->post('wed_sched') == '')
+        {
+            $data['inputerror'][] = 'wed_sched';
+            $data['error_string'][] = 'Wednesday sched is required';
+            $data['status'] = FALSE;
+        }
+
+         if($this->input->post('thurs_sched') == '')
+        {
+            $data['inputerror'][] = 'thurs_sched';
+            $data['error_string'][] = 'Thursday sched is required';
+            $data['status'] = FALSE;
+        }
+
+          if($this->input->post('fri_sched') == '')
+        {
+            $data['inputerror'][] = 'fri_sched';
+            $data['error_string'][] = 'Friday sched is required';
+            $data['status'] = FALSE;
+        }
+          if($this->input->post('sat_sched') == '')
+        {
+            $data['inputerror'][] = 'sat_sched';
+            $data['error_string'][] = 'Saturday sched is required';
+            $data['status'] = FALSE;
+        }
+        if($this->input->post('sun_sched') == '')
+        {
+            $data['inputerror'][] = 'sun_sched';
+            $data['error_string'][] = 'Sunday sched is required';
+            $data['status'] = FALSE;
+        }
+ 
+        if($data['status'] === FALSE)
+        {
+            echo json_encode($data);
+            exit();
+        }
+    }
 		
 	
 }

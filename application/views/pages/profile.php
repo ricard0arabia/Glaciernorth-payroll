@@ -437,10 +437,13 @@ $(document).ready(function () {
     
                         </div>
                         <div class="tab-pane fade" id="schedule">
+                       <?php if($level == '2'){ ?>   
                           <br>
                           <button class="btn btn-success" onclick="add_sched()"><i class="glyphicon glyphicon-plus"></i> Work Schedule</button>
+                          <button class="btn btn-primary" onclick="edit_sched()"><i class="glyphicon glyphicon-pencil"></i> Edit Schedule</button>
                           <br>
                           <br>
+                          <?php } ?>
                           <div id='calendar'></div>
 
 
@@ -516,6 +519,7 @@ $(document).ready(function () {
                                     <option value="b">2pm - 10pm</option>
                                     <option value="c">10pm - 6am</option>
                                     <option value="d">8pm - 5pm</option>
+                                    <option value="e">No work</option>
                                 </select>
                                 <span class="help-block"></span>
                             </div>
@@ -529,6 +533,7 @@ $(document).ready(function () {
                                     <option value="b">2pm - 10pm</option>
                                     <option value="c">10pm - 6am</option>
                                     <option value="d">8pm - 5pm</option>
+                                    <option value="e">No work</option>
                                 </select>
                                 <span class="help-block"></span>
                             </div>
@@ -542,6 +547,7 @@ $(document).ready(function () {
                                     <option value="b">2pm - 10pm</option>
                                     <option value="c">10pm - 6am</option>
                                     <option value="d">8pm - 5pm</option>
+                                    <option value="e">No work</option>
                                 </select>
                                 <span class="help-block"></span>
                             </div>
@@ -555,6 +561,7 @@ $(document).ready(function () {
                                     <option value="b">2pm - 10pm</option>
                                     <option value="c">10pm - 6am</option>
                                     <option value="d">8pm - 5pm</option>
+                                    <option value="e">No work</option>
                                 </select>
                                 <span class="help-block"></span>
                             </div>
@@ -568,6 +575,7 @@ $(document).ready(function () {
                                     <option value="b">2pm - 10pm</option>
                                     <option value="c">10pm - 6am</option>
                                     <option value="d">8pm - 5pm</option>
+                                    <option value="e">No work</option>
                                 </select>
                                 <span class="help-block"></span>
                             </div>
@@ -581,6 +589,7 @@ $(document).ready(function () {
                                     <option value="b">2pm - 10pm</option>
                                     <option value="c">10pm - 6am</option>
                                     <option value="d">8pm - 5pm</option>
+                                    <option value="e">No work</option>
                                 </select>
                                 <span class="help-block"></span>
                             </div>
@@ -594,6 +603,7 @@ $(document).ready(function () {
                                     <option value="b">2pm - 10pm</option>
                                     <option value="c">10pm - 6am</option>
                                     <option value="d">8pm - 5pm</option>
+                                    <option value="e">No work</option>
                                 </select>
                                 <span class="help-block"></span>
                             </div>
@@ -607,7 +617,11 @@ $(document).ready(function () {
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" id="btnSave" onclick="save()" class="btn btn-primary">Save</button>
+               <?php if($this->uri->segment(1) == 'employees') { ?>
+                <button type="button" id="btnSave" onclick="save(<?php echo $this->uri->segment(3); ?>)" class="btn btn-primary">Save</button>
+                <?php }else{ ?>
+                 <button type="button" id="btnSave" onclick="save(<?php echo $this->session->userdata('username'); ?>)" class="btn btn-primary">Save</button>
+                <?php } ?>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
             </div>
         </div><!-- /.modal-content -->
@@ -1075,6 +1089,13 @@ if($(this).hasClass('detailed')){
 
   <?php } ?>
  }
+//
+//
+//
+//
+//
+//
+//
 
  // modal
 
@@ -1113,26 +1134,48 @@ if($(this).hasClass('detailed')){
  });
  function add_sched()
 {
-  
+  sched_save_method = 'add';
     $('#form')[0].reset(); // reset form on modals
     $('.form-group').removeClass('has-error'); // clear error class
     $('.help-block').empty(); // clear error string
     $('#modal_form').modal('show'); // show bootstrap modal
     $('.modal-title').text('Add Employee Work Schedule'); // Set Title to Bootstrap modal title
 }
-function save()
+ function edit_sched()
+{
+  sched_save_method = 'edit';
+    $('#form')[0].reset(); // reset form on modals
+    $('.form-group').removeClass('has-error'); // clear error class
+    $('.help-block').empty(); // clear error string
+    $('#modal_form').modal('show'); // show bootstrap modal
+    $('.modal-title').text('Edit Employee Work Schedule'); // Set Title to Bootstrap modal title
+}
+function save(id)
 {
     $('#btnSave').text('saving...'); //change button text
     $('#btnSave').attr('disabled',true); //set button disable
 
-  
+    if(sched_save_method == 'add') {
+
+    url = "<?php echo site_url('employees/add_sched')?>/" + id;
+
+    } else {
+
+      
+    url = "<?php echo site_url('employees/edit_sched')?>/" +  id;
+
+    }
+
     $.ajax({
 
        <?php if($this->uri->segment(1) == 'employees') { ?>
 
-        url : "<?php echo site_url('employees/add_sched')?>/" +  <?php echo $this->uri->segment(3) ?>,
+        url : url,
+
         <?php } else { ?>
-        url : "<?php echo site_url('userprofile/add_sched')?>/" +  <?php echo $this->session->userdata('username') ?>,
+
+        url : "<?php echo site_url('userprofile/add_sched')?>/" + id,
+
         <?php } ?>
 
 
@@ -1144,8 +1187,15 @@ function save()
  
             if(data.status) //if success close modal and reload ajax table
             {
+               if(data.start == false || data.end == false){
+
+                  alert('Stardate or end date not valid! Kingina mo');
+
+                }
+                else{
                 $('#modal_form').modal('hide');
-                reload_table1();
+              }
+              
             }
             else
             {
@@ -1174,6 +1224,13 @@ function save()
 
 
 // calendar
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -1183,6 +1240,12 @@ $(function(){
 
     var currentDate; // Holds the day clicked when adding a new event
     var currentEvent; // Holds the event object when editing an event
+    var id;
+    <?php if($this->uri->segment(1) == "employees"){ ?>
+      id = <?php echo $this->uri->segment(3) ?>;
+      <?php }else{ ?>
+      id = <?php echo $this->session->userdata('username') ?>;
+      <?php } ?>
 
     $('#color').colorpicker(); // Colopicker
     $('#time').timepicker({
@@ -1203,11 +1266,13 @@ $(function(){
               right: 'month,agendaWeek,agendaDay'
         },
         // Get all events stored in database
+       nextDayThreshold: "06:00:00",
       editable: true,
         selectable: true,
       selectHelper: true,
        displayEventEnd: true,
-        events:"<?php echo site_url('calendar/getEvents')?>",
+        eventLimit: true,
+        events:"<?php echo site_url('calendar/getEvents')?>/" + id,
      
          
        
@@ -1337,8 +1402,6 @@ $(function(){
             $.post(base_url+'calendar/updateEvent', {
                 id: currentEvent._id,
                 title: $('#title').val(),
-                description: $('#description').val(),
-                color: $('#color').val(),
                 date: currentEvent.date.split(' ')[0]  + ' ' +  getTime()
             }, function(result){
                 $('#sched_modal').modal('hide');

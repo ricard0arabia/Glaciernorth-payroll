@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 15, 2016 at 12:14 PM
+-- Generation Time: Aug 15, 2016 at 11:44 AM
 -- Server version: 10.1.8-MariaDB
 -- PHP Version: 5.6.14
 
@@ -58,10 +58,15 @@ CREATE TABLE `absences` (
 
 CREATE TABLE `attendance` (
   `id` int(11) NOT NULL,
-  `employeeid` varchar(200) DEFAULT NULL,
+  `user_id` varchar(255) DEFAULT NULL,
   `date` date DEFAULT NULL,
-  `time_in` varchar(255) DEFAULT NULL,
-  `time_out` varchar(255) DEFAULT NULL
+  `time_in` time DEFAULT NULL,
+  `time_out` time DEFAULT NULL,
+  `hours_worked` double DEFAULT NULL,
+  `overtime` double DEFAULT NULL,
+  `tardiness` double DEFAULT NULL,
+  `undertime` double DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -124,6 +129,23 @@ INSERT INTO `bir_table` (`id`, `cstatus`, `dependents`, `minrange`, `maxrange`, 
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `branddetails`
+--
+
+CREATE TABLE `branddetails` (
+  `brand_id` int(11) NOT NULL,
+  `brandname` varchar(50) NOT NULL,
+  `dealername` varchar(50) NOT NULL,
+  `emailid` varchar(50) NOT NULL,
+  `wedaddress` varchar(50) NOT NULL,
+  `city` varchar(50) NOT NULL,
+  `contactno` varchar(50) NOT NULL,
+  `state` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `department`
 --
 
@@ -148,26 +170,33 @@ INSERT INTO `department` (`id`, `department`) VALUES
 --
 
 CREATE TABLE `employees` (
-  `emp_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
+  `user_id` varchar(255) NOT NULL,
   `firstname` varchar(250) NOT NULL,
   `middlename` varchar(250) NOT NULL,
   `lastname` varchar(250) NOT NULL,
-  `emailadd` varchar(200) NOT NULL,
   `userlevel` mediumint(9) NOT NULL DEFAULT '2',
   `emp_pass` varchar(250) NOT NULL,
-  `status` tinyint(1) NOT NULL DEFAULT '1',
-  `date_created` varchar(200) NOT NULL
+  `department` varchar(255) NOT NULL,
+  `position` varchar(255) NOT NULL,
+  `contact_no` varchar(255) NOT NULL,
+  `address` text NOT NULL,
+  `status` int(11) NOT NULL,
+  `date_created` date NOT NULL,
+  `img_name` varchar(32) NOT NULL,
+  `thumb_name` varchar(32) NOT NULL,
+  `ext` varchar(32) NOT NULL,
+  `upload_date` varchar(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `employees`
 --
 
-INSERT INTO `employees` (`emp_id`, `user_id`, `firstname`, `middlename`, `lastname`, `emailadd`, `userlevel`, `emp_pass`, `status`, `date_created`) VALUES
-(1, 1, 'Kyrie', 'Asd', 'Irving', 'kyrie@yahoo.com', 1, 'c4ca4238a0b923820dcc509a6f75849b', 1, ''),
-(2, 2, 'Ricardo', 'Ronel', 'Arabia', 'ricardo@yahoo.com', 2, 'c81e728d9d4c2f636f067f89cc14862c', 1, ''),
-(3, 3, 'lebron', 'qwerty', 'james', 'qwerty@yahoo.com', 3, 'eccbc87e4b5ce2fe28308fd9f2a7baf3', 1, '04/10/2016');
+INSERT INTO `employees` (`id`, `user_id`, `firstname`, `middlename`, `lastname`, `userlevel`, `emp_pass`, `department`, `position`, `contact_no`, `address`, `status`, `date_created`, `img_name`, `thumb_name`, `ext`, `upload_date`) VALUES
+(1, '2', 'Ricardos', 'Ronel', 'Arabia', 2, 'c81e728d9d4c2f636f067f89cc14862c', 'Hr department', 'Supervisors', '94776515s', '', 1, '0000-00-00', 'pic15', 'pic15_thumb', '.JPG', '1469186275'),
+(3, '2016082', 'marjan', 'gorgeous', 'nassiri', 3, '94b11656405aa155684fbb1b02f9f87e', 'Exexcutive', 'ceo', '123456', 'forbes park', 1, '1996-10-10', 'pic11', 'pic11_thumb', '.JPG', '1470115497'),
+(4, '2016083', 'lebron', 'king', 'james', 3, '6accff9fd9643c351eaeb8f0966fad02', 'cleveland', 'forward', '123456', 'cavaliers', 1, '1996-10-10', 'profile_', 'profile__thumb', '.jpg', '1470395052');
 
 -- --------------------------------------------------------
 
@@ -178,35 +207,24 @@ INSERT INTO `employees` (`emp_id`, `user_id`, `firstname`, `middlename`, `lastna
 CREATE TABLE `employee_details` (
   `emp_details_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `birthdate` varchar(15) NOT NULL,
-  `gender` char(10) NOT NULL,
-  `jobtitle` varchar(100) NOT NULL,
-  `datehired` varchar(100) NOT NULL,
-  `address` text NOT NULL,
-  `incase_emergency` varchar(250) NOT NULL,
-  `emergency_no` int(16) NOT NULL,
+  `birthdate` date NOT NULL,
+  `gender` varchar(255) NOT NULL,
+  `datehired` date NOT NULL,
   `cstatus` varchar(50) NOT NULL,
-  `salary` float(8,2) NOT NULL,
-  `department` varchar(255) NOT NULL,
-  `contact_no` varchar(255) NOT NULL,
+  `salary` decimal(10,0) NOT NULL,
   `hdmf_no` varchar(255) NOT NULL,
   `tin_no` varchar(255) NOT NULL,
   `sss_no` varchar(255) NOT NULL,
-  `philhealth_no` varchar(255) NOT NULL,
-  `img_name` varchar(32) NOT NULL,
-  `thumb_name` varchar(32) NOT NULL,
-  `ext` varchar(8) NOT NULL,
-  `upload_date` varchar(20) NOT NULL
+  `philhealth_no` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `employee_details`
 --
 
-INSERT INTO `employee_details` (`emp_details_id`, `user_id`, `birthdate`, `gender`, `jobtitle`, `datehired`, `address`, `incase_emergency`, `emergency_no`, `cstatus`, `salary`, `department`, `contact_no`, `hdmf_no`, `tin_no`, `sss_no`, `philhealth_no`, `img_name`, `thumb_name`, `ext`, `upload_date`) VALUES
-(4, 3, '04/16/1996', 'male', 'boss', '08/10/1995', 'asdasd', 'asd', 123, 'asd', 123123.00, 'ferrere', '123123', '23123', '123123', '123123', '123123', '123213', '12323', '12123', '123123'),
-(22, 1, '09/01/1996', 'Male', 'Manager', '02/05/2016', 'sampaloc manila', 'hashim', 123456, '', 21500.00, 'Engineering', '', '456782', '09875', '98765', '456781', '', '', '', ''),
-(27, 2, '09/01/1996', 'Male', 'Manager', '02/05/2016', 'sampaloc manila', 'hashim', 123456, 's2', 36000.00, 'engineering', '5640965', '09874', '09875', '98765', '98762', 'IMG_0882', 'IMG_0882_thumb', '.JPG', '1468562842');
+INSERT INTO `employee_details` (`emp_details_id`, `user_id`, `birthdate`, `gender`, `datehired`, `cstatus`, `salary`, `hdmf_no`, `tin_no`, `sss_no`, `philhealth_no`) VALUES
+(55, 2, '1996-10-10', 'male', '0000-00-00', 'asd', '0', 'asds', '1231231231', 'asd', 'asd'),
+(59, 2016072, '1996-10-17', 'asd', '1996-10-10', 'asd', '0', 'qwerty', 'asdasd', 'asd', 'asd');
 
 -- --------------------------------------------------------
 
@@ -269,32 +287,77 @@ INSERT INTO `emp_status` (`emp_ID`, `title`, `empstatus`) VALUES
 --
 
 CREATE TABLE `emp_workschedule` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `mon_start` time NOT NULL,
-  `mon_end` time NOT NULL,
-  `tue_start` time NOT NULL,
-  `tue_end` time NOT NULL,
-  `wed_start` time NOT NULL,
-  `wed_end` time NOT NULL,
-  `thurs_start` time NOT NULL,
-  `thurs_end` time NOT NULL,
-  `fri_start` time NOT NULL,
-  `fri_end` time NOT NULL,
-  `sat_start` time NOT NULL,
-  `sat_end` time NOT NULL,
-  `sun_start` time NOT NULL,
-  `sun_end` time NOT NULL
+  `sched_id` int(11) NOT NULL,
+  `user_id` varchar(255) NOT NULL,
+  `mon_start` datetime NOT NULL,
+  `mon_end` datetime NOT NULL,
+  `tue_start` datetime NOT NULL,
+  `tue_end` datetime NOT NULL,
+  `wed_start` datetime NOT NULL,
+  `wed_end` datetime NOT NULL,
+  `thurs_start` datetime NOT NULL,
+  `thurs_end` datetime NOT NULL,
+  `fri_start` datetime NOT NULL,
+  `fri_end` datetime NOT NULL,
+  `sat_start` datetime NOT NULL,
+  `sat_end` datetime NOT NULL,
+  `sun_start` datetime NOT NULL,
+  `sun_end` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `emp_workschedule`
 --
 
-INSERT INTO `emp_workschedule` (`id`, `user_id`, `mon_start`, `mon_end`, `tue_start`, `tue_end`, `wed_start`, `wed_end`, `thurs_start`, `thurs_end`, `fri_start`, `fri_end`, `sat_start`, `sat_end`, `sun_start`, `sun_end`) VALUES
-(2, 2, '07:00:00', '14:00:00', '14:00:00', '22:00:00', '06:00:00', '14:00:00', '14:00:00', '22:00:00', '06:00:00', '14:00:00', '22:00:00', '06:00:00', '14:00:00', '22:00:00'),
-(3, 1, '06:00:00', '14:00:00', '14:00:00', '22:00:00', '06:00:00', '14:00:00', '14:00:00', '22:00:00', '06:00:00', '14:00:00', '22:00:00', '06:00:00', '14:00:00', '22:00:00'),
-(4, 3, '12:00:00', '12:00:00', '12:00:00', '12:00:00', '12:00:00', '12:00:00', '12:00:00', '12:00:00', '12:00:00', '12:00:00', '12:00:00', '12:00:00', '12:00:00', '12:00:00');
+INSERT INTO `emp_workschedule` (`sched_id`, `user_id`, `mon_start`, `mon_end`, `tue_start`, `tue_end`, `wed_start`, `wed_end`, `thurs_start`, `thurs_end`, `fri_start`, `fri_end`, `sat_start`, `sat_end`, `sun_start`, `sun_end`) VALUES
+(1, '2016082', '2016-08-11 06:00:00', '2016-08-12 14:00:00', '2016-08-13 06:00:00', '2016-08-14 14:00:00', '2016-08-15 06:00:00', '2016-08-16 14:00:00', '2016-08-17 06:00:00', '2016-08-18 14:00:00', '2016-08-19 06:00:00', '2016-08-20 14:00:00', '2016-08-21 06:00:00', '2016-08-22 14:00:00', '2016-08-23 06:00:00', '2016-08-24 14:00:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `events`
+--
+
+CREATE TABLE `events` (
+  `id` int(11) NOT NULL,
+  `color` varchar(7) NOT NULL DEFAULT '#3a87ad',
+  `start` datetime NOT NULL,
+  `end` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `events`
+--
+
+INSERT INTO `events` (`id`, `color`, `start`, `end`) VALUES
+(11, '#e00e2b', '2016-08-14 09:24:00', '2016-08-15 14:00:00'),
+(12, '#4c55f2', '2016-08-15 09:25:00', '2016-08-15 13:00:00'),
+(13, '#6bce45', '2016-08-16 10:26:00', '2016-08-16 17:00:00'),
+(14, '#c529d5', '2016-08-17 11:28:00', '2016-08-17 17:00:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `message`
+--
+
+CREATE TABLE `message` (
+  `id` int(11) NOT NULL,
+  `recipient_id` varchar(255) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `subject` varchar(100) NOT NULL,
+  `message` text NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `read_status` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `message`
+--
+
+INSERT INTO `message` (`id`, `recipient_id`, `name`, `email`, `subject`, `message`, `created_at`, `read_status`) VALUES
+(123, '2', 'asd', 'asd', 'asd', 'asd', '2016-08-09 17:04:42', 0);
 
 -- --------------------------------------------------------
 
@@ -439,23 +502,24 @@ CREATE TABLE `report` (
 --
 
 CREATE TABLE `rqst_leaves` (
-  `id` int(11) UNSIGNED NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `leave_id` int(11) UNSIGNED NOT NULL,
+  `user_id` varchar(255) NOT NULL,
   `startdate` date NOT NULL,
   `enddate` date NOT NULL,
-  `status` int(11) NOT NULL,
+  `leave_status` varchar(255) NOT NULL,
   `cause` text NOT NULL,
   `duration` int(11) NOT NULL,
-  `leavetype` varchar(255) NOT NULL
+  `leavetype` varchar(255) NOT NULL,
+  `date_submitted` date DEFAULT NULL,
+  `date_approved` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `rqst_leaves`
 --
 
-INSERT INTO `rqst_leaves` (`id`, `user_id`, `startdate`, `enddate`, `status`, `cause`, `duration`, `leavetype`) VALUES
-(46, 3, '2016-07-13', '2016-07-14', 1, 'asd', 1, 'Sick'),
-(47, 2, '2016-07-12', '2016-07-13', 1, 'asd', 1, 'Vacation');
+INSERT INTO `rqst_leaves` (`leave_id`, `user_id`, `startdate`, `enddate`, `leave_status`, `cause`, `duration`, `leavetype`, `date_submitted`, `date_approved`) VALUES
+(3, '2016083', '2016-08-22', '2016-08-26', 'approved', 'nothing', 5, 'Vacation', '2016-08-15', '2016-08-15');
 
 -- --------------------------------------------------------
 
@@ -464,13 +528,23 @@ INSERT INTO `rqst_leaves` (`id`, `user_id`, `startdate`, `enddate`, `status`, `c
 --
 
 CREATE TABLE `rqst_overtime` (
-  `id` int(11) UNSIGNED NOT NULL,
+  `overtime_id` int(11) UNSIGNED NOT NULL,
   `user_id` int(11) NOT NULL,
   `date` date NOT NULL,
   `duration` int(11) NOT NULL,
   `cause` text NOT NULL,
-  `status` varchar(255) NOT NULL
+  `ot_status` varchar(255) NOT NULL,
+  `date_submitted` date NOT NULL,
+  `date_approved` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `rqst_overtime`
+--
+
+INSERT INTO `rqst_overtime` (`overtime_id`, `user_id`, `date`, `duration`, `cause`, `ot_status`, `date_submitted`, `date_approved`) VALUES
+(1, 2, '2016-08-10', 10, 'qwert', 'requested', '0000-00-00', '0000-00-00'),
+(2, 2016082, '2016-08-16', 2, 'asd', 'approved', '0000-00-00', '2016-08-09');
 
 -- --------------------------------------------------------
 
@@ -485,35 +559,79 @@ CREATE TABLE `rqst_shift` (
   `enddate` date NOT NULL,
   `duration` int(11) NOT NULL,
   `reason` text NOT NULL,
-  `status` varchar(255) NOT NULL,
+  `shift_status` varchar(255) NOT NULL,
   `shift_days` varchar(255) NOT NULL,
   `sub_department` varchar(255) NOT NULL,
   `sub_position` varchar(255) NOT NULL,
   `sub_id` varchar(255) NOT NULL,
-  `mon_start` time NOT NULL,
-  `mon_end` time NOT NULL,
-  `tue_start` time NOT NULL,
-  `tue_end` time NOT NULL,
-  `wed_start` time NOT NULL,
-  `wed_end` time NOT NULL,
-  `thurs_start` time NOT NULL,
-  `thurs_end` time NOT NULL,
-  `fri_start` time NOT NULL,
-  `fri_end` time NOT NULL,
-  `sat_start` time NOT NULL,
-  `sat_end` time NOT NULL,
-  `sun_start` time NOT NULL,
-  `sun_end` time NOT NULL
+  `mon_start` datetime NOT NULL,
+  `mon_end` datetime NOT NULL,
+  `tue_start` datetime NOT NULL,
+  `tue_end` datetime NOT NULL,
+  `wed_start` datetime NOT NULL,
+  `wed_end` datetime NOT NULL,
+  `thurs_start` datetime NOT NULL,
+  `thurs_end` datetime NOT NULL,
+  `fri_start` datetime NOT NULL,
+  `fri_end` datetime NOT NULL,
+  `sat_start` datetime NOT NULL,
+  `sat_end` datetime NOT NULL,
+  `sun_start` datetime NOT NULL,
+  `sun_end` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `rqst_shift`
 --
 
-INSERT INTO `rqst_shift` (`id`, `user_id`, `startdate`, `enddate`, `duration`, `reason`, `status`, `shift_days`, `sub_department`, `sub_position`, `sub_id`, `mon_start`, `mon_end`, `tue_start`, `tue_end`, `wed_start`, `wed_end`, `thurs_start`, `thurs_end`, `fri_start`, `fri_end`, `sat_start`, `sat_end`, `sun_start`, `sun_end`) VALUES
-(4, 2, '2016-07-15', '2016-07-23', 8, 'qwerty', 'requested', 'asdasd', 'asd', 'qwerty', '3', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00'),
-(5, 2, '2016-07-21', '2016-07-28', 7, 'dfgdfg', 'requested', 'asdasd', 'asd', 'qwerty', '1', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00'),
-(6, 2, '2016-07-13', '2016-07-15', 2, 'asdasdasd', 'requested', 'asdasd', 'asd', 'qwerty', '3', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00', '20:00:00');
+INSERT INTO `rqst_shift` (`id`, `user_id`, `startdate`, `enddate`, `duration`, `reason`, `shift_status`, `shift_days`, `sub_department`, `sub_position`, `sub_id`, `mon_start`, `mon_end`, `tue_start`, `tue_end`, `wed_start`, `wed_end`, `thurs_start`, `thurs_end`, `fri_start`, `fri_end`, `sat_start`, `sat_end`, `sun_start`, `sun_end`) VALUES
+(7, 2, '2016-08-16', '2016-08-23', 7, 'asd', 'requested', 'asdasd', 'asd', 'qwerty', '2016082', '2016-08-12 20:00:00', '2016-08-12 20:00:00', '2016-08-12 20:00:00', '2016-08-12 20:00:00', '2016-08-12 20:00:00', '2016-08-12 20:00:00', '2016-08-12 20:00:00', '2016-08-12 20:00:00', '2016-08-12 20:00:00', '2016-08-12 20:00:00', '2016-08-12 20:00:00', '2016-08-12 20:00:00', '2016-08-12 20:00:00', '2016-08-12 20:00:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `schedule`
+--
+
+CREATE TABLE `schedule` (
+  `id` int(11) NOT NULL,
+  `user_id` varchar(255) NOT NULL,
+  `color` varchar(255) NOT NULL,
+  `start` datetime NOT NULL,
+  `end` datetime NOT NULL,
+  `day` varchar(255) NOT NULL,
+  `work_status` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `schedule`
+--
+
+INSERT INTO `schedule` (`id`, `user_id`, `color`, `start`, `end`, `day`, `work_status`) VALUES
+(100, '2016083', '#264281', '2016-08-17 00:00:00', '2016-08-17 00:00:00', 'Wed', 'inactive'),
+(101, '2016083', '#264281', '2016-08-18 06:00:00', '2016-08-18 14:00:00', 'Thu', 'active'),
+(102, '2016083', '#264281', '2016-08-19 14:00:00', '2016-08-19 22:00:00', 'Fri', 'active'),
+(103, '2016083', '#264281', '2016-08-20 00:00:00', '2016-08-20 00:00:00', 'Sat', 'inactive'),
+(104, '2016083', '#264281', '2016-08-21 00:00:00', '2016-08-21 00:00:00', 'Sun', 'inactive'),
+(105, '2016083', '#f6ba3e', '2016-08-22 06:00:00', '2016-08-22 14:00:00', 'Mon', 'leave'),
+(106, '2016083', '#f6ba3e', '2016-08-23 14:00:00', '2016-08-23 22:00:00', 'Tue', 'leave'),
+(107, '2016083', '#264281', '2016-08-24 00:00:00', '2016-08-24 00:00:00', 'Wed', 'inactive'),
+(108, '2016083', '#f6ba3e', '2016-08-25 06:00:00', '2016-08-25 14:00:00', 'Thu', 'leave'),
+(109, '2016083', '#f6ba3e', '2016-08-26 14:00:00', '2016-08-26 22:00:00', 'Fri', 'leave'),
+(110, '2016083', '#264281', '2016-08-27 00:00:00', '2016-08-27 00:00:00', 'Sat', 'inactive'),
+(111, '2016083', '#264281', '2016-08-28 00:00:00', '2016-08-28 00:00:00', 'Sun', 'inactive'),
+(112, '2016083', '#264281', '2016-08-29 06:00:00', '2016-08-29 14:00:00', 'Mon', 'active'),
+(113, '2016083', '#264281', '2016-08-30 14:00:00', '2016-08-30 22:00:00', 'Tue', 'active'),
+(114, '2016083', '#264281', '2016-08-31 00:00:00', '2016-08-31 00:00:00', 'Wed', 'inactive'),
+(115, '2016083', '#264281', '2016-09-01 06:00:00', '2016-09-01 14:00:00', 'Thu', 'active'),
+(116, '2016083', '#264281', '2016-09-02 14:00:00', '2016-09-02 22:00:00', 'Fri', 'active'),
+(117, '2016083', '#264281', '2016-09-03 00:00:00', '2016-09-03 00:00:00', 'Sat', 'inactive'),
+(118, '2016083', '#264281', '2016-09-04 00:00:00', '2016-09-04 00:00:00', 'Sun', 'inactive'),
+(119, '2016083', '#264281', '2016-09-05 06:00:00', '2016-09-05 14:00:00', 'Mon', 'active'),
+(120, '2016083', '#264281', '2016-09-06 14:00:00', '2016-09-06 22:00:00', 'Tue', 'active'),
+(121, '2016083', '#264281', '2016-09-07 00:00:00', '2016-09-07 00:00:00', 'Wed', 'inactive'),
+(122, '2016083', '#264281', '2016-09-08 06:00:00', '2016-09-08 14:00:00', 'Thu', 'active'),
+(123, '2016083', '#264281', '2016-09-09 14:00:00', '2016-09-09 22:00:00', 'Fri', 'active');
 
 -- --------------------------------------------------------
 
@@ -757,6 +875,12 @@ ALTER TABLE `bir_table`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `branddetails`
+--
+ALTER TABLE `branddetails`
+  ADD PRIMARY KEY (`brand_id`);
+
+--
 -- Indexes for table `department`
 --
 ALTER TABLE `department`
@@ -766,7 +890,7 @@ ALTER TABLE `department`
 -- Indexes for table `employees`
 --
 ALTER TABLE `employees`
-  ADD PRIMARY KEY (`emp_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `employee_details`
@@ -790,6 +914,18 @@ ALTER TABLE `emp_status`
 -- Indexes for table `emp_workschedule`
 --
 ALTER TABLE `emp_workschedule`
+  ADD PRIMARY KEY (`sched_id`);
+
+--
+-- Indexes for table `events`
+--
+ALTER TABLE `events`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `message`
+--
+ALTER TABLE `message`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -826,18 +962,24 @@ ALTER TABLE `report`
 -- Indexes for table `rqst_leaves`
 --
 ALTER TABLE `rqst_leaves`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`leave_id`);
 
 --
 -- Indexes for table `rqst_overtime`
 --
 ALTER TABLE `rqst_overtime`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`overtime_id`);
 
 --
 -- Indexes for table `rqst_shift`
 --
 ALTER TABLE `rqst_shift`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `schedule`
+--
+ALTER TABLE `schedule`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -901,6 +1043,11 @@ ALTER TABLE `attendance`
 ALTER TABLE `bir_table`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 --
+-- AUTO_INCREMENT for table `branddetails`
+--
+ALTER TABLE `branddetails`
+  MODIFY `brand_id` int(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `department`
 --
 ALTER TABLE `department`
@@ -909,12 +1056,12 @@ ALTER TABLE `department`
 -- AUTO_INCREMENT for table `employees`
 --
 ALTER TABLE `employees`
-  MODIFY `emp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `employee_details`
 --
 ALTER TABLE `employee_details`
-  MODIFY `emp_details_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `emp_details_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 --
 -- AUTO_INCREMENT for table `emp_contributions`
 --
@@ -929,7 +1076,17 @@ ALTER TABLE `emp_status`
 -- AUTO_INCREMENT for table `emp_workschedule`
 --
 ALTER TABLE `emp_workschedule`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `sched_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `events`
+--
+ALTER TABLE `events`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+--
+-- AUTO_INCREMENT for table `message`
+--
+ALTER TABLE `message`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=124;
 --
 -- AUTO_INCREMENT for table `overtime`
 --
@@ -959,17 +1116,22 @@ ALTER TABLE `report`
 -- AUTO_INCREMENT for table `rqst_leaves`
 --
 ALTER TABLE `rqst_leaves`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `leave_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `rqst_overtime`
 --
 ALTER TABLE `rqst_overtime`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `overtime_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `rqst_shift`
 --
 ALTER TABLE `rqst_shift`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+--
+-- AUTO_INCREMENT for table `schedule`
+--
+ALTER TABLE `schedule`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=124;
 --
 -- AUTO_INCREMENT for table `semi_birtable`
 --

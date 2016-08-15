@@ -802,6 +802,30 @@ class Contents extends CI_Model {
         $this->db->insert('schedule', $data);
         return $this->db->insert_id();
     }
+    public function sched_update($data,$user_id,$id)
+    {   
+        $this->db->where('user_id', $user_id);
+        $this->db->where('id', $id);
+        $this->db->update('schedule', $data);
+        return $this->db->affected_rows();
+    }
+    public function get_sched($id)
+    {
+        $this->db->from('schedule');
+        $this->db->where('user_id =', $id); 
+        $query = $this->db->get();
+ 
+        return $query->result();
+    }
+
+    public function get_leave_date($id){
+
+        $this->db->from('rqst_leaves');
+        $this->db->where('user_id =', $id); 
+        $query = $this->db->get();
+ 
+        return $query->row();
+    }
 
 //session
 
@@ -841,10 +865,10 @@ class Contents extends CI_Model {
 
 		}
 
-Public function getEvents()
+Public function getEvents($id)
     {
         
-    $sql = "SELECT * FROM schedule WHERE schedule.start BETWEEN ? AND ? ORDER BY schedule.start ASC";
+    $sql = "SELECT * FROM schedule WHERE user_id = $id AND work_status != 'inactive' AND schedule.start BETWEEN ? AND ? ORDER BY schedule.start ASC";
     return $this->db->query($sql, array($_GET['start'], $_GET['end']))->result();
 
     }
@@ -854,8 +878,8 @@ Public function getEvents()
     Public function addEvent()
     {
 
-    $sql = "INSERT INTO schedule (user_id, color, schedule.start, schedule.end, day, status) VALUES (?,?,?,?,?,?)";
-    $this->db->query($sql, array($_POST['user_id'], '#4c55f2', $_POST['start'], $_POST['end'], $_POST['day'], 'regular'));
+    $sql = "INSERT INTO events (title,events.date, description, color) VALUES (?,?,?,?)";
+    $this->db->query($sql, array($_POST['title'], $_POST['date'], $_POST['description'], $_POST['color']));
         return ($this->db->affected_rows()!=1)?false:true;
     }
 

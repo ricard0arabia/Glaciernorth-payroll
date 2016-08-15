@@ -75,6 +75,7 @@
         <button class="btn btn-default" onclick="reload_table1()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
         <br />
         <br />
+      
         <table id="table1" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
@@ -405,11 +406,19 @@ function save()
  
             if(data.status) //if success close modal and reload ajax table
             {
+              if(data.start == false || data.end == false){
+
+                  alert('Stardate or leave date not valid! Kingina mo');
+
+                }
+                else{
                 $('#modal_form').modal('hide');
                 reload_table1();
+              }
             }
             else
             {
+
                 for (var i = 0; i < data.inputerror.length; i++)
                 {
                     $('[name="'+data.inputerror[i]+'"]').parent().parent().addClass('has-error'); //select parent twice to select div form-group class and add has-error class
@@ -421,8 +430,10 @@ function save()
  
  
         },
+
         error: function (jqXHR, textStatus, errorThrown)
         {
+           
             alert('Error adding / update data');
             $('#btnSave').text('save'); //change button text
             $('#btnSave').attr('disabled',false); //set button enable

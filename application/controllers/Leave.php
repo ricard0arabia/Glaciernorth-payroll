@@ -133,7 +133,44 @@ class Leave extends CI_Controller {
 	public function add_leave()
     {
         $this->_validate();
-        
+        $list = $this->leave->get_sched($this->session->userdata('username'));
+        $start = false;
+        $end = false;
+
+         foreach ($list as $value) {
+        $datetime = date_create($value->start);
+        $date = date_format($datetime,"Y-m-d");
+            if($this->input->post('startdate') == $date){
+                if($value->work_status == 'inactive'){
+
+                    $end = false;
+                    break;
+
+                }else{
+                $start = true;
+                break;
+                }
+            }
+       }
+
+        foreach ($list as $value) {
+        $datetime = date_create($value->start);
+        $date = date_format($datetime,"Y-m-d");
+
+            if($this->input->post('enddate') == $date){
+                if($value->work_status == 'inactive'){
+
+                    $end = false;
+                    break;
+
+                }else{
+
+                $end = true;
+                break;
+                }
+            }
+       }
+         if($start == true && $end == true){
         $data = array(
         		'user_id' => $this->session->userdata('username'),
         		'startdate' => $this->input->post('startdate'),
@@ -146,8 +183,16 @@ class Leave extends CI_Controller {
                 
                 
             );
+    
         $insert = $this->leave->save($data);
-        echo json_encode(array("status" => TRUE));
+
+        echo json_encode(array("status" => TRUE, "start" => $start, "end" => $end));
+
+           }else{
+
+            echo json_encode(array("status" => true, "start" => $start, "end" => $end));
+
+        }
     }
 
      public function edit_leave($id)
@@ -188,6 +233,8 @@ class Leave extends CI_Controller {
         $data['error_string'] = array();
         $data['inputerror'] = array();
         $data['status'] = TRUE;
+        $data['start'] = array();
+        $data['end'] = array();
  
 		if($this->input->post('leavetype') == '')
         {
@@ -278,7 +325,41 @@ class Leave extends CI_Controller {
 
      public function accept_leave($id)
     {
-        
+       $date = $this->leave->get_leave_date($id);
+
+       $startdate = $date->startdate;
+       $enddate = $date->enddate;
+
+       while ($startdate <= $enddate) {
+
+                $list = $this->leave->get_sched($id);
+
+            foreach ($list as $value) {
+                $date_id = $value->id;
+                $datetime = date_create($value->start);
+                $date = date_format($datetime,"Y-m-d");
+
+                if($startdate == $date){
+
+                    if($value->work_status == 'active'){
+                       
+                        $data = array(
+                
+                            'work_status' => 'leave',
+                            'color' => '#EEE8AA',
+                                
+                        );
+                      
+                    $this->leave->sched_update($data, $id, $date_id);
+
+                    }
+                }
+            }
+
+        $startdate = date ("Y-m-d", strtotime("+1 days", strtotime($startdate)));
+
+        }
+ 
         $data = array(
                 
                 'leave_status' => 'approved',

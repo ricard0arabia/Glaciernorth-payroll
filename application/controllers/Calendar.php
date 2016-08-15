@@ -20,9 +20,9 @@ class Calendar extends CI_Controller {
 
 	/*Get all Events */
 
-	Public function getEvents()
+	Public function getEvents($id)
 	{
-		$result=$this->Contents->getEvents();
+		$result=$this->Contents->getEvents($id);
 		echo json_encode($result);
 	}
 	/*Add new event */
