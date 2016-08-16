@@ -1,6 +1,5 @@
 <?php
 
-defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Employees extends CI_Controller {
 
@@ -256,8 +255,10 @@ $row[] = date("h:i A", strtotime($employee->sun_start)).' - '.date("h:i A", strt
                     $this->employee->add_image($file,$id);
                     $data = array('upload_data' => $this->upload->data());
 
-                    $data['notif'] = $this->uploadinfo();        
+                    $data['notif'] = $this->uploadinfo();
                     $data['image'] = $this->employee->get_image_profile($id);
+                    
+                    $this->load->view('header');
                     $this->load->view('pages/profile', $data);
                     $this->load->view('footer');
                 

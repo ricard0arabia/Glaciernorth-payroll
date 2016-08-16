@@ -827,6 +827,15 @@ class Contents extends CI_Model {
         return $query->row();
     }
 
+     public function get_ot_date($id){
+
+        $this->db->from('rqst_overtime');
+        $this->db->where('user_id =', $id); 
+        $query = $this->db->get();
+ 
+        return $query->row();
+    }
+
       public function sched_count_all($id)
     {
         $this->db->from('schedule');

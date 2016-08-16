@@ -1,6 +1,6 @@
 <?php
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+
 
 class Leave extends CI_Controller {
 
@@ -132,14 +132,14 @@ class Leave extends CI_Controller {
 
 	public function add_leave()
     {
-        $this->_validate();
+            $this->_validate();
 
+            $count = $this->leave->count_all($this->session->userdata('username'));
+            $date_now = date('Y-m-d');
 
-        $date_now = date("Y-m-d");
+            $dates = $this->leave->get_leave_date($this->session->userdata('username'));
 
-        $date = $this->leave->get_leave_date($id);
-
-            if($this->leave->sched_count_all($this->session->userdata('username') == 0 || $date_now > $date->enddate)){
+            if($count == 0 || $date_now > $dates->enddate){
 
             $list = $this->leave->get_sched($this->session->userdata('username'));
             $start = false;
@@ -149,9 +149,9 @@ class Leave extends CI_Controller {
             $datetime = date_create($value->start);
             $date = date_format($datetime,"Y-m-d");
                 if($this->input->post('startdate') == $date){
-                    if($value->work_status == 'inactive'){
+                    if($value->work_status != 'active'){
 
-                        $end = false;
+                        $start = false;
                         break;
 
                     }else{
@@ -166,7 +166,7 @@ class Leave extends CI_Controller {
             $date = date_format($datetime,"Y-m-d");
 
                 if($this->input->post('enddate') == $date){
-                    if($value->work_status == 'inactive'){
+                    if($value->work_status != 'active'){
 
                         $end = false;
                         break;
@@ -194,18 +194,19 @@ class Leave extends CI_Controller {
         
             $insert = $this->leave->save($data);
 
-            echo json_encode(array("status" => TRUE));
+            echo json_encode(array("status" => TRUE, "start" => $start, "end" => $end));
 
                }else{
 
-                echo json_encode(array("status" => true,));
+                echo json_encode(array("status" => true, "start" => $start, "end" => $end));
 
             }
         }else{
             $this->_validate();
 
-            $status = "You still have remaining leave";
-            echo json_encode(array("status" => true, "check" => $status));
+            $info = "You have remaining leave to fulfill";
+
+            echo json_encode(array("status" => true, "warning" => $info));
 
 
         }
@@ -251,6 +252,7 @@ class Leave extends CI_Controller {
         $data['status'] = TRUE;
         $data['start'] = array();
         $data['end'] = array();
+         $data['warning'] = array();
  
 		if($this->input->post('leavetype') == '')
         {
@@ -362,7 +364,7 @@ class Leave extends CI_Controller {
                         $data = array(
                 
                             'work_status' => 'leave',
-                            'color' => '#EEE8AA',
+                            'color' => '#f7bc38',
                                 
                         );
                       

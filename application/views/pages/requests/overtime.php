@@ -292,7 +292,8 @@ var table2;
         $('.datepicker').datepicker({
         autoclose: true,
         format: "yyyy-mm-dd",
-       startDate: '1d',    
+       startDate: '1d',  
+        endDate: '+2d',
         todayHighlight: true,
         orientation: "bottom auto",
         todayBtn: true,
@@ -365,10 +366,25 @@ function save()
         success: function(data)
         {
  
-            if(data.status) //if success close modal and reload ajax table
+           if(data.status) //if success close modal and reload ajax table
             {
+              if(data.start == false){
+
+                  alert('Start date not valid! Kingina mo! Overtime pa more');
+
+                }
+                else{
+
+                  if(data.warning){
+
+                     alert(data.warning);
+
+                  }
+                  else{
                 $('#modal_form').modal('hide');
                 reload_table1();
+                }
+              }
             }
             else
             {
@@ -449,7 +465,7 @@ function reload_table2()
                          <div class="form-group">
                             <label class="control-label col-md-3">Date</label>
                             <div class="col-md-5">
-                             <input name="date" placeholder="yyyy-mm-dd" class="form-control datepicker" type="date">
+                             <input name="date" placeholder="yyyy-mm-dd" class="form-control datepicker" type="text">
 
                                 <span class="help-block"></span>
                             </div>

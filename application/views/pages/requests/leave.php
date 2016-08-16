@@ -408,13 +408,20 @@ function save()
             {
               if(data.start == false || data.end == false){
 
-                  alert('Start date or End date not valid!');
+                  alert('Start date or End date not valid! Kingina mo! Leave pa more');
 
                 }
                 else{
-                   alert(data.start + " " + data.end);
+
+                  if(data.warning){
+
+                     alert(data.warning);
+
+                  }
+                  else{
                 $('#modal_form').modal('hide');
                 reload_table1();
+                }
               }
             }
             else

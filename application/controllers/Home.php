@@ -1,5 +1,5 @@
 <?php
-if(!defined('BASEPATH')) exit('Hacking Attempt: Get out of the system ..!');
+
 
 	class Home extends CI_Controller{
 

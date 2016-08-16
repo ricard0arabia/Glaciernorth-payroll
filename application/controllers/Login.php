@@ -1,5 +1,5 @@
 <?php
-if(!defined('BASEPATH')) exit('Hacking Attempt : Keluar dari sistem..!!');
+
 
 class Login extends CI_Controller{
 

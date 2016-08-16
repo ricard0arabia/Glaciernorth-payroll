@@ -188,7 +188,7 @@ label{
         <div class="card card-container">
            
           
-            <img id="profile-img" class="profile-img-card" src="<?php echo base_url(); ?>css/blueprint/assets/logo.png" />
+            <img id="profile-img" class="profile-img-card" src="<?php echo base_url(); ?>assets/img/logo.png" />
             <br>
              <div class="titles">Glacier Portal</div>
 

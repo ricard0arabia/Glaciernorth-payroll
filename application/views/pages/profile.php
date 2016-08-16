@@ -132,6 +132,7 @@ $(document).ready(function () {
         url : "<?php echo site_url('userprofile/basicinfo_list')?>",
         type: "GET",
         dataType: "JSON",
+
         success: function(data)
         {
  
@@ -155,6 +156,7 @@ $(document).ready(function () {
         url : "<?php echo site_url('userprofile/otherdetails_list')?>",
         type: "GET",
         dataType: "JSON",
+
         success: function(data)
         {
  
@@ -181,6 +183,7 @@ $(document).ready(function () {
         url : "<?php echo site_url('employees/basicinfo_list')?>/"+ <?php echo $this->uri->segment(3) ?>,
         type: "GET",
         dataType: "JSON",
+
         success: function(data)
         {
  
@@ -721,6 +724,7 @@ $('#edit1').click(function(){
         url : "<?php echo site_url('userprofile/basicinfo_list')?>",
         type: "GET",
         dataType: "JSON",
+
         success: function(data)
         {
  
@@ -747,6 +751,7 @@ $('#edit1').click(function(){
         url : "<?php echo site_url('employees/basicinfo_list')?>/"+ <?php echo $this->uri->segment(3) ?>,
         type: "GET",
         dataType: "JSON",
+
         success: function(data)
         {
  
@@ -808,6 +813,7 @@ if($(this).hasClass('basic')){
         type: "POST",
         data: $('#basicinfo').serialize(),
         dataType: "JSON",
+
         success: function(data) 
         {
          if(data == "Success")
@@ -826,6 +832,7 @@ if($(this).hasClass('basic')){
         type: "POST",
         data: $('#basicinfo').serialize(),
         dataType: "JSON",
+
         success: function(data) 
         {
          if(data == "Success")
@@ -879,6 +886,7 @@ $('#edit2').click(function(){
         url : "<?php echo site_url('userprofile/otherdetails_list')?>",
         type: "GET",
         dataType: "JSON",
+
         success: function(data)
         {
  
@@ -905,6 +913,7 @@ $('#edit2').click(function(){
         url : "<?php echo site_url('employees/otherdetails_list')?>/"+ <?php echo $this->uri->segment(3) ?>,
         type: "GET",
         dataType: "JSON",
+
         success: function(data)
         {
  
@@ -974,6 +983,7 @@ if($(this).hasClass('detailed')){
         type: "POST",
         data: $('#otherdetails').serialize(),
         dataType: "JSON",
+
         success: function(data) 
         {
          if(data == "Success")
@@ -995,6 +1005,7 @@ if($(this).hasClass('detailed')){
           type: "POST",
           data: $('#otherdetails').serialize(),
           dataType: "JSON",
+
           success: function(data) 
           {
            if(data == "Success")
@@ -1012,6 +1023,7 @@ if($(this).hasClass('detailed')){
           type: "POST",
           data: $('#otherdetails').serialize(),
           dataType: "JSON",
+ 
           success: function(data) 
           {
            if(data == "Success")
@@ -1037,6 +1049,7 @@ if($(this).hasClass('detailed')){
         type: "POST",
         data: $('#otherdetails').serialize(),
         dataType: "JSON",
+
         success: function(data) 
         {
          if(data == "Success")
@@ -1058,6 +1071,7 @@ if($(this).hasClass('detailed')){
           type: "POST",
           data: $('#otherdetails').serialize(),
           dataType: "JSON",
+
           success: function(data) 
           {
            if(data == "Success")
@@ -1075,6 +1089,7 @@ if($(this).hasClass('detailed')){
           type: "POST",
           data: $('#otherdetails').serialize(),
           dataType: "JSON",
+
           success: function(data) 
           {
            if(data == "Success")
@@ -1255,7 +1270,7 @@ $(function(){
         showMeridian: false
     });  // Timepicker
 
-    var base_url='http://localhost:8080/fullcalendar/'; // Here i define the base_url
+    var base_url='http://glacierpayroll.com/'; // Here i define the base_url
 
     // Fullcalendar
     $('#calendar').fullCalendar({
@@ -1272,7 +1287,7 @@ $(function(){
       selectHelper: true,
        displayEventEnd: true,
         eventLimit: true,
-        events:"<?php echo site_url('calendar/getEvents')?>/" + id,
+        events:"<?php echo site_url('/calendar/getEvents')?>/" + id,
      
          
        
@@ -1297,7 +1312,7 @@ $(function(){
          eventDrop: function(event, delta, revertFunc) {  
 
             
-               $.post(base_url+'calendar/dragUpdateEvent',{                            
+               $.post(base_url+'/calendar/dragUpdateEvent',{                            
                 id:event.id,
                 date: event.start.format()
             }, function(result){
@@ -1383,7 +1398,7 @@ $(function(){
     // Handle Click on Add Button
     $('#sched_modal').on('click', '#add-event',  function(e){
         if(validator(['title', 'description'])) {
-            $.post("<?php echo site_url('calendar/addEvent')?>", {
+            $.post("<?php echo site_url('/calendar/addEvent')?>", {
                 title: $('#title').val(),
                 description: $('#description').val(),
                 color: $('#color').val(),
@@ -1399,7 +1414,7 @@ $(function(){
     // Handle click on Update Button
     $('#sched_modal').on('click', '#update-event',  function(e){
         if(validator(['title', 'description'])) {
-            $.post(base_url+'calendar/updateEvent', {
+            $.post(base_url+'/calendar/updateEvent', {
                 id: currentEvent._id,
                 title: $('#title').val(),
                 date: currentEvent.date.split(' ')[0]  + ' ' +  getTime()
@@ -1414,7 +1429,7 @@ $(function(){
 
     // Handle Click on Delete Button
     $('.modal').on('click', '#delete-event',  function(e){
-        $.get(base_url+'calendar/deleteEvent?id=' + currentEvent._id, function(result){
+        $.get(base_url+'/calendar/deleteEvent?id=' + currentEvent._id, function(result){
             $('.modal').modal('hide');
             $('#calendar').fullCalendar("refetchEvents");
         });

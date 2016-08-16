@@ -11,7 +11,7 @@
 
     <title>Glacier Payroll System</title>
 
- 
+   <link rel="icon" href="<?php echo base_url('assets/img/favico.ico') ?>"> 
     <link href="<?php echo base_url('assets/bootstrap/css/bootstrap.css')?>" rel="stylesheet">
     <link href="<?php echo base_url('assets/datatables/css/dataTables.bootstrap.css')?>" rel="stylesheet">
   

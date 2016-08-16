@@ -1,6 +1,6 @@
 <?php
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+
 
 class Overtime extends CI_Controller {
 
@@ -124,6 +124,36 @@ class Overtime extends CI_Controller {
     public function add_overtime()
     {
         $this->_validate();
+
+         $count = $this->overtime->ot_count_all($this->session->userdata('username'));
+            $date_now = date('Y-m-d');
+
+            $dates = $this->overtime->get_ot_date($this->session->userdata('username'));
+
+            if($count == 0 || $date_now > $dates->date){
+
+            $list = $this->overtime->get_sched($this->session->userdata('username'));
+            $start = false;
+
+
+             foreach ($list as $value) {
+            $datetime = date_create($value->start);
+            $date = date_format($datetime,"Y-m-d");
+                if($this->input->post('date') == $date){
+                    if($value->work_status != 'active'){
+
+                        $start = false;
+                        break;
+
+                    }else{
+                    $start = true;
+                    break;
+                    }
+                }
+           }
+
+            
+             if($start == true){
         
         $data = array(
                 'user_id' => $this->session->userdata('username'),
@@ -131,11 +161,27 @@ class Overtime extends CI_Controller {
                 'ot_status' => 'requested',
                 'cause' => $this->input->post('cause'),
                 'duration' => $this->input->post('duration'),
+                'date_submitted' => date("Y-m-d"),
                 
                 
             );
         $insert = $this->overtime->ot_save($data);
         echo json_encode(array("status" => TRUE));
+
+        }else{
+
+                echo json_encode(array("status" => true, "start" => $start));
+
+            }
+        }else{
+            $this->_validate();
+
+            $info = "You have remaining overtime to fulfill";
+
+            echo json_encode(array("status" => true, "warning" => $info));
+
+
+        }
     }
 
      public function edit_overtime($id)
@@ -173,6 +219,8 @@ class Overtime extends CI_Controller {
         $data['error_string'] = array();
         $data['inputerror'] = array();
         $data['status'] = TRUE;
+                $data['start'] = array();
+                $data['warning'] = array();
  
     
         if($this->input->post('date') == '')
@@ -251,6 +299,36 @@ class Overtime extends CI_Controller {
      public function accept_overtime($id)
     {
         
+        $date = $this->overtime->get_ot_date($id);
+
+       $ot_date = $date->date;
+      
+                $list = $this->overtime->get_sched($id);
+
+            foreach ($list as $value) {
+                $date_id = $value->id;
+                $datetime = date_create($value->start);
+                $date = date_format($datetime,"Y-m-d");
+
+                if($ot_date == $date){
+
+                    if($value->work_status == 'active'){
+                       
+                        $data = array(
+                
+                            'work_status' => 'overtime',
+                            'color' => '#407f1e',
+                                
+                        );
+                      
+                    $this->overtime->sched_update($data, $id, $date_id);
+
+                    }
+                }
+            }
+
+    
+
         $data = array(
                 
                 'ot_status' => 'approved',
