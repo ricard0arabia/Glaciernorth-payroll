@@ -129,6 +129,7 @@ class Employees extends CI_Controller {
                 'position' => $this->input->post('position'),
                 'contact_no' => $this->input->post('contact_no'),
                 'address' => $this->input->post('address'),
+                'userlevel' => $this->input->post('userlevel'),
                
                 
             );
@@ -255,12 +256,13 @@ $row[] = date("h:i A", strtotime($employee->sun_start)).' - '.date("h:i A", strt
                     $this->employee->add_image($file,$id);
                     $data = array('upload_data' => $this->upload->data());
 
-                    $data['notif'] = $this->uploadinfo();
-                    $data['image'] = $this->employee->get_image_profile($id);
-                    
-                    $this->load->view('header');
-                    $this->load->view('pages/profile', $data);
-                    $this->load->view('footer');
+                   $this->load->view('header');
+            $data['level'] = $this->session->userdata('level');
+            $data['notif'] = $this->uploadinfo();
+            $data['image'] = $this->employee->get_image_profile($id);
+             $data['exist'] = $this->employee->empinfo_count_all($id);
+            $this->load->view('pages/profile', $data);
+            $this->load->view('footer');
                 
                     
                 }else{
@@ -710,6 +712,24 @@ $work_status = 'active';
 
         );
     $insert = $this->employee->sched_save($data);
+
+    $data1 = array(
+
+        'user_id' => $id,
+        'date' => $start_date,
+        'time_in' => "",
+        'time_out' => "",
+        'hours_worked' => 0,
+        'overtime' => 0,
+        'tardiness' => 0,
+        'undertime' => 0,
+        'attnd_status' => 'active',
+
+
+        );
+    $insert = $this->employee->attendance_save($data1);
+
+
     $start_date = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)));
   }
 
@@ -1068,7 +1088,7 @@ $work_status = 'active';
         $date = date_format($datetime,"Y-m-d");
             if($start_date == $date){
 
-               $checkdate = $value->id;
+               $checkdate = $value->sched_id;
                 break;
             }
        }

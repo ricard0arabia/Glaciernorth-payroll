@@ -26,11 +26,11 @@ class Contents extends CI_Model {
     var $shift_column_order = array('id','user_id','startdate','enddate','duration','shift_days','reason','status','sub_department','sub_position','sub_id','mon_start','mon_end','tue_start','tue_end','wed_start','wed_end','thurs_start','thurs_end','fri_start','fri_end','sat_start','sat_end','sun_start','sun_end',null); //set column field database for datatable orderable
     var $shift_column_search = array('sub_department','sub_position','sub_id'); //set column field database for datatable searchable just firstname , lastname , address are searchable
     var $shift_order = array('id' => 'desc'); // default
-	
+    
 
 
 
- 	var $emp_table = 'employees';
+    var $emp_table = 'employees';
     var $emp_column_order = array('user_id','firstname','middlename','lastname','userlevel','emp_pass','department','position','contact_no','address','status','date_created',null); //set column field database for datatable orderable
     var $emp_column_search = array('firstname','lastname','position','department','userlevel'); //set column field database for datatable searchable just firstname , lastname , address are searchable
     var $emp_order = array('user_id' => 'desc'); // def
@@ -46,44 +46,53 @@ class Contents extends CI_Model {
     var $message_column_search = array('name','email','subject'); //set column field database for datatable searchable just firstname , lastname , address are searchable
     var $message_order = array('id' => 'desc'); // def
 
+var $time_table = 'timesheet';
+    var $time_column_order = array('timesheet_id','date',null); //set column field database for datatable orderable
+    var $time_column_search = array('date'); //set column field database for datatable searchable just firstname , lastname , address are searchable
+    var $time_order = array('timesheet_id' => 'desc'); // default order
 
 
-	public function __construct() {
-		parent::__construct();
-		  $this->load->database();
-	}		
-	
+ var $attendance_table = 'attendance';
+    var $attendance_column_order = array('attendance_id','user_id','date','time_in','time_out','hours_worked','overtime','tardiness','undertime',null); //set column field database for datatable orderable
+    var $attendance_column_search = array('lastname','department','position','firstname','date'); //set column field database for datatable searchable just firstname , lastname , address are searchable
+    var $attendance_order = array('attendance_id' => 'asc'); // default order
 
-	function add_image($data,$id) {
-		$this->db->where('user_id', $id);
-		$this->db->update('employees', $data); 
-	}
+    public function __construct() {
+        parent::__construct();
+          $this->load->database();
+    }       
+    
 
-	function get_image() {
-			$getimage = $this->db->query("SELECT img_name, ext
-										FROM employees
-										WHERE user_id  = '".$this->uri->segment(3)."'
-										");
-										
-		if($getimage->num_rows() > 0) {
-			return $getimage->result_array();
-		} else {
-			return false;		
-		}
-	}
+    function add_image($data,$id) {
+        $this->db->where('user_id', $id);
+        $this->db->update('employees', $data); 
+    }
 
-	function get_image_profile($id) {
-			$getimage = $this->db->query("SELECT img_name, ext
-										FROM employees
-										WHERE user_id  = '".$id."'
-										");
-										
-		if($getimage->num_rows() > 0) {
-			return $getimage->result_array();
-		} else {
-			return false;		
-		}
-	}
+    function get_image() {
+            $getimage = $this->db->query("SELECT img_name, ext
+                                        FROM employees
+                                        WHERE user_id  = '".$this->uri->segment(3)."'
+                                        ");
+                                        
+        if($getimage->num_rows() > 0) {
+            return $getimage->result_array();
+        } else {
+            return false;       
+        }
+    }
+
+    function get_image_profile($id) {
+            $getimage = $this->db->query("SELECT img_name, ext
+                                        FROM employees
+                                        WHERE user_id  = '".$id."'
+                                        ");
+                                        
+        if($getimage->num_rows() > 0) {
+            return $getimage->result_array();
+        } else {
+            return false;       
+        }
+    }
    
 
 
@@ -93,9 +102,9 @@ class Contents extends CI_Model {
 #add leave request
 #add leave request
 
-	  private function _get_datatables_query()
+      private function _get_datatables_query()
     {
-  		
+        
         $this->db->from('rqst_leaves');
         $this->db->join('employees','employees.user_id = rqst_leaves.user_id');
 
@@ -137,46 +146,46 @@ class Contents extends CI_Model {
  
     function rqst_get_datatables()
     {
-    	
+        
         $this->_get_datatables_query();
         if($_POST['length'] != -1)
-        $this->db->limit($_POST['length'], $_POST['start']);   	
-  		$this->db->where('rqst_leaves.user_id', $this->session->userdata('username')); 
-  		$this->db->where('rqst_leaves.leave_status =', 'requested');
+        $this->db->limit($_POST['length'], $_POST['start']);    
+        $this->db->where('rqst_leaves.user_id', $this->session->userdata('username')); 
+        $this->db->where('rqst_leaves.leave_status =', 'requested');
         $query = $this->db->get();
         return $query->result();
     }
      function leave_request_history_get_datatables()
     {
-    	
+        
         $this->_get_datatables_query();
         if($_POST['length'] != -1)
-        $this->db->limit($_POST['length'], $_POST['start']);   	
-  		$this->db->where('rqst_leaves.user_id =', $this->session->userdata('username')); 
-  		$this->db->where('rqst_leaves.leave_status !=', 'requested'); 
+        $this->db->limit($_POST['length'], $_POST['start']);    
+        $this->db->where('rqst_leaves.user_id =', $this->session->userdata('username')); 
+        $this->db->where('rqst_leaves.leave_status !=', 'requested'); 
         $query = $this->db->get();
         return $query->result();
     }
  
     function approval_get_datatables()
     {
-    	
+        
         $this->_get_datatables_query();
         if($_POST['length'] != -1)
-        $this->db->limit($_POST['length'], $_POST['start']);   	
-  		$this->db->where('rqst_leaves.user_id !=', $this->session->userdata('username')); 
-  		$this->db->where('rqst_leaves.leave_status =', 'requested'); 
+        $this->db->limit($_POST['length'], $_POST['start']);    
+        $this->db->where('rqst_leaves.user_id !=', $this->session->userdata('username')); 
+        $this->db->where('rqst_leaves.leave_status =', 'requested'); 
         $query = $this->db->get();
         return $query->result();
     }
     function leave_approval_history_get_datatables()
     {
-    	
+        
         $this->_get_datatables_query();
         if($_POST['length'] != -1)
-        $this->db->limit($_POST['length'], $_POST['start']);   	
-  		$this->db->where('rqst_leaves.user_id !=', $this->session->userdata('username')); 
-  		$this->db->where('rqst_leaves.leave_status !=', 'requested'); 
+        $this->db->limit($_POST['length'], $_POST['start']);    
+        $this->db->where('rqst_leaves.user_id !=', $this->session->userdata('username')); 
+        $this->db->where('rqst_leaves.leave_status !=', 'requested'); 
         $query = $this->db->get();
         return $query->result();
     }
@@ -229,7 +238,7 @@ class Contents extends CI_Model {
 
 
 
-    	  private function ot_get_datatables_query()
+          private function ot_get_datatables_query()
     {
          
 
@@ -364,7 +373,7 @@ class Contents extends CI_Model {
 
 
 
-    	  private function shift_get_datatables_query()
+          private function shift_get_datatables_query()
     {
       
         $this->db->from($this->shift_table);
@@ -458,7 +467,7 @@ class Contents extends CI_Model {
 #emp_schedule
 
 
-    	  private function empsched_get_datatables_query()
+          private function empsched_get_datatables_query()
     {
         
         $this->db->from('emp_workschedule');
@@ -503,8 +512,8 @@ class Contents extends CI_Model {
     {
         $this->empsched_get_datatables_query();
         if($_POST['length'] != -1)
-        $this->db->limit($_POST['length'], $_POST['start']);  	
-    	$this->db->where('emp_workschedule.user_id =', $id); 
+        $this->db->limit($_POST['length'], $_POST['start']);    
+        $this->db->where('emp_workschedule.user_id =', $id); 
         $query = $this->db->get();
         return $query->result();
     }
@@ -512,8 +521,8 @@ class Contents extends CI_Model {
     {
         $this->empsched_get_datatables_query();
         if($_POST['length'] != -1)
-        $this->db->limit($_POST['length'], $_POST['start']);  	
-    	$this->db->where('emp_workschedule.user_id !=', $this->session->userdata('username')); 
+        $this->db->limit($_POST['length'], $_POST['start']);    
+        $this->db->where('emp_workschedule.user_id !=', $this->session->userdata('username')); 
         $query = $this->db->get();
         return $query->result();
     }
@@ -563,11 +572,11 @@ class Contents extends CI_Model {
 #emp_list
 
 
-    	  private function emp_get_datatables_query()
+          private function emp_get_datatables_query()
     {
     
        $this->db->from($this->emp_table);
-    	
+        
         $i = 0;
      
         foreach ($this->emp_column_search as $item) // loop column
@@ -606,8 +615,8 @@ class Contents extends CI_Model {
     {
         $this->emp_get_datatables_query();
         if($_POST['length'] != -1)
-        $this->db->limit($_POST['length'], $_POST['start']);  	
-    	$this->db->where('employees.user_id !=', $this->session->userdata('username')); 
+        $this->db->limit($_POST['length'], $_POST['start']);    
+        $this->db->where('employees.user_id !=', $this->session->userdata('username')); 
         $query = $this->db->get();
         return $query->result();
     }
@@ -670,7 +679,7 @@ class Contents extends CI_Model {
 
     public function empinfo_count_all($id)
     {
-    	$this->db->where('user_id',$id);
+        $this->db->where('user_id',$id);
         $this->db->from($this->empinfo_table);
         return $this->db->count_all_results();
     }
@@ -805,7 +814,7 @@ class Contents extends CI_Model {
     public function sched_update($data,$user_id,$id)
     {   
         $this->db->where('user_id', $user_id);
-        $this->db->where('id', $id);
+        $this->db->where('sched_id', $id);
         $this->db->update('schedule', $data);
         return $this->db->affected_rows();
     }
@@ -816,6 +825,16 @@ class Contents extends CI_Model {
         $query = $this->db->get();
  
         return $query->result();
+    }
+
+     public function get_emp_sched($id,$date)
+    {
+        $this->db->from('schedule');
+        $this->db->where('user_id =', $id); 
+        $this->db->where("start LIKE '$date%'"); 
+        $query = $this->db->get();
+ 
+        return $query->row();
     }
 
     public function get_leave_date($id){
@@ -842,44 +861,284 @@ class Contents extends CI_Model {
         $this->db->where('user_id', $id);
         return $this->db->count_all_results();
     }
+//timesheet
+
+
+
+
+
+
+
+
+
+          private function time_get_datatables_query()
+    {
+      
+        $this->db->from($this->time_table);
+
+ 
+        $i = 0;
+     
+        foreach ($this->time_column_search as $item) // loop column
+        {
+            if($_POST['search']['value']) // if datatable send POST for search
+            {
+                 
+                if($i===0) // first loop
+                {
+                    $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+                    $this->db->like($item, $_POST['search']['value']);
+                }
+                else
+                {
+                    $this->db->or_like($item, $_POST['search']['value']);
+                }
+ 
+                if(count($this->time_column_search) - 1 == $i) //last loop
+                    $this->db->group_end(); //close bracket
+            }
+            $i++;
+        }
+         
+        if(isset($_POST['order'])) // here order processing
+        {
+            $this->db->order_by($this->time_column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+        }
+        else if(isset($this->time_order))
+        {
+            $order = $this->time_order;
+            $this->db->order_by(key($order), $order[key($order)]);
+        }
+    }
+ 
+    function time_get_datatables()
+    {
+        $this->time_get_datatables_query();
+        if($_POST['length'] != -1)
+        $this->db->limit($_POST['length'], $_POST['start']);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function get_time()
+    {
+        $this->db->from('timesheet');
+        $query = $this->db->get();
+ 
+        return $query->result();
+    }
+
+     public function emp_get_time($id)
+    {
+        $this->db->from('timesheet');
+        $this->db->where('timesheet_id',$id);
+        $query = $this->db->get();
+ 
+        return $query->row();
+    }
+ 
+    function time_count_filtered()
+    {
+        $this->time_get_datatables_query();
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+ 
+    public function time_count_all()
+    {
+        $this->db->from($this->time_table);
+        return $this->db->count_all_results();
+    }
+ 
+    public function time_get_by_id($id)
+    {
+        $this->db->from($this->time_table);
+        $this->db->where('id',$id);
+        $query = $this->db->get();
+ 
+        return $query->row();
+    }
+ 
+    public function time_save($data)
+    {
+        $this->db->insert($this->time_table, $data);
+        return $this->db->insert_id();
+    }
+ 
+    public function time_update($where, $data)
+    {
+        $this->db->update($this->time_table, $data, $where);
+        return $this->db->affected_rows();
+    }
+ 
+    public function time_delete_by_id($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete($this->time_table);
+    }
+
+
+
+//attendance
+
+     private function attendance_get_datatables_query()
+    {
+      
+         $this->db->from('attendance');
+        $this->db->join('employees','employees.user_id = attendance.user_id');
+
+ 
+        $i = 0;
+     
+        foreach ($this->attendance_column_search as $item) // loop column
+        {
+            if($_POST['search']['value']) // if datatable send POST for search
+            {
+                 
+                if($i===0) // first loop
+                {
+                    $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+                    $this->db->like($item, $_POST['search']['value']);
+                }
+                else
+                {
+                    $this->db->or_like($item, $_POST['search']['value']);
+                }
+ 
+                if(count($this->attendance_column_search) - 1 == $i) //last loop
+                    $this->db->group_end(); //close bracket
+            }
+            $i++;
+        }
+         
+        if(isset($_POST['order'])) // here order processing
+        {
+            $this->db->order_by($this->attendance_column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+        }
+        else if(isset($this->attendance_order))
+        {
+            $order = $this->attendance_order;
+            $this->db->order_by(key($order), $order[key($order)]);
+        }
+    }
+ 
+    function attendance_get_datatables($id, $date)
+    {
+       $this->attendance_get_datatables_query();
+        if($_POST['length'] != -1)
+        $this->db->where('attendance.user_id !=', $id);
+        $this->db->where('attendance.date =', $date);
+
+        
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+     function emp_attendance_get_datatables($id)
+    {
+       $this->attendance_get_datatables_query();
+        if($_POST['length'] != -1)
+        $this->db->where('attendance.user_id =', $id);
+        $query = $this->db->get();
+        return $query->result();
+    }
+    
+    public function get_attendance($id)
+    {
+        $this->db->from('attendance');
+        $this->db->where('user_id !=', $id); 
+        $query = $this->db->get();
+ 
+        return $query->result();
+    }
+
+    function attendance_count_filtered()
+    {
+        $this->attendance_get_datatables_query();
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+ 
+    public function attendance_count_all()
+    {
+        $this->db->from($this->attendance_table);
+        return $this->db->count_all_results();
+    }
+ 
+    public function attendance_get_by_id($id)
+    {
+        $this->db->from($this->attendance_table);
+        $this->db->where('attendance_id',$id);
+        $query = $this->db->get();
+ 
+        return $query->row();
+    }
+ 
+    public function attendance_save($data)
+    {
+        $this->db->insert($this->attendance_table, $data);
+        return $this->db->insert_id();
+    }
+ 
+    public function attendance_update($data,$id,$date)
+    {
+       $this->db->where('user_id', $id);
+        $this->db->where('date', $date);
+        $this->db->update('attendance', $data);
+        return $this->db->affected_rows();
+    }
+ 
+    public function attendance_delete_by_id($id)
+    {
+        $this->db->where('attendance_id', $id);
+        $this->db->delete($this->attendance_table);
+    }
+
+
+
+
+
+
+
+
 
 //session
 
     public function takeUser($username, $password, $level)
 
-		{
+        {
 
-		$this->db->select('*');
+        $this->db->select('*');
 
-		$this->db->from('employees');
+        $this->db->from('employees');
 
-		$this->db->where('user_id', $username);
+        $this->db->where('user_id', $username);
 
-		$this->db->where('emp_pass', $password);
-
-
-		$this->db->where('userlevel', $level);
-
-		$query = $this->db->get();
-
-		return $query->num_rows();
-
-		}
-
-		public function userData($username)
-
-		{
+        $this->db->where('emp_pass', $password);
 
 
-		$this->db->select('user_id');
+        $this->db->where('userlevel', $level);
 
-		$this->db->where('user_id', $username);
+        $query = $this->db->get();
 
-		$query = $this->db->get('employees');
+        return $query->num_rows();
 
-		return $query->row();
+        }
 
-		}
+        public function userData($username)
+
+        {
+
+
+        $this->db->select('user_id');
+
+        $this->db->where('user_id', $username);
+
+        $query = $this->db->get('employees');
+
+        return $query->row();
+
+        }
 
 Public function getEvents($id)
     {
@@ -933,9 +1192,9 @@ Public function getEvents($id)
 
     }
 
-		
+        
  
-	
+    
 }
 
 ?>

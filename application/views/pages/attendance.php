@@ -1,41 +1,14 @@
-
    <div class="container">
-        
- 
-            <div class="panel with-nav-tabs panel-default">
-                <div class="panel-heading">
-                        <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tab1default" data-toggle="tab">Attendance</a></li>
-                            <li><a href="#tab2default" data-toggle="tab">Leave Requests</a></li>
-                         
-                           
-                        </ul>
-                </div>
-                <div class="panel-body">
-                    <div class="tab-content">
 
-
-<!--                                                 Employee List                                         -->
-<!--                                                 Employee List                                         -->
-<!--                                                 Employee List                                         -->
-<!--                                                 Employee List                                         -->
-<!--                                                 Employee List                                         -->
-<!--                                                 Employee List                                         -->
-
-                        <div class="tab-pane fade in active" id="tab1default">
-
-
-
-
-        <h3>Employee List</h3>
+  <h3>Timesheet for <?php echo date("F j,Y", strtotime($timesheet_data->date)); ?></h3>
     <br>
  <button class="btn btn-default" onclick="reload_table()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
         <br />
         <br />
-        <table id="table_list" class="table table-striped table-bordered" cellspacing="0" width="100%">
+        <table id="table_attendance" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>Image</th>
                                 <th>Name</th>
                                 <th>Position</th>
                                 <th>Department</th>
@@ -44,26 +17,34 @@
                                 <th>Time Out</th>
                                 <th>Hours Worked</th>
                                 <th>Overtime</th>
+                                <th>Undertime</th>
                                 <th>Tardiness</th>
                                 <th>Status</th>
-                        
-                                <th style="width:125px;">Action</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                        
                     </table>
 
+</div>
+
+
+
+
+
+
 
 
 <script type="text/javascript">
-
+var word_date = "<?php echo date("F j,Y", strtotime($timesheet_data->date)); ?>";
 var save_method; //for save method string
 var table;
-
+var date_id = "<?php echo $timesheet_data->date; ?>";
    $(document).ready(function () {
 
+
        //datatables
-    table = $('#table_list').DataTable({
+    table1 = $('#table_attendance').DataTable({
  
         "processing": true, //Feature control the processing indicator.
         "serverSide": true, //Feature control DataTables' server-side processing mode.
@@ -71,7 +52,7 @@ var table;
  
         // Load data for the table's content from an Ajax source
         "ajax": {
-            "url": "<?php echo site_url('time/attendance')?>",
+            "url": "<?php echo site_url('time/attendance_list')?>/" + date_id,
             "type": "POST"
         },
  
@@ -90,66 +71,62 @@ var table;
         $(this).parent().parent().removeClass('has-error');
         $(this).next().empty();
     });
-    $("textarea").change(function(){
-        $(this).parent().parent().removeClass('has-error');
-        $(this).next().empty();
-    });
-    $("select").change(function(){
-        $(this).parent().parent().removeClass('has-error');
-        $(this).next().empty();
-    });
 
-    // set default dates
-            var start = new Date();
-            // set end date to max one year period:
-            var end = new Date(new Date().setYear(start.getFullYear()+1));
+    $('#time_in').timepicker().on('changeTime.timepicker', function (a) {
+         $('#time_out').timepicker().on('changeTime.timepicker', function (b){
 
-            $('#fromDate').datepicker({
-                format: "yyyy-mm-dd",
-                startDate : start,
-                endDate   : end
-            // update "toDate" defaults whenever "fromDate" changes
-            }).on('changeDate', function(){
-                // set the "toDate" start to not be later than "fromDate" ends:
-                $('#toDate').datepicker('setStartDate', new Date($(this).val()));
-                calcDiff();
-            }); 
-
-            $('#toDate').datepicker({
-                format: "yyyy-mm-dd",
-                startDate : start,
-                endDate   : end
-            // update "fromDate" defaults whenever "toDate" changes
-            }).on('changeDate', function(){
-                // set the "fromDate" end to not be later than "toDate" starts:
-                $('#fromDate').datepicker('setEndDate', new Date($(this).val()));
-                calcDiff();
-            });
+           
+        var newDate =(b.time.hours)-(a.time.hours);
+         $("#duration").val(newDate);
+      
+         });
+     });
+   $('#time_out').timepicker().on('changeTime.timepicker', function (b) {
+         $('#time_in').timepicker().on('changeTime.timepicker', function (a){
+        var newDate =(b.time.hours)-(a.time.hours);
+         $("#duration").val(newDate);
+      
+         });
+     });
 
             
     });
 
 
-function add_shift(id)
+function formatDate(date) {
+    var date = new Date(date);
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+  var ampm = hours >= 12 ? 'pm' : 'am';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  minutes = minutes < 10 ? '0'+minutes : minutes;
+  var strTime = hours + ':' + minutes + ' ' + ampm;
+  return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear() + "  " + strTime;
+}
+
+
+
+function add_attendance(id)
 {
-   
     save_method = 'add';
     $('#form')[0].reset(); // reset form on modals
     $('.form-group').removeClass('has-error'); // clear error class
     $('.help-block').empty(); // clear error string
- 
-    //Ajax Load data from ajax
+   
     $.ajax({
-        url : "<?php echo site_url('shift/add_shift')?>/" + id,
+        url : "<?php echo site_url('time/get_attendance')?>/" + id +"/"+ date_id,
         type: "GET",
         dataType: "JSON",
         success: function(data)
         {
-         
-            $('[name="id"]').val(data.id);
-            $('[name="sub_id"]').val(id);
-            $('#modal_form').modal('show'); // show bootstrap modal when complete loaded
-            $('.modal-title').text('Add shift'); // Set title to Bootstrap modal title
+             var start = formatDate(data.start);
+             var end = formatDate(data.end);
+             $('[name="id"]').val(id);
+            $('[name="start"]').val(start);
+            $('[name="end"]').val(end);
+           $('#modal_form').modal('show'); // show bootstrap modal
+    $('.modal-title').text('Add Attendance ' + word_date ); // Set Title to Bootstrap modal title
  
         },
         error: function (jqXHR, textStatus, errorThrown)
@@ -159,23 +136,9 @@ function add_shift(id)
     });
 }
 
-      
- function calcDiff() {
-    var date1 = $('#fromDate').datepicker('getDate');
-    var date2 = $('#toDate').datepicker('getDate');
-    var diff = 0;
-    if (date1 && date2) {
-      diff = Math.floor((date2.getTime() - date1.getTime()) / 86400000); 
-    }
-    $('#calculated').val(diff);
-  }
-        
 
-function reload_table()
-{
-    table.ajax.reload(null,false); //reload datatable ajax
-}
- 
+   
+
 
 function save()
 {
@@ -183,16 +146,9 @@ function save()
     $('#btnSave').attr('disabled',true); //set button disable
     var url;
  
-    if(save_method == 'add') {
-        url = "<?php echo site_url('shift/save_shift')?>";
-      
-    } else {
-        url = "<?php echo site_url('shift/update_shift')?>";
-    }
- 
-    // ajax adding data to database
+
     $.ajax({
-        url : url,
+        url : "<?php echo site_url('time/add_attendance')?>/"+date_id,
         type: "POST",
         data: $('#form').serialize(),
         dataType: "JSON",
@@ -201,11 +157,22 @@ function save()
  
             if(data.status) //if success close modal and reload ajax table
             {
+              if(data.warning == false){
+
+                  alert('Entered date not valid');
+
+                }
+                else{
+
+                  
                 $('#modal_form').modal('hide');
                 reload_table();
+                
+              }
             }
             else
             {
+
                 for (var i = 0; i < data.inputerror.length; i++)
                 {
                     $('[name="'+data.inputerror[i]+'"]').parent().parent().addClass('has-error'); //select parent twice to select div form-group class and add has-error class
@@ -217,8 +184,10 @@ function save()
  
  
         },
+
         error: function (jqXHR, textStatus, errorThrown)
         {
+           
             alert('Error adding / update data');
             $('#btnSave').text('save'); //change button text
             $('#btnSave').attr('disabled',false); //set button enable
@@ -227,7 +196,7 @@ function save()
     });
 }
 
-function delete_shift(id)
+function delete_leave(id)
 {
     if(confirm('Are you sure delete this data?'))
     {
@@ -240,7 +209,7 @@ function delete_shift(id)
             {
                 //if success reload ajax table
                 $('#modal_form').modal('hide');
-                reload_table();
+                reload_table_timesheet();
             },
             error: function (jqXHR, textStatus, errorThrown)
             {
@@ -252,154 +221,96 @@ function delete_shift(id)
 }
  
 
- </script>
-
-
-
-                </div>
-
-<!--                                                 Leave Request                                         -->
-<!--                                                 Leave Request                                         -->
-<!--                                                 Leave Request                                         -->
-<!--                                                 Leave Request                                         -->
-<!--                                                 Leave Request                                         -->
-<!--                                                 Leave Request                                         -->
-<!--                                                 Leave Request                                         -->
-<!--                                                 Leave Request                                         -->
-<!--                                                 Leave Request                                         -->
-<!--                                                 Leave Request                                         -->
-<!--                                                 Leave Request                                         -->
-<!--                                                 Leave Request                                         -->
-                       
-                <div class="tab-pane fade" id="tab2default">
-
-
-        <h3>My leave Requests</h3>
-        <br />
-   
-        <button class="btn btn-default" onclick="reload_table()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
-        <br />
-        <br />
-        <table id="table_rqst" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                        <thead>
-                            <tr>
-                                <th>Monday</th>
-                                <th>Tuesday</th>
-                                <th>Wednesday</th>
-                                <th>Thursday</th>
-                                <th>Friday</th>
-                                <th>Saturday</th>
-                                <th>Sunday</th>
-                                <th>Start date</th>
-                                <th>End date</th>
-                                <th>Reason</th>
-                                <th>Sub. Dept</th>
-                                <th>Sub. Position</th>
-                                <th>Sub. Id</th>
-                                <th style="width:125px;">Action</th>
-                            </tr>
-                        </thead>
-                       
-                    </table>
-
-
-<script type="text/javascript">
-
-var save_method; //for save method string
-var table;
-
-   $(document).ready(function () {
-
-       //datatables
-    table = $('#table_rqst').DataTable({
- 
-        "processing": true, //Feature control the processing indicator.
-        "serverSide": true, //Feature control DataTables' server-side processing mode.
-        "order": [], //Initial no order.
- 
-        // Load data for the table's content from an Ajax source
-        "ajax": {
-            "url": "<?php echo site_url('shift/shift_list')?>",
-            "type": "POST"
-        },
- 
-        //Set column definition initialisation properties.
-        "columnDefs": [
-        {
-            "targets": [ -1 ], //last column
-            "orderable": false, //set not orderable
-        },
-        ],
- 
-    });
-
-    
-            
-    });
-
+function reload_table()
+{
+    table1.ajax.reload(null,false); //reload datatable ajax
+}
 
  </script>
 
-                </div>
-            </div><!-- tab content-->
-        </div> <!--panel body-->           
-     </div><!-- panel default -->
-   </div>   <!-- container -->      
 
 
 
 
-
-<div class="modal fade" id="modal_form" role="dialog">
+ <div class="modal fade" id="modal_form" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
-                <h3 class="modal-title">Add Shift Request</h3>
+                <h3 class="modal-title">Add Leave Request</h3>
                
             </div>
             <div class="modal-body form">
                 <form action="#" id="form" class="form-horizontal">
                     <input type="hidden" value="" name="id"/>
-                     <input type="hidden" value="" name="sub_id"/>
                     <div class="form-body">
                         <div class="row">
 
-                                      
-                         <div class="form-group">
-                            <label class="control-label col-md-3">Start Date</label>
-                            <div class="col-md-5">
-                             <input id="fromDate" name="startdate" placeholder="yyyy-mm-dd" class="form-control" type="text">
-
+                       
+                            <div class="col-md-6">  
+                                <div class="form-group">
+                                    
+                                        <div class="col-md-12">    
+                                        <label class="control-label">Schedule Start time</label>
+                                        <input id="start" name="start" class="form-control" type="text" readonly>
+                                        </div>
+                                       
+                                </div>  
+                            </div> 
+                                <div class="col-md-6">  
+                                <div class="form-group">
+                                 
+                                        <div class="col-md-12">  
+                                        <label class="control-label">Schedule End time</label>                     
+                                        <input id="end" name="end"  class="form-control" type="text" readonly>
+                                        </div>  
+                                </div>   
+                            </div>
+                      
+                    <div class="form-group">
+                             <label class="control-label col-md-3">Time-in</label>
+                            <div class="col-md-5">                           
+                          <input id="time_in" name="time_in" placeholder="yyyy-mm-dd" class="time form-control" type="text">
                                 <span class="help-block"></span>
                             </div>
                         </div>
                        
                        
                         <div class="form-group">
-                             <label class="control-label col-md-3">End Date</label>
+                             <label class="control-label col-md-3">Time-out</label>
                             <div class="col-md-5">                           
-                          <input id="toDate" name="enddate" placeholder="yyyy-mm-dd" class="form-control" type="text">
+                          <input id="time_out" name="time_out" placeholder="yyyy-mm-dd" class="time form-control" type="text">
                                 <span class="help-block"></span>
                             </div>
                         </div>
                          
 
                          <div class="form-group">
-                            <label class="control-label col-md-3">Duration</label>
+                            <label class="control-label col-md-3">Hours worked</label>
                             <div class="col-md-5">
-                                <input name="duration" id="calculated" class="form-control"></input>
+                                <input name="totalhours" id="totalhours" class="form-control"></input>
                                 <span class="help-block"></span>
                             </div>
                         </div>
-
-                  
-                       
                     
                         <div class="form-group">
-                            <label class="control-label col-md-3">Reason</label>
+                            <label class="control-label col-md-3">Overtime</label>
+                           <div class="col-md-5">
+                                <input name="overtime" id="overtime" class="form-control"></input>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Undertime</label>
                             <div class="col-md-5">
-                                <textarea name="reason" placeholder="Cause" class="form-control"></textarea>
+                                <input name="undertime" id="undertime" class="form-control"></input>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Tardiness</label>
+                             <div class="col-md-5">
+                                <input name="tardiness" id="tardiness" class="form-control"></input>
                                 <span class="help-block"></span>
                             </div>
                         </div>
@@ -420,4 +331,3 @@ var table;
  
 
   <!-- Modal Structure -->
- 

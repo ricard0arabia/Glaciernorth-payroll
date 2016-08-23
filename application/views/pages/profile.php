@@ -145,6 +145,7 @@ $(document).ready(function () {
             $('[name="address"]').val(data.address);
             $('[name="position"]').val(data.position);
             $('[name="contact_no"]').val(data.contact_no);
+            $('[name="userlevel"]').val(data.userlevel);
        
        
  
@@ -196,6 +197,7 @@ $(document).ready(function () {
             $('[name="address"]').val(data.address);
             $('[name="position"]').val(data.position);
             $('[name="contact_no"]').val(data.contact_no);
+            $('[name="userlevel"]').val(data.userlevel);
        
        
  
@@ -320,8 +322,9 @@ $(document).ready(function () {
                 <div class="panel-heading">
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#201file" data-toggle="tab">201 File</a></li>
+                            
+                            <li><a href="#earnings" data-toggle="tab">Earnings</a></li>
                             <li><a href="#schedule" data-toggle="tab">Schedule</a></li>
-                            <li><a href="#tab3primary" data-toggle="tab">Primary 3</a></li>
                           
                         </ul>
                 </div>
@@ -376,6 +379,17 @@ $(document).ready(function () {
     <td><input type="text" id="contact_no"class="basic input1" name="contact_no" readonly></td>
     
   </tr>
+  <tr>
+    <th></th>
+    <td></td>
+    <th>Userlevel</th>
+    <td><select id="userlevel" name="userlevel" class="basic input1" disabled="disabled" readonly>
+                                <option value="1">Accountant</option>
+                                <option value="2">H.R Supervisor</option>
+                                <option value="3">Employee</option>
+                                </select></td>
+    
+  </tr>
 
   </form>
 </table>
@@ -409,7 +423,7 @@ $(document).ready(function () {
   </tr>
   <tr>
     <th>Gender</th>
-    <td><select id="gender" name="gender" class="detailed input2" disabled="disabled">
+    <td><select id="gender" name="gender" class="detailed input2" disabled="disabled" readonly>
                                     <option value="">--Select Gender--</option>
                                     <option value="male">Male</option>
                                     <option value="female">Female</option>
@@ -425,7 +439,19 @@ $(document).ready(function () {
   </tr>
   <tr>
     <th>Civil Status</th>
-    <td><input type="text" id="cstatus" class="detailed input2" name="cstatus" readonly></td>
+   <td><select id="cstatus" name="cstatus" class="detailed input2" disabled="disabled" readonly>
+                                    <option value="">--Select civil status--</option>
+                                    <option value="s">Single</option>
+                                    <option value="s1">Single/With 1 Dependent</option>
+                                    <option value="s2">Single/With 2 Dependent</option>
+                                    <option value="s3">Single/With 3 Dependent</option>
+                                    <option value="s4">Single/With 4 Dependent</option>
+                                    <option value="me">Married</option>
+                                    <option value="me1">Married With 1 Dependent</option>
+                                    <option value="me2">Married With 2 Dependent</option>
+                                    <option value="me3">Married With 3 Dependent</option>
+                                    <option value="me4">Married With 4 Dependent</option>
+                                </select></td>
     <th>Philhealth No.</th>
     <td><input type="text" id="philhealth_no" class="detailed input2" name="philhealth_no" readonly></td>
     
@@ -439,6 +465,7 @@ $(document).ready(function () {
                    
     
                         </div>
+                         <div class="tab-pane fade" id="earnings">Primary 3</div>
                         <div class="tab-pane fade" id="schedule">
                        <?php if($level == '2'){ ?>   
                           <br>
@@ -451,7 +478,7 @@ $(document).ready(function () {
 
 
                         </div>
-                        <div class="tab-pane fade" id="tab3primary">Primary 3</div>
+                       
                     </div>
                 </div>
             </div>
@@ -691,7 +718,7 @@ $(document).ready(function () {
 $('#edit1').click(function(){
  
        
-  $('input, textarea').each(function(){
+  $('input, textarea, select').each(function(){
     var inp = $(this);
 
   if($(this).hasClass('basic')){
@@ -710,6 +737,7 @@ $('#edit1').click(function(){
       document.getElementById("edit1").innerHTML = 'cancel';
       document.getElementById("res1").disabled = true;
       document.getElementById("res2").disabled = true;  
+      document.getElementById("userlevel").disabled = false;
       document.getElementById("save1").style.display = "block";
  
 
@@ -737,6 +765,7 @@ $('#edit1').click(function(){
             $('[name="address"]').val(data.address);
             $('[name="position"]').val(data.position);
             $('[name="contact_no"]').val(data.contact_no);
+            $('[name="userlevel"]').val(data.userlevel);
        
        
  
@@ -764,6 +793,7 @@ $('#edit1').click(function(){
             $('[name="address"]').val(data.address);
             $('[name="position"]').val(data.position);
             $('[name="contact_no"]').val(data.contact_no);
+            $('[name="userlevel"]').val(data.userlevel);
        
        
  
@@ -780,6 +810,7 @@ $('#edit1').click(function(){
       document.getElementById("edit1").innerHTML = 'edit';
       document.getElementById("res1").disabled = false;
       document.getElementById("res2").disabled = false;  
+      document.getElementById("userlevel").disabled = true;
       document.getElementById("save1").style.display = "none";
 
 
@@ -790,7 +821,7 @@ $('#edit1').click(function(){
 });
  $('#save1').click(function(){
  
-  $('input, textarea').each(function(){
+  $('input, textarea, select').each(function(){
     var inp = $(this);
 
 if($(this).hasClass('basic')){
@@ -802,6 +833,7 @@ if($(this).hasClass('basic')){
       document.getElementById("edit1").innerHTML = 'edit';
       document.getElementById("res1").disabled = false;
       document.getElementById("res2").disabled = false;  
+      document.getElementById("userlevel").disabled = true;
       document.getElementById("save1").style.display = "none";
     }
   });
@@ -870,6 +902,7 @@ $('#edit2').click(function(){
         document.getElementById("res1").disabled = true;
         document.getElementById("res2").disabled = true;  
         document.getElementById("gender").disabled = false;
+        document.getElementById("cstatus").disabled = false;
         document.getElementById("save2").style.display = "block";
    
 
@@ -942,6 +975,7 @@ $('#edit2').click(function(){
       document.getElementById("res1").disabled = false;
       document.getElementById("res2").disabled = false;  
       document.getElementById("gender").disabled = true;
+       document.getElementById("cstatus").disabled = true;
       document.getElementById("save2").style.display = "none";
 
     
@@ -965,6 +999,7 @@ if($(this).hasClass('detailed')){
       document.getElementById("res1").disabled = false;
       document.getElementById("res2").disabled = false;  
       document.getElementById("gender").disabled = true;
+       document.getElementById("cstatus").disabled = true;
       document.getElementById("save2").style.display = "none";
     }
   });
@@ -1117,7 +1152,7 @@ if($(this).hasClass('detailed')){
  $(document).ready(function () {
      // set default dates
             var start = new Date();
-            start.setDate(start.getDate() + 2);
+            start.setDate(start.getDate() - 10);
 
             // set end date to max one year period:
             var end = new Date(new Date().setYear(start.getFullYear()+1));

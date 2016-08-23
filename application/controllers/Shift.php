@@ -20,13 +20,35 @@ class Shift extends CI_Controller {
 
 		$this->load->helper('url');	
           $this->load->view('header');
+          $data['distinct'] = $this->shift->count_distinct($this->session->userdata('username'));
           $data['user'] = $this->session->userdata('username');
+        $data['shift'] = $this->shift->get_allsched($this->session->userdata('username'));
+        $data['check'] = $this->shift->get_distinct($this->session->userdata('username'));
           $this->load->view('pages/requests/shiftchange',$data);
 		  $this->load->view('footer');
         }
 	
 	}	
+    public function get_allsched(){
 
+        $result = $this->shift->get_allsched($this->session->userdata('username'));
+        echo json_encode($result);
+
+    }
+
+     public function get_distinct(){
+
+        $result = $this->shift->get_distinct($this->session->userdata('username'));
+        echo json_encode($result);
+
+    }
+    public function count_distinct(){
+
+        $result = $this->shift->count_distinct($this->session->userdata('username'));
+        echo json_encode($result);
+
+    }
+   
              public function shift_list()
     {
         $list = $this->shift->shift_get_datatables();
@@ -74,7 +96,7 @@ $row[] = date("h:i A", strtotime($shift->sun_start)).' - '.date("h:i A", strtoti
 
         public function empsched_list()
     {
-        $list = $this->shift->allempsched_get_datatables();
+        $list = $this->shift->schedule_get_datatables($this->session->userdata('username'));
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $shift) {
@@ -86,10 +108,24 @@ $row[] = date("h:i A", strtotime($shift->sun_start)).' - '.date("h:i A", strtoti
             $row[] = ucfirst($shift->firstname).' '.ucfirst(substr($shift->middlename,0,1)).'. '.ucfirst($shift->lastname);
             $row[] = $shift->position;
             $row[] = $shift->department;
+            $row[] = $shift->start;
+            $row[] = $shift->start;
+            $row[] = $shift->start;
+            $row[] = $shift->start;
+            $row[] = $shift->start;
+            $row[] = $shift->start;
+            $row[] = $shift->start;
+
+
+
+        
+
+
+           
             
              
 
-
+/*
 $row[] = date("h:i A", strtotime($shift->mon_start)).' - '.date("h:i A", strtotime($shift->mon_end));
 $row[] = date("h:i A", strtotime($shift->tue_start)).' - '.date("h:i A", strtotime($shift->tue_end));
 $row[] = date("h:i A", strtotime($shift->wed_start)).' - '.date("h:i A", strtotime($shift->wed_end));
@@ -97,7 +133,7 @@ $row[] = date("h:i A", strtotime($shift->thurs_start)).' - '.date("h:i A", strto
 $row[] = date("h:i A", strtotime($shift->fri_start)).' - '.date("h:i A", strtotime($shift->fri_end));
 $row[] = date("h:i A", strtotime($shift->sat_start)).' - '.date("h:i A", strtotime($shift->sat_end));
 $row[] = date("h:i A", strtotime($shift->sun_start)).' - '.date("h:i A", strtotime($shift->sun_end));
-
+*/
             
     
            
@@ -110,8 +146,8 @@ $row[] = date("h:i A", strtotime($shift->sun_start)).' - '.date("h:i A", strtoti
  
         $output = array(
                         "draw" => $_POST['draw'],
-                        "recordsTotal" => $this->shift->empsched_count_all(),
-                        "recordsFiltered" => $this->shift->empsched_count_filtered(),
+                        "recordsTotal" => $this->shift->allsched_count_all(),
+                        "recordsFiltered" => $this->shift->sched_count_filtered(),
                         "data" => $data,
                 );
         //output to json format

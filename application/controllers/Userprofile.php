@@ -48,6 +48,7 @@ class Userprofile extends CI_Controller {
                 'department' => $this->input->post('department'),
                 'position' => $this->input->post('position'),
                 'contact_no' => $this->input->post('contact_no'),
+                'userlevel' => $this->input->post('userlevel'),
                 'address' => $this->input->post('address'),
                
                 
@@ -169,12 +170,14 @@ $row[] = date("h:i A", strtotime($profile->sun_start)).' - '.date("h:i A", strto
 					$this->profile->add_image($file,$this->session->userdata('username'));
 					$data = array('upload_data' => $this->upload->data());
 
-					$data['notif'] = $this->uploadinfo();
-			        $data['image'] = $this->profile->get_image_profile($this->session->userdata('username'));
-					
-					$this->load->view('header');
-			        $this->load->view('pages/profile', $data);
-					$this->load->view('footer');
+					$this->load->helper('url');    
+            $this->load->view('header');
+            $data['level'] = $this->session->userdata('level');
+            $data['notif'] = $this->uploadinfo();
+            $data['image'] = $this->profile->get_image_profile($this->session->userdata('username'));
+            $data['exist'] = $this->profile->empinfo_count_all($this->session->userdata('username'));
+            $this->load->view('pages/profile', $data);
+            $this->load->view('footer');
 				
 					
 				}else{

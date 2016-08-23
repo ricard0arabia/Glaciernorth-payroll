@@ -13,11 +13,12 @@
 
  
     <link href="<?php echo base_url('assets/bootstrap/css/bootstrap.css')?>" rel="stylesheet">
-    <link href="<?php echo base_url('assets/bootstrap/css/bootstrap-timepicker.min.css')?>" rel="stylesheet">
+
     <link href="<?php echo base_url('assets/datatables/css/dataTables.bootstrap.css')?>" rel="stylesheet">
   
-        <link href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.1.1/fullcalendar.min.css' rel='stylesheet' />
-        <link href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.1.1/fullcalendar.print.css' rel='stylesheet' media='print' />
+        <link href="<?php echo base_url('assets/fullcalendar-2.1.1/fullcalendar.min.css')?>" rel="stylesheet">
+
+        <link href="<?php echo base_url('assets/fullcalendar-2.1.1/fullcalendar.min.css')?>" rel="stylesheet">
         <link href="//cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.2/css/bootstrapValidator.min.css" rel="stylesheet" />
         
         <link href="<?php echo base_url();?>assets/css/bootstrap-colorpicker.min.css" rel="stylesheet" />
@@ -41,7 +42,11 @@
          url(../assets/font/billabong.woff) format('woff'),
          url(../../assets/font/billabong.woff) format('woff');
 }
- th, td { text-align: center; }
+.bootstrap-timepicker-widget.dropdown-menu {
+    z-index: 1050!important;
+}
+
+
 </style>
 <body>
 
@@ -150,14 +155,15 @@
      </div>
 
        <!-- jQuery -->
-            <script src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.3/moment.min.js'></script>
+    <script src="<?php echo base_url('assets/js/moment.js')?>"></script>
   <script src="<?php echo base_url('assets/jquery/jquery-2.1.4.min.js')?>"></script>
 <script src="<?php echo base_url('assets/bootstrap/js/bootstrap.min.js')?>"></script>
 <script src="<?php echo base_url('node_modules/socket.io/node_modules/socket.io-client/socket.io.js');?>"></script>
 
 <script src="<?php echo base_url('assets/datatables/js/jquery.dataTables.min.js')?>"></script>
 <script src="<?php echo base_url('assets/datatables/js/dataTables.bootstrap.js')?>"></script>
-<script src= "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/js/bootstrap-datepicker.min.js" > </script>
+
+ <script src='<?php echo base_url();?>assets/js/bootstrap-datepicker.min.js'></script>
   <script src="<?php echo base_url()?>assets/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
     <script src="<?php echo base_url()?>assets/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
     <!-- Page-Level Demo Scripts - Tables - Use for reference -->
@@ -177,7 +183,8 @@
  <script type="text/javascript" src="//cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
 
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.2/js/bootstrapValidator.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.1.1/fullcalendar.min.js"></script>
+
+         <script src='<?php echo base_url();?>assets/fullcalendar-2.1.1/fullcalendar.min.js'></script>
      
 
         <script src='<?php echo base_url();?>assets/js/bootstrap-colorpicker.min.js'></script>

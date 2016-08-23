@@ -4,13 +4,13 @@
 
 class Leave extends CI_Controller {
 
-	
-	public function __construct() {
-		parent::__construct();
-		$this->load->model('Contents','leave');
-	}
+    
+    public function __construct() {
+        parent::__construct();
+        $this->load->model('Contents','leave');
+    }
 
-	public function request() {	
+    public function request() { 
 
         if($this->session->userdata('isLogin') == FALSE)
         {
@@ -19,16 +19,16 @@ class Leave extends CI_Controller {
         }
         else{
 
-		$this->load->helper('url');	
+        $this->load->helper('url'); 
         $this->load->view('header');
         $data['user'] = $this->session->userdata('username'); 
         $data['name'] = $this->leave->emp_get_name($this->session->userdata('username'));   
           $this->load->view('pages/requests/leave',$data);
 
-		  $this->load->view('footer');
+          $this->load->view('footer');
         }
-	
-	}	
+    
+    }   
 
     public function approval() { 
 
@@ -130,7 +130,7 @@ class Leave extends CI_Controller {
 
 
 
-	public function add_leave()
+    public function add_leave()
     {
             $this->_validate();
 
@@ -180,11 +180,11 @@ class Leave extends CI_Controller {
            }
              if($start == true && $end == true){
             $data = array(
-            		'user_id' => $this->session->userdata('username'),
-            		'startdate' => $this->input->post('startdate'),
+                    'user_id' => $this->session->userdata('username'),
+                    'startdate' => $this->input->post('startdate'),
                     'enddate' => $this->input->post('enddate'),
-            		'leavetype' => $this->input->post('leavetype'),
-            		'leave_status' => 'requested',
+                    'leavetype' => $this->input->post('leavetype'),
+                    'leave_status' => 'requested',
                     'cause' => $this->input->post('cause'),
                     'duration' => $this->input->post('duration'),
                     'date_submitted' => date("Y-m-d"),
@@ -225,11 +225,11 @@ class Leave extends CI_Controller {
     {
         $this->_validate();
         $data = array(
-              	'user_id' => $this->session->userdata('username'),
-        		'startdate' => $this->input->post('startdate'),
+                'user_id' => $this->session->userdata('username'),
+                'startdate' => $this->input->post('startdate'),
                 'enddate' => $this->input->post('enddate'),
-        		'leavetype' => $this->input->post('leavetype'),
-        		'leave_status' => 'requested',
+                'leavetype' => $this->input->post('leavetype'),
+                'leave_status' => 'requested',
                 'cause' => $this->input->post('cause'),
                 'duration' => $this->input->post('duration'),
             );
@@ -244,7 +244,7 @@ class Leave extends CI_Controller {
     }
  
 
-	   private function _validate()
+       private function _validate()
     {
         $data = array();
         $data['error_string'] = array();
@@ -254,7 +254,7 @@ class Leave extends CI_Controller {
         $data['end'] = array();
          $data['warning'] = array();
  
-		if($this->input->post('leavetype') == '')
+        if($this->input->post('leavetype') == '')
         {
             $data['inputerror'][] = 'leavetype';
             $data['error_string'][] = 'Please select type';
@@ -353,7 +353,7 @@ class Leave extends CI_Controller {
                 $list = $this->leave->get_sched($id);
 
             foreach ($list as $value) {
-                $date_id = $value->id;
+                $date_id = $value->sched_id;
                 $datetime = date_create($value->start);
                 $date = date_format($datetime,"Y-m-d");
 
@@ -432,6 +432,6 @@ class Leave extends CI_Controller {
 
 
 
-	
+    
 }
 ?>
