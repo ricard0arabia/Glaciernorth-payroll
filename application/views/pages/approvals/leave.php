@@ -291,6 +291,7 @@ function accept_leave(id)
             dataType: "JSON",
             success: function(data)
             {
+              alert(data.check);
                 reload_table1();
             },
         });

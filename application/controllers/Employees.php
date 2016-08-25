@@ -78,7 +78,7 @@ class Employees extends CI_Controller {
                 'userlevel' => '3',
                 'emp_pass' => md5($this->input->post('user_id')),
                 'address' => $this->input->post('address'),
-                'date_created' => '1996/10/10',
+                'date_created' => date('Y-m-d'),
                 'status' => '1',
              
                  
@@ -95,7 +95,6 @@ class Employees extends CI_Controller {
             $this->load->view('header');
             $data['level'] = $this->session->userdata('level');
             $data['image'] = $this->employee->get_image_profile($id);
-             $data['exist'] = $this->employee->empinfo_count_all($id);
             $this->load->view('pages/profile', $data);
             $this->load->view('footer');
     }
@@ -117,79 +116,54 @@ class Employees extends CI_Controller {
 
 
 
-  public function update_basicinfo()
-    {
-   
-        $data = array(
-                
-                'firstname' => $this->input->post('firstname'),
-                'middlename' => $this->input->post('middlename'),
-                'lastname' => $this->input->post('lastname'),
-                'department' => $this->input->post('department'),
-                'position' => $this->input->post('position'),
-                'contact_no' => $this->input->post('contact_no'),
-                'address' => $this->input->post('address'),
-                'userlevel' => $this->input->post('userlevel'),
-               
-                
-            );
-        $this->employee->emp_update(array('user_id' => $this->input->post('user_id')), $data);
-        echo json_encode(array("status" => TRUE));
-    }
-
-  public function basicinfo_list($id)
+  public function employee_details($id)
   {
         $data = $this->employee->emp_get_by_id($id);
         echo json_encode($data);
   }
 
-  public function otherdetails_list($id)
-  {
-        $data = $this->employee->empinfo_get_by_id($id);
-        echo json_encode($data);
-  }
-
-    public function add_otherdetails($id)
+   public function update_basicinfo($id)
     {
-     
-        
-        $data = array(
-                'user_id' => $id,
-                'birthdate' => $this->input->post('birthdate'),
-                'gender' => $this->input->post('gender'),
-                'datehired' => $this->input->post('datehired'),
-                'cstatus' => $this->input->post('cstatus'),
-                'hdmf_no' => $this->input->post('hdmf_no'),
-                'tin_no' => $this->input->post('tin_no'),
-                'sss_no' => $this->input->post('sss_no'),
-                'philhealth_no' => $this->input->post('philhealth_no'),
-                'salary' => 0,
-
+ 
+       $data = array(
                 
+                'firstname' => $this->input->post('firstname'),
+                'middlename' => $this->input->post('middlename'),
+                'lastname' => $this->input->post('lastname'),
+                'gender' => $this->input->post('gender'),
+                'birthdate' => $this->input->post('birthdate'),
+                'cstatus' => $this->input->post('cstatus'),
+                'contact_no' => $this->input->post('contact_no'),
+                'email' => $this->input->post('emailadd'),
+                'zipcode' => $this->input->post('zipcode'),
+                'emp_pass' => md5($this->input->post('password')),
+                'address' => $this->input->post('address'),
+               
                 
             );
-        $insert = $this->employee->empinfo_save($data);
+        $this->employee->emp_update(array('user_id' => $id), $data);
         echo json_encode(array("status" => TRUE));
     }
 
- public function update_otherdetails($id)
+     public function update_otherdetails($id)
     {
  
-        $data = array(
-
-          
-                'birthdate' => $this->input->post('birthdate'),
-                'gender' => $this->input->post('gender'),
+       $data = array(
+                
+                'department' => $this->input->post('department'),
+                'position' => $this->input->post('position'),
+                'userlevel' => $this->input->post('userlevel'),
+                'taxstatus' => $this->input->post('taxstatus'),
                 'datehired' => $this->input->post('datehired'),
-                'cstatus' => $this->input->post('cstatus'),
+                'salary' => $this->input->post('salary'),
                 'hdmf_no' => $this->input->post('hdmf_no'),
-                'tin_no' => $this->input->post('tin_no'),
+                'tin_no' => $this->input->post('tin_no'),           
                 'sss_no' => $this->input->post('sss_no'),
                 'philhealth_no' => $this->input->post('philhealth_no'),
                
                 
             );
-    $this->employee->empinfo_update(array('user_id' => $id), $data);
+        $this->employee->emp_update(array('user_id' => $id), $data);
         echo json_encode(array("status" => TRUE));
     }
   
@@ -260,7 +234,6 @@ $row[] = date("h:i A", strtotime($employee->sun_start)).' - '.date("h:i A", strt
             $data['level'] = $this->session->userdata('level');
             $data['notif'] = $this->uploadinfo();
             $data['image'] = $this->employee->get_image_profile($id);
-             $data['exist'] = $this->employee->empinfo_count_all($id);
             $this->load->view('pages/profile', $data);
             $this->load->view('footer');
                 
@@ -723,7 +696,7 @@ $work_status = 'active';
         'overtime' => 0,
         'tardiness' => 0,
         'undertime' => 0,
-        'attnd_status' => 'active',
+        'attnd_status' => $work_status,
 
 
         );

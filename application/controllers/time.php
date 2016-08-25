@@ -121,6 +121,19 @@ class Time extends CI_Controller {
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $time) {
+              $class = 'label label-success';
+        if ($time->attnd_status === 'absent') {
+            $class = 'label label-danger';
+        }
+        else if ($time->attnd_status === 'inactive') {
+            $class = 'label label-info';
+        }
+        else if ($time->attnd_status === 'leave') {
+            $class = 'label label-warning';
+        } 
+        else if ($time->attnd_status === 'overtime') {
+            $class = 'label label-primary';
+        }
             $no++;
             $row = array();
          	
@@ -135,7 +148,7 @@ class Time extends CI_Controller {
             $row[] = $time->overtime;
             $row[] = $time->tardiness;
             $row[] = $time->undertime;
-            $row[] = $time->attnd_status;
+            $row[] = '<h4><span class="'.$class.'">'.$time->attnd_status.'</span></h4>'; 
        
            
             //add html for action
@@ -169,11 +182,25 @@ class Time extends CI_Controller {
                 'overtime' => $this->input->post('overtime'),
                 'undertime' => $this->input->post('undertime'),
                 'tardiness' => $this->input->post('tardiness'),
+                'attnd_status' => $this->input->post('status'),
                
                 
             );
          $user_id = $this->input->post('id');
         $this->time->attendance_update($data,$user_id,$date);
+        $color = '#264281';
+        if($this->input->post('status') == 'absent'){
+            $color = '#ea4335';
+        }
+
+        $data1 = array(
+                
+                'work_status' => $this->input->post('status'),
+                'color' => $color,
+               
+                
+            );
+         $this->time->sched_update1($data1,$user_id,$date);
         echo json_encode(array("status" => TRUE));
 
        
@@ -183,7 +210,7 @@ class Time extends CI_Controller {
         $data = $this->time->get_emp_sched($id,$date);
 
         $sched = array(
-    
+                 "work_status" => $data->work_status,         
                 "start" => $data->start,
                 "end" => $data->end,
         );

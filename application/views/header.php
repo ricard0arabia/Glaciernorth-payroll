@@ -100,13 +100,7 @@
           <li><a href="<?php echo site_url()."shift"; ?>">List of Shift requests</a></li>
                    </ul>
                     </li>
-<!-- *****************************Accountant ************************************************* -->
 
-                 <?php if($this->session->userdata('level') == 1) { ?>
-
-                   <?php if($this->uri->segment(1) == "employees" || $this->uri->segment(1) == "loan" || $this->uri->segment(1) == "shift" || $this->uri->segment(1) == "leave" || $this->uri->segment(1) == "overtime") { ?> <li  class = "active" > <?php }else { ?>
-                 <li> <?php } ?> <a  class="waves-effect waves-default btn-small"  href="<?php echo site_url()."employees"; ?>"> <span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;Employee Masterfile</a></li>
-                  <?php } ?>
 <!-- *****************************      Hr      ************************************************* -->
 
                   <?php if($this->session->userdata('level') == 2) { ?>
@@ -138,7 +132,31 @@
                   <?php if($this->uri->segment(1) == "compensation" ) { ?> <li  class = "active" > <?php }else { ?>
                 <li> <?php } ?><a  class="waves-effect waves-default btn-small"  href="<?php if($this->session->userdata('level') == 1) {  echo site_url(). "compensation/payperiod"; } else {echo site_url(). "compensation/payslip";} ?>"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Compensation</a></li>
 
- <li><a  class="waves-effect waves-default btn-small"  href="<?php echo site_url()."message"; ?>"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Messages<span class="badge" id="new_count_message"><?php echo $this->db->where('read_status',0)->count_all_results('message');?></span></a></li>
+
+ <!-- *****************************    Payroll for accountant    ****************************** -->
+  <?php if($this->session->userdata('level') == 1) { ?>
+         
+           <?php if($this->uri->segment(1) == "payroll" ) { ?> <li  class = "active" > <?php }else { ?>
+           <li> <?php } ?><a  class="waves-effect waves-default btn-small"  href="<?php echo site_url(). "payroll"; ?>"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Payroll</a></li>
+
+
+
+<li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                     <li ><a href="<?php echo site_url()."reports/sss";?>" >SSS</a></li>
+                      <li><a href="<?php echo site_url()."reports/philhealth";?>">Philhealth</a></li>
+                      <li><a href="<?php echo site_url()."reports/pagibig";?>" >Pagibig</a></li>      
+                       <li><a href="<?php echo site_url()."reports/bir";?>" >BIR</a></li>         
+                     </ul>
+                    </li>
+
+<?php } ?>
+
+
+
+                 <!-- *****************************    Options    ****************************** -->
+
 
                     <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Options</a>
@@ -194,57 +212,4 @@
         
        <div class = "row">
          
- <script>
- var session_id;
  
-  $(document).ready(function(){
-  
-    if(<?php echo $this->db->where('read_status',0)->count_all_results('message'); ?> == 0){
-
-      $( "#new_count_message" ).hide();
-    } 
-    $.ajax({
-        url : "<?php echo site_url('employees/get_session')?>",
-        type: "GET",
-        dataType: "JSON",
-        success: function(data)
-        {
- 
-          session_id = data.session_id;
-
- 
-        },
-        error: function (jqXHR, textStatus, errorThrown)
-        {
-            alert('Error get data from ajax');
-        }
-    });
-  });
-   var socket = io.connect( 'http://'+window.location.hostname+':3000' );
-
-socket.on( 'new_message', function( data ) {
-
-          
-       alert('name id  '+ data.name);
-         alert('subject id  '+ data.subject);
-        alert('recipient id  '+ data.recipient_id);
-           $( "#new_count_message" ).show();
-            $( "#new_count_message" ).html( data.new_count_message );
-            $('#notif_audio')[0].play();
-          
-        });
-
-  socket.on( 'new_count_message', function( data ) {
-
-          
-      
-        alert('new count messsage '+ data.new_count_message);
-           $( "#new_count_message" ).show();
-            $( "#new_count_message" ).html( data.new_count_message );
-            $('#notif_audio')[0].play();
-          
-        });
-  
-
-
-    </script>

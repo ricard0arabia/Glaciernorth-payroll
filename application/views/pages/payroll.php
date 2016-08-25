@@ -1,6 +1,6 @@
    <div class="container">
 
-  <h3>Timesheet for <?php echo date("F j,Y", strtotime($timesheet_data->date)); ?></h3>
+  <h3>Payroll for <?php echo date("F j,Y", strtotime($payperiod->date_from)); ?> to <?php echo date("F j,Y", strtotime($payperiod->date_to)); ?></h3>
     <br>
  <button class="btn btn-default" onclick="reload_table()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
         <br />

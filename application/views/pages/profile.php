@@ -129,7 +129,7 @@ $(document).ready(function () {
    <?php if($this->uri->segment(1) == 'userprofile') { ?>
 
     $.ajax({
-        url : "<?php echo site_url('userprofile/basicinfo_list')?>",
+        url : "<?php echo site_url('userprofile/employee_details')?>",
         type: "GET",
         dataType: "JSON",
 
@@ -141,47 +141,38 @@ $(document).ready(function () {
             $('[name="firstname"]').val(data.firstname);
             $('[name="middlename"]').val(data.middlename);
             $('[name="lastname"]').val(data.lastname);
-            $('[name="department"]').val(data.department);
-            $('[name="address"]').val(data.address);
-            $('[name="position"]').val(data.position);
-            $('[name="contact_no"]').val(data.contact_no);
-            $('[name="userlevel"]').val(data.userlevel);
-       
-       
- 
-        },
-       
-    });
-    <?php if($exist == 1){ ?>
-    $.ajax({
-        url : "<?php echo site_url('userprofile/otherdetails_list')?>",
-        type: "GET",
-        dataType: "JSON",
-
-        success: function(data)
-        {
- 
-           
             $('[name="birthdate"]').val(data.birthdate);
             $('[name="gender"]').val(data.gender);
-            $('[name="datehired"]').val(data.datehired);
             $('[name="cstatus"]').val(data.cstatus);
+            $('[name="emailadd"]').val(data.email);
+            $('[name="zipcode"]').val(data.zipcode);
+            $('[name="contact_no"]').val(data.contact_no);
+            $('[name="address"]').val(data.address);
+            $('[name="password"]').val(data.password);
+
+            $('[name="department"]').val(data.department);
+            $('[name="position"]').val(data.position);
+            $('[name="salary"]').val(data.salary);
+            $('[name="datehired"]').val(data.datehired);
+            $('[name="taxstatus"]').val(data.taxstatus);
+            $('[name="userlevel"]').val(data.userlevel);
             $('[name="hdmf_no"]').val(data.hdmf_no);
             $('[name="tin_no"]').val(data.tin_no);
             $('[name="sss_no"]').val(data.sss_no);
             $('[name="philhealth_no"]').val(data.philhealth_no);
+
        
        
  
         },
        
     });
-      <?php } ?>
-    <?php } else { ?>
+    
 
+      <?php }else if($this->uri->segment(1) == 'employees'){ ?>
 
-      $.ajax({
-        url : "<?php echo site_url('employees/basicinfo_list')?>/"+ <?php echo $this->uri->segment(3) ?>,
+        $.ajax({
+        url : "<?php echo site_url('employees/employee_details')?>/" + <?php echo $this->uri->segment(3); ?>,
         type: "GET",
         dataType: "JSON",
 
@@ -193,43 +184,36 @@ $(document).ready(function () {
             $('[name="firstname"]').val(data.firstname);
             $('[name="middlename"]').val(data.middlename);
             $('[name="lastname"]').val(data.lastname);
-            $('[name="department"]').val(data.department);
-            $('[name="address"]').val(data.address);
-            $('[name="position"]').val(data.position);
-            $('[name="contact_no"]').val(data.contact_no);
-            $('[name="userlevel"]').val(data.userlevel);
-       
-       
- 
-        },
-       
-    });
-      <?php if($exist == 1){ ?>
-      $.ajax({
-        url : "<?php echo site_url('employees/otherdetails_list')?>/"+ <?php echo $this->uri->segment(3) ?>,
-        type: "GET",
-        dataType: "JSON",
-        success: function(data)
-        {
- 
-           
             $('[name="birthdate"]').val(data.birthdate);
             $('[name="gender"]').val(data.gender);
-            $('[name="datehired"]').val(data.datehired);
             $('[name="cstatus"]').val(data.cstatus);
+            $('[name="emailadd"]').val(data.email);
+            $('[name="zipcode"]').val(data.zipcode);
+            $('[name="contact_no"]').val(data.contact_no);
+            $('[name="address"]').val(data.address);
+            $('[name="password"]').val(data.password);
+
+            $('[name="department"]').val(data.department);
+            $('[name="position"]').val(data.position);
+            $('[name="salary"]').val(data.salary);
+            $('[name="datehired"]').val(data.datehired);
+            $('[name="taxstatus"]').val(data.taxstatus);
+            $('[name="userlevel"]').val(data.userlevel);
             $('[name="hdmf_no"]').val(data.hdmf_no);
             $('[name="tin_no"]').val(data.tin_no);
             $('[name="sss_no"]').val(data.sss_no);
             $('[name="philhealth_no"]').val(data.philhealth_no);
+
        
        
  
         },
        
     });
-      <?php } ?>
+    
 
-      <?php } ?>
+
+        <?php } ?>
 
 
 
@@ -348,7 +332,7 @@ $(document).ready(function () {
 
     <?php } else { ?> 
 
-     <button id="save1" style="display: none;" type="button" name="submit" class=" btn btn-info pull-right" onclick="employeeprofile1()">   Save  </button>
+     <button id="save1" style="display: none;" type="button" name="submit" class=" btn btn-info pull-right" onclick="employeeprofile1(<?php echo $this->uri->segment(3); ?>)">   Save  </button>
 
     <?php } ?>
 
@@ -357,39 +341,55 @@ $(document).ready(function () {
   <tr>
     <th>Employee Id</th>
     <td><input type="text" id="user_id" class="basic input1"name="user_id" readonly></td>
-    <th>Department</th>
-    <td><input type="text" id="department" class="basic input1" name="department"  readonly></td>
+     <th>Civil Status</th>
+    <td><select id="cstatus" name="cstatus" class="basic input1" disabled="disabled" readonly>
+                                    <option value="">--Select civil status--</option>
+                                    <option value="single">Single</option>
+                                    <option value="married">Married</option>
+                                     <option value="widowed">Widowed</option>
+                                </select></td>
   </tr>
   <tr>
     <th>First Name</th>
     <td><input type="text" id="firstname"class="basic input1" name="firstname"  readonly></td>
-    <th>Position</th>
-    <td><input type="text" id="position"  class="basic input1"name="position"  readonly></td>
+     <th>Contact No.</th>
+    <td><input type="text" id="contact_no"class="basic input1" name="contact_no" readonly></td>
   </tr>
   <tr>
     <th>Middle Name</th>
     <td><input type="text" id="middlename" class="basic input1" name="middlename"  readonly></td>
-    <th>Address</th>
-    <td><textarea type="text" id="address" class="basic input1" name="address" style="min-width: 100%" readonly></textarea></td>
+    <th>Email Address</th>
+    <td><input type="text" id="emailadd" class="basic input1" name="emailadd"  readonly></td>
+   
   </tr>
   <tr>
     <th>Last Name</th>
     <td><input type="text" id="lastname"class="basic input1" name="lastname" readonly></td>
-    <th>Contact No.</th>
-    <td><input type="text" id="contact_no"class="basic input1" name="contact_no" readonly></td>
+    <th>Zip code</th>
+    <td><input type="text" id="zipcode" class="basic input1" name="zipcode"  readonly></td>
+   
     
   </tr>
   <tr>
-    <th></th>
-    <td></td>
-    <th>Userlevel</th>
-    <td><select id="userlevel" name="userlevel" class="basic input1" disabled="disabled" readonly>
-                                <option value="1">Accountant</option>
-                                <option value="2">H.R Supervisor</option>
-                                <option value="3">Employee</option>
+   <tr>
+    <th>Gender</th>
+    <td><select id="gender" name="gender" class="basic input1" disabled="disabled" readonly>
+                                    <option value="">--Select Gender--</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
                                 </select></td>
+    <th>Password</th>
+    <td><input type="text" id="password" class="basic input1" name="password"  readonly></td>
+   
     
   </tr>
+  <tr>
+      <th>Birthdate</th>
+    <td><input type="date" id="birthdate" class="basic input1"name="birthdate" readonly></td>
+     <th>Address</th>
+    <td><textarea type="text" id="address" class="basic input1" name="address" style="min-width: 100%" readonly></textarea></td>
+  </tr>
+
 
   </form>
 </table>
@@ -416,30 +416,38 @@ $(document).ready(function () {
 
   <table id="view2" class="table table-stripped">
   <tr>
-    <th>Birthdate</th>
-    <td><input type="date" id="birthdate" class="detailed input2"name="birthdate" readonly></td>
+    <th>Department</th>
+    <td><input type="text" id="department" class="detailed input2"name="department" readonly></td>
     <th>HDMF No.</th>
     <td><input type="text" id="hdmf_no" class="detailed input2" name="hdmf_no"  readonly></td>
   </tr>
   <tr>
-    <th>Gender</th>
-    <td><select id="gender" name="gender" class="detailed input2" disabled="disabled" readonly>
-                                    <option value="">--Select Gender--</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                </select></td>
+    <th>Position</th>
+    <td><input type="text" id="position"  class="detailed input2"name="position"  readonly></td>
     <th>TIN No.</th>
     <td><input type="text" id="tin_no"  class="detailed input2"name="tin_no"  readonly></td>
   </tr>
   <tr>
-    <th>Datehired</th>
-    <td><input type="date" id="datehired" class="detailed input2" name="datehired"  readonly></td>
+  <th>Userlevel</th>
+    <td><select id="userlevel" name="userlevel" class="detailed input2" disabled="disabled" readonly>
+                                    <option value="">--Select user level--</option>
+                                    <option value="1">Accountant</option>
+                                    <option value="2">H.R supervisor</option>
+                                     <option value="3">Employee</option>
+                                </select></td>
     <th>SSS No.</th>
     <td><input type="text" id="sss_no" class="detailed input2" name="sss_no" readonly></td>
   </tr>
   <tr>
-    <th>Civil Status</th>
-   <td><select id="cstatus" name="cstatus" class="detailed input2" disabled="disabled" readonly>
+    <th>Datehired</th>
+    <td><input type="date" id="datehired" class="detailed input2" name="datehired" readonly></td>
+    <th>Philhealth No.</th>
+    <td><input type="text" id="philhealth_no" class="detailed input2" name="philhealth_no" readonly></td>
+    
+  </tr>
+  <tr>
+   <th>Tax Status</th>
+   <td><select id="taxstatus" name="taxstatus" class="detailed input2" disabled="disabled" readonly>
                                     <option value="">--Select civil status--</option>
                                     <option value="s">Single</option>
                                     <option value="s1">Single/With 1 Dependent</option>
@@ -452,9 +460,15 @@ $(document).ready(function () {
                                     <option value="me3">Married With 3 Dependent</option>
                                     <option value="me4">Married With 4 Dependent</option>
                                 </select></td>
-    <th>Philhealth No.</th>
-    <td><input type="text" id="philhealth_no" class="detailed input2" name="philhealth_no" readonly></td>
-    
+    <th></th>
+    <td></td>
+  </tr>
+  <tr>
+     <th>Salary</th>
+    <td><input type="text" id="salary" class="detailed input2" name="salary" readonly></td>
+    <th></th>
+    <td></td>
+
   </tr>
 
   </form>
@@ -737,7 +751,8 @@ $('#edit1').click(function(){
       document.getElementById("edit1").innerHTML = 'cancel';
       document.getElementById("res1").disabled = true;
       document.getElementById("res2").disabled = true;  
-      document.getElementById("userlevel").disabled = false;
+       document.getElementById("cstatus").disabled = false;
+      document.getElementById("gender").disabled = false;
       document.getElementById("save1").style.display = "block";
  
 
@@ -749,7 +764,7 @@ $('#edit1').click(function(){
       
         <?php if($this->uri->segment(1) == 'userprofile') { ?>
     $.ajax({
-        url : "<?php echo site_url('userprofile/basicinfo_list')?>",
+        url : "<?php echo site_url('userprofile/employee_details')?>",
         type: "GET",
         dataType: "JSON",
 
@@ -757,15 +772,18 @@ $('#edit1').click(function(){
         {
  
            
-            $('[name="user_id"]').val(data.user_id);
+           $('[name="user_id"]').val(data.user_id);
             $('[name="firstname"]').val(data.firstname);
             $('[name="middlename"]').val(data.middlename);
             $('[name="lastname"]').val(data.lastname);
-            $('[name="department"]').val(data.department);
-            $('[name="address"]').val(data.address);
-            $('[name="position"]').val(data.position);
+            $('[name="birthdate"]').val(data.birthdate);
+            $('[name="gender"]').val(data.gender);
+            $('[name="cstatus"]').val(data.cstatus);
+            $('[name="emailadd"]').val(data.email);
+            $('[name="zipcode"]').val(data.zipcode);
             $('[name="contact_no"]').val(data.contact_no);
-            $('[name="userlevel"]').val(data.userlevel);
+            $('[name="address"]').val(data.address);
+            $('[name="password"]').val(data.password);
        
        
  
@@ -777,7 +795,7 @@ $('#edit1').click(function(){
 
 
       $.ajax({
-        url : "<?php echo site_url('employees/basicinfo_list')?>/"+ <?php echo $this->uri->segment(3) ?>,
+        url : "<?php echo site_url('employees/employee_details')?>/"+ <?php echo $this->uri->segment(3) ?>,
         type: "GET",
         dataType: "JSON",
 
@@ -785,15 +803,18 @@ $('#edit1').click(function(){
         {
  
            
-            $('[name="user_id"]').val(data.user_id);
+              $('[name="user_id"]').val(data.user_id);
             $('[name="firstname"]').val(data.firstname);
             $('[name="middlename"]').val(data.middlename);
             $('[name="lastname"]').val(data.lastname);
-            $('[name="department"]').val(data.department);
-            $('[name="address"]').val(data.address);
-            $('[name="position"]').val(data.position);
+            $('[name="birthdate"]').val(data.birthdate);
+            $('[name="gender"]').val(data.gender);
+            $('[name="cstatus"]').val(data.cstatus);
+            $('[name="emailadd"]').val(data.email);
+            $('[name="zipcode"]').val(data.zipcode);
             $('[name="contact_no"]').val(data.contact_no);
-            $('[name="userlevel"]').val(data.userlevel);
+            $('[name="address"]').val(data.address);
+            $('[name="password"]').val(data.password);
        
        
  
@@ -810,7 +831,8 @@ $('#edit1').click(function(){
       document.getElementById("edit1").innerHTML = 'edit';
       document.getElementById("res1").disabled = false;
       document.getElementById("res2").disabled = false;  
-      document.getElementById("userlevel").disabled = true;
+       document.getElementById("cstatus").disabled = true;
+      document.getElementById("gender").disabled = true;
       document.getElementById("save1").style.display = "none";
 
 
@@ -833,15 +855,16 @@ if($(this).hasClass('basic')){
       document.getElementById("edit1").innerHTML = 'edit';
       document.getElementById("res1").disabled = false;
       document.getElementById("res2").disabled = false;  
-      document.getElementById("userlevel").disabled = true;
+      document.getElementById("cstatus").disabled = true;
+      document.getElementById("gender").disabled = true;
       document.getElementById("save1").style.display = "none";
     }
   });
 });
- function employeeprofile1()
+ function employeeprofile1(id)
  {
    $.ajax({
-        url :  "<?php echo site_url('employees/update_basicinfo')?>",
+        url :  "<?php echo site_url('employees/update_basicinfo')?>/" + id,
         type: "POST",
         data: $('#basicinfo').serialize(),
         dataType: "JSON",
@@ -901,8 +924,8 @@ $('#edit2').click(function(){
         document.getElementById("edit2").innerHTML = 'cancel';
         document.getElementById("res1").disabled = true;
         document.getElementById("res2").disabled = true;  
-        document.getElementById("gender").disabled = false;
-        document.getElementById("cstatus").disabled = false;
+        document.getElementById("userlevel").disabled = false;
+        document.getElementById("taxstatus").disabled = false;
         document.getElementById("save2").style.display = "block";
    
 
@@ -916,7 +939,7 @@ $('#edit2').click(function(){
 
         <?php if($this->uri->segment(1) == 'userprofile') { ?>
     $.ajax({
-        url : "<?php echo site_url('userprofile/otherdetails_list')?>",
+        url : "<?php echo site_url('userprofile/employee_details')?>",
         type: "GET",
         dataType: "JSON",
 
@@ -924,10 +947,12 @@ $('#edit2').click(function(){
         {
  
            
-            $('[name="birthdate"]').val(data.birthdate);
-            $('[name="gender"]').val(data.gender);
+            $('[name="department"]').val(data.department);
+            $('[name="position"]').val(data.position);
+            $('[name="salary"]').val(data.salary);
             $('[name="datehired"]').val(data.datehired);
-            $('[name="cstatus"]').val(data.cstatus);
+            $('[name="taxstatus"]').val(data.taxstatus);
+            $('[name="userlevel"]').val(data.userlevel);
             $('[name="hdmf_no"]').val(data.hdmf_no);
             $('[name="tin_no"]').val(data.tin_no);
             $('[name="sss_no"]').val(data.sss_no);
@@ -943,7 +968,7 @@ $('#edit2').click(function(){
 
 
        $.ajax({
-        url : "<?php echo site_url('employees/otherdetails_list')?>/"+ <?php echo $this->uri->segment(3) ?>,
+        url : "<?php echo site_url('employees/employee_details')?>/"+ <?php echo $this->uri->segment(3) ?>,
         type: "GET",
         dataType: "JSON",
 
@@ -951,10 +976,12 @@ $('#edit2').click(function(){
         {
  
            
-            $('[name="birthdate"]').val(data.birthdate);
-            $('[name="gender"]').val(data.gender);
+             $('[name="department"]').val(data.department);
+            $('[name="position"]').val(data.position);
+            $('[name="salary"]').val(data.salary);
             $('[name="datehired"]').val(data.datehired);
-            $('[name="cstatus"]').val(data.cstatus);
+            $('[name="taxstatus"]').val(data.taxstatus);
+            $('[name="userlevel"]').val(data.userlevel);
             $('[name="hdmf_no"]').val(data.hdmf_no);
             $('[name="tin_no"]').val(data.tin_no);
             $('[name="sss_no"]').val(data.sss_no);
@@ -974,8 +1001,8 @@ $('#edit2').click(function(){
       document.getElementById("edit2").innerHTML = 'edit';
       document.getElementById("res1").disabled = false;
       document.getElementById("res2").disabled = false;  
-      document.getElementById("gender").disabled = true;
-       document.getElementById("cstatus").disabled = true;
+  document.getElementById("taxstatus").disabled = true;
+  document.getElementById("userlevel").disabled = true;
       document.getElementById("save2").style.display = "none";
 
     
@@ -998,8 +1025,8 @@ if($(this).hasClass('detailed')){
       document.getElementById("edit2").innerHTML = 'edit';
       document.getElementById("res1").disabled = false;
       document.getElementById("res2").disabled = false;  
-      document.getElementById("gender").disabled = true;
-       document.getElementById("cstatus").disabled = true;
+       document.getElementById("taxstatus").disabled = true;
+       document.getElementById("userlevel").disabled = true;
       document.getElementById("save2").style.display = "none";
     }
   });
@@ -1011,8 +1038,7 @@ if($(this).hasClass('detailed')){
  function userprofile2()
  {
 
-   <?php if($exist == 1) { ?>
-    
+ 
    $.ajax({
         url :  "<?php echo site_url('userprofile/update_otherdetails')?>",
         type: "POST",
@@ -1028,57 +1054,13 @@ if($(this).hasClass('detailed')){
          }
         }
       }); 
-
-   
-
-  <?php } else { ?>
-
-      if(save_method == 'add'){
-      save_method = 'update';
-       $.ajax({
-          url :  "<?php echo site_url('userprofile/add_otherdetails')?>",
-          type: "POST",
-          data: $('#otherdetails').serialize(),
-          dataType: "JSON",
-
-          success: function(data) 
-          {
-           if(data == "Success")
-           {
-            $('#success_msg').show();
-            $('#success_msg').text(" Record saved successfully");
-           }
-          }
-        }); 
-
-      }  else {
-
-        $.ajax({
-          url :  "<?php echo site_url('userprofile/update_otherdetails')?>",
-          type: "POST",
-          data: $('#otherdetails').serialize(),
-          dataType: "JSON",
  
-          success: function(data) 
-          {
-           if(data == "Success")
-           {
-            $('#success_msg').show();
-            $('#success_msg').text(" Record saved successfully");
-           }
-          }
-        }); 
-
-      }
-
-  <?php } ?>
  }
 
  function employeeprofile2(id)
  {
 
-   <?php if($exist == 1) { ?>
-    
+ 
    $.ajax({
         url :  "<?php echo site_url('employees/update_otherdetails')?>/" + id,
         type: "POST",
@@ -1096,48 +1078,6 @@ if($(this).hasClass('detailed')){
       }); 
 
    
-
-  <?php } else { ?>
-
-      if(save_method == 'add'){
-      save_method = 'update';
-       $.ajax({
-          url :  "<?php echo site_url('employees/add_otherdetails')?>/" + id,
-          type: "POST",
-          data: $('#otherdetails').serialize(),
-          dataType: "JSON",
-
-          success: function(data) 
-          {
-           if(data == "Success")
-           {
-            $('#success_msg').show();
-            $('#success_msg').text(" Record saved successfully");
-           }
-          }
-        }); 
-
-      }  else {
-
-        $.ajax({
-          url :  "<?php echo site_url('employees/update_otherdetails')?>/" + id,
-          type: "POST",
-          data: $('#otherdetails').serialize(),
-          dataType: "JSON",
-
-          success: function(data) 
-          {
-           if(data == "Success")
-           {
-            $('#success_msg').show();
-            $('#success_msg').text(" Record saved successfully");
-           }
-          }
-        }); 
-
-      }
-
-  <?php } ?>
  }
 //
 //

@@ -31,14 +31,11 @@ class Contents extends CI_Model {
 
 
     var $emp_table = 'employees';
-    var $emp_column_order = array('user_id','firstname','middlename','lastname','userlevel','emp_pass','department','position','contact_no','address','status','date_created',null); //set column field database for datatable orderable
+    var $emp_column_order = array('user_id','firstname','middlename','lastname','userlevel','emp_pass','department','position','zipcode','email','contact_no','address','birthdate','gender','datehired','cstatus','taxstatus','salary','hdmf_no','tin_no','sss_no','philhealth_no','status','date_created','img_name','thumb_name','ext','upload_date',null); //set column field database for datatable orderable
     var $emp_column_search = array('firstname','lastname','position','department','userlevel'); //set column field database for datatable searchable just firstname , lastname , address are searchable
     var $emp_order = array('user_id' => 'desc'); // def
 
-    var $empinfo_table = 'employee_details';
-    var $empinfo_column_order = array('emp_details_id','user_id','birthdate','gender','datehired','cstatus','salary','hdmf_no','tin_no','sss_no','philhealth_no',null); //set column field database for datatable orderable
-    var $empinfo_column_search = array('user_id'); //set column field database for datatable searchable just firstname , lastname , address are searchable
-    var $empinfo_order = array('emp_details_id' => 'desc'); // def
+    
 
 
    var $message_table = 'message';
@@ -49,13 +46,37 @@ class Contents extends CI_Model {
 var $time_table = 'timesheet';
     var $time_column_order = array('timesheet_id','date',null); //set column field database for datatable orderable
     var $time_column_search = array('date'); //set column field database for datatable searchable just firstname , lastname , address are searchable
-    var $time_order = array('timesheet_id' => 'desc'); // default order
+    var $time_order = array('timesheet_id' => 'asc'); // default order
 
 
  var $attendance_table = 'attendance';
     var $attendance_column_order = array('attendance_id','user_id','date','time_in','time_out','hours_worked','overtime','tardiness','undertime',null); //set column field database for datatable orderable
     var $attendance_column_search = array('lastname','department','position','firstname','date'); //set column field database for datatable searchable just firstname , lastname , address are searchable
     var $attendance_order = array('attendance_id' => 'asc'); // default order
+
+
+     var $payperiod_table = 'payperiod';
+    var $payperiod_column_order = array('payperiod_id','date_from','date_to','payperiod_status','total_gross','total_income','total_withholding_tax','total_deduction',null); //set column field database for datatable orderable
+    var $payperiod_column_search = array('date_to','date_from','sub_id'); //set column field database for datatable searchable just firstname , lastname , address are searchable
+    var $payperiod_order = array('payperiod_id' => 'desc'); // default
+
+
+         var $bir_table = 'semi_birtable';
+    var $bir_column_order = array('bir_id','taxstatus','dependents','minrange','maxrange','tax1','tax2',null); //set column field database for datatable orderable
+    var $bir_column_search = array('taxstatus','dependents','minrange','maxrange'); //set column field database for datatable searchable just firstname , lastname , address are searchable
+    var $bir_order = array('bir_id' => 'asc'); // default
+
+
+      var $sss_table = 'sss';
+    var $sss_column_order = array('sss_id','min_salary','max_salary','employer','employee','total','status',null); //set column field database for datatable orderable
+    var $sss_column_search = array('min_salary','max_salary','employer','employee'); //set column field database for datatable searchable just firstname , lastname , address are searchable
+    var $sss_order = array('sss_id' => 'asc'); // default
+
+      var $philhealth_table = 'philhealth_table';
+    var $philhealth_column_order = array('philhealth_id','min_salary','max_salary','employer','employee',null); //set column field database for datatable orderable
+    var $philhealth_column_search = array('min_salary','max_salary','employer','employee'); //set column field database for datatable searchable just firstname , lastname , address are searchable
+    var $philhealth_order = array('philhealth_id' => 'asc'); // default
+    
 
     public function __construct() {
         parent::__construct();
@@ -670,46 +691,7 @@ var $time_table = 'timesheet';
     }
 
 
-// employee details
-// employee details
-// employee details
-// employee details
-
-
-
-    public function empinfo_count_all($id)
-    {
-        $this->db->where('user_id',$id);
-        $this->db->from($this->empinfo_table);
-        return $this->db->count_all_results();
-    }
- 
-    public function empinfo_get_by_id($id)
-    {
-        $this->db->from($this->empinfo_table);
-        $this->db->where('user_id =', $id); 
-        $query = $this->db->get();
- 
-        return $query->row();
-    }
- 
-    public function empinfo_save($data)
-    {
-        $this->db->insert($this->empinfo_table, $data);
-        return $this->db->insert_id();
-    }
- 
-    public function empinfo_update($where, $data)
-    {
-        $this->db->update($this->empinfo_table, $data, $where);
-        return $this->db->affected_rows();
-    }
- 
-    public function empinfo_delete_by_id($id)
-    {
-        $this->db->where('user_id', $id);
-        $this->db->delete($this->empinfo_table);
-    }
+    
 //
     //
     //
@@ -815,6 +797,13 @@ var $time_table = 'timesheet';
     {   
         $this->db->where('user_id', $user_id);
         $this->db->where('sched_id', $id);
+        $this->db->update('schedule', $data);
+        return $this->db->affected_rows();
+    }
+     public function sched_update1($data,$user_id,$date)
+    {   
+        $this->db->where('user_id', $user_id);
+       $this->db->where("start LIKE '$date%'"); 
         $this->db->update('schedule', $data);
         return $this->db->affected_rows();
     }
@@ -1052,6 +1041,15 @@ var $time_table = 'timesheet';
         return $query->result();
     }
 
+     public function get_emp_attendance($id)
+    {
+        $this->db->from('attendance');
+        $this->db->where('user_id =', $id); 
+        $query = $this->db->get();
+ 
+        return $query->result();
+    }
+
     function attendance_count_filtered()
     {
         $this->attendance_get_datatables_query();
@@ -1080,9 +1078,9 @@ var $time_table = 'timesheet';
         return $this->db->insert_id();
     }
  
-    public function attendance_update($data,$id,$date)
+    public function attendance_update($data,$user_id,$date)
     {
-       $this->db->where('user_id', $id);
+       $this->db->where('user_id', $user_id);
         $this->db->where('date', $date);
         $this->db->update('attendance', $data);
         return $this->db->affected_rows();
@@ -1093,6 +1091,404 @@ var $time_table = 'timesheet';
         $this->db->where('attendance_id', $id);
         $this->db->delete($this->attendance_table);
     }
+
+// payperiod
+
+
+       private function payperiod_get_datatables_query()
+    {
+    
+       $this->db->from($this->payperiod_table);
+        
+        $i = 0;
+     
+        foreach ($this->payperiod_column_search as $item) // loop column
+        {
+            if($_POST['search']['value']) // if datatable send POST for search
+            {
+                 
+                if($i===0) // first loop
+                {
+                    $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+                    $this->db->like($item, $_POST['search']['value']);
+                }
+                else
+                {
+                    $this->db->or_like($item, $_POST['search']['value']);
+                }
+ 
+                if(count($this->payperiod_column_search) - 1 == $i) //last loop
+                    $this->db->group_end(); //close bracket
+            }
+            $i++;
+        }
+         
+        if(isset($_POST['order'])) // here order processing
+        {
+            $this->db->order_by($this->payperiod_column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+        }
+        else if(isset($this->payperiod_order))
+        {
+            $order = $this->payperiod_order;
+            $this->db->order_by(key($order), $order[key($order)]);
+        }
+    }
+ 
+    function payperiod_get_datatables()
+    {
+        $this->payperiod_get_datatables_query();
+        if($_POST['length'] != -1)
+        $this->db->limit($_POST['length'], $_POST['start']);    
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+      public function get_payperiod()
+    {
+        $this->db->from('payperiod');
+        $query = $this->db->get();
+ 
+        return $query->result();
+    }
+
+      public function  get_specific_payperiod($id)
+    {
+        $this->db->from('payperiod');
+        $this->db->where('payperiod_id',$id);
+        $query = $this->db->get();
+ 
+        return $query->row();
+    }
+ 
+    function payperiod_count_filtered()
+    {
+        $this->payperiod_get_datatables_query();
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+ 
+    public function payperiod_count_all()
+    {
+        $this->db->from($this->payperiod_table);
+        return $this->db->count_all_results();
+    }
+ 
+    public function payperiod_get_by_id($id)
+    {
+        $this->db->from($this->payperiod_table);
+        $query = $this->db->get();
+ 
+        return $query->row();
+    }
+
+  
+ 
+    public function payperiod_save($data)
+    {
+        $this->db->insert($this->payperiod_table, $data);
+        return $this->db->insert_id();
+    }
+ 
+    public function payperiod_update($where, $data)
+    {
+        $this->db->update($this->payperiod_table, $data, $where);
+        return $this->db->affected_rows();
+    }
+ 
+    public function payperiod_delete_by_id($id)
+    {
+        $this->db->where('payperiod_id', $id);
+        $this->db->delete($this->payperiod_table);
+    }
+
+// bir
+
+
+       private function bir_get_datatables_query()
+    {
+    
+       $this->db->from($this->bir_table);
+        
+        $i = 0;
+     
+        foreach ($this->bir_column_search as $item) // loop column
+        {
+            if($_POST['search']['value']) // if datatable send POST for search
+            {
+                 
+                if($i===0) // first loop
+                {
+                    $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+                    $this->db->like($item, $_POST['search']['value']);
+                }
+                else
+                {
+                    $this->db->or_like($item, $_POST['search']['value']);
+                }
+ 
+                if(count($this->bir_column_search) - 1 == $i) //last loop
+                    $this->db->group_end(); //close bracket
+            }
+            $i++;
+        }
+         
+        if(isset($_POST['order'])) // here order processing
+        {
+            $this->db->order_by($this->bir_column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+        }
+        else if(isset($this->bir_order))
+        {
+            $order = $this->bir_order;
+            $this->db->order_by(key($order), $order[key($order)]);
+        }
+    }
+ 
+    function bir_get_datatables()
+    {
+        $this->bir_get_datatables_query();
+        if($_POST['length'] != -1)
+        $this->db->limit($_POST['length'], $_POST['start']);    
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+  
+ 
+    function bir_count_filtered()
+    {
+        $this->bir_get_datatables_query();
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+ 
+    public function bir_count_all()
+    {
+        $this->db->from($this->bir_table);
+        return $this->db->count_all_results();
+    }
+ 
+    public function bir_get_by_id($id)
+    {
+        $this->db->from($this->bir_table);
+        $query = $this->db->get();
+ 
+        return $query->row();
+    }
+
+  
+ 
+    public function bir_save($data)
+    {
+        $this->db->insert($this->bir_table, $data);
+        return $this->db->insert_id();
+    }
+ 
+    public function bir_update($where, $data)
+    {
+        $this->db->update($this->bir_table, $data, $where);
+        return $this->db->affected_rows();
+    }
+ 
+    public function bir_delete_by_id($id)
+    {
+        $this->db->where('bir_id', $id);
+        $this->db->delete($this->bir_table);
+    }
+
+
+// sss
+
+
+       private function sss_get_datatables_query()
+    {
+    
+       $this->db->from($this->sss_table);
+        
+        $i = 0;
+     
+        foreach ($this->sss_column_search as $item) // loop column
+        {
+            if($_POST['search']['value']) // if datatable send POST for search
+            {
+                 
+                if($i===0) // first loop
+                {
+                    $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+                    $this->db->like($item, $_POST['search']['value']);
+                }
+                else
+                {
+                    $this->db->or_like($item, $_POST['search']['value']);
+                }
+ 
+                if(count($this->sss_column_search) - 1 == $i) //last loop
+                    $this->db->group_end(); //close bracket
+            }
+            $i++;
+        }
+         
+        if(isset($_POST['order'])) // here order processing
+        {
+            $this->db->order_by($this->sss_column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+        }
+        else if(isset($this->sss_order))
+        {
+            $order = $this->sss_order;
+            $this->db->order_by(key($order), $order[key($order)]);
+        }
+    }
+ 
+    function sss_get_datatables()
+    {
+        $this->sss_get_datatables_query();
+        if($_POST['length'] != -1)
+        $this->db->limit($_POST['length'], $_POST['start']);    
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+  
+ 
+    function sss_count_filtered()
+    {
+        $this->sss_get_datatables_query();
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+ 
+    public function sss_count_all()
+    {
+        $this->db->from($this->sss_table);
+        return $this->db->count_all_results();
+    }
+ 
+    public function sss_get_by_id($id)
+    {
+        $this->db->from($this->sss_table);
+        $query = $this->db->get();
+ 
+        return $query->row();
+    }
+
+  
+ 
+    public function sss_save($data)
+    {
+        $this->db->insert($this->sss_table, $data);
+        return $this->db->insert_id();
+    }
+ 
+    public function sss_update($where, $data)
+    {
+        $this->db->update($this->sss_table, $data, $where);
+        return $this->db->affected_rows();
+    }
+ 
+    public function sss_delete_by_id($id)
+    {
+        $this->db->where('sss_id', $id);
+        $this->db->delete($this->sss_table);
+    }
+
+
+
+
+// philhealth
+
+
+       private function philhealth_get_datatables_query()
+    {
+    
+       $this->db->from($this->philhealth_table);
+        
+        $i = 0;
+     
+        foreach ($this->philhealth_column_search as $item) // loop column
+        {
+            if($_POST['search']['value']) // if datatable send POST for search
+            {
+                 
+                if($i===0) // first loop
+                {
+                    $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+                    $this->db->like($item, $_POST['search']['value']);
+                }
+                else
+                {
+                    $this->db->or_like($item, $_POST['search']['value']);
+                }
+ 
+                if(count($this->philhealth_column_search) - 1 == $i) //last loop
+                    $this->db->group_end(); //close bracket
+            }
+            $i++;
+        }
+         
+        if(isset($_POST['order'])) // here order processing
+        {
+            $this->db->order_by($this->philhealth_column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+        }
+        else if(isset($this->philhealth_order))
+        {
+            $order = $this->philhealth_order;
+            $this->db->order_by(key($order), $order[key($order)]);
+        }
+    }
+ 
+    function philhealth_get_datatables()
+    {
+        $this->philhealth_get_datatables_query();
+        if($_POST['length'] != -1)
+        $this->db->limit($_POST['length'], $_POST['start']);    
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+  
+ 
+    function philhealth_count_filtered()
+    {
+        $this->philhealth_get_datatables_query();
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+ 
+    public function philhealth_count_all()
+    {
+        $this->db->from($this->philhealth_table);
+        return $this->db->count_all_results();
+    }
+ 
+    public function philhealth_get_by_id($id)
+    {
+        $this->db->from($this->philhealth_table);
+        $query = $this->db->get();
+ 
+        return $query->row();
+    }
+
+  
+ 
+    public function philhealth_save($data)
+    {
+        $this->db->insert($this->philhealth_table, $data);
+        return $this->db->insert_id();
+    }
+ 
+    public function philhealth_update($where, $data)
+    {
+        $this->db->update($this->philhealth_table, $data, $where);
+        return $this->db->affected_rows();
+    }
+ 
+    public function philhealth_delete_by_id($id)
+    {
+        $this->db->where('philhealth_id', $id);
+        $this->db->delete($this->philhealth_table);
+    }
+
+
+
 
 
 

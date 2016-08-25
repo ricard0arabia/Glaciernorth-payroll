@@ -306,7 +306,7 @@ class Overtime extends CI_Controller {
                 $list = $this->overtime->get_sched($id);
 
             foreach ($list as $value) {
-                $date_id = $value->id;
+                $date_id = $value->sched_id;
                 $datetime = date_create($value->start);
                 $date = date_format($datetime,"Y-m-d");
 
@@ -326,6 +326,35 @@ class Overtime extends CI_Controller {
                     }
                 }
             }
+
+        
+
+             $list = $this->overtime->get_emp_attendance($id);
+
+            foreach ($list as $value) {
+                $date_id = $value->date;
+                $datetime = date_create($value->date);
+                $date = date_format($datetime,"Y-m-d");
+            
+
+                if($ot_date == $date){
+
+                    if($value->attnd_status == 'active'){
+                       
+                        $data = array(
+                
+                           'attnd_status' => 'overtime',
+                                
+                        );
+                      
+                    $this->overtime->attendance_update($data, $id, $date_id);
+
+                   
+                    }
+                }
+            }
+
+      
 
     
 

@@ -343,7 +343,8 @@ class Leave extends CI_Controller {
 
      public function accept_leave($id)
     {
-       $date = $this->leave->get_leave_date($id);
+
+        $date = $this->leave->get_leave_date($id);
 
        $startdate = $date->startdate;
        $enddate = $date->enddate;
@@ -377,6 +378,42 @@ class Leave extends CI_Controller {
         $startdate = date ("Y-m-d", strtotime("+1 days", strtotime($startdate)));
 
         }
+         $date1 = $this->leave->get_leave_date($id);
+       $startdate1 = $date1->startdate;
+       $enddate1 = $date1->enddate;
+
+       $check = "";
+
+        while ($startdate1 <= $enddate1) {
+
+                $list = $this->leave->get_emp_attendance($id);
+
+            foreach ($list as $value) {
+                $date_id = $value->date;
+                $datetime = date_create($value->date);
+                $date = date_format($datetime,"Y-m-d");
+            
+
+                if($startdate1 == $date){
+
+                    if($value->attnd_status == 'active'){
+                       
+                        $data = array(
+                
+                            'attnd_status' => 'leave',
+                                
+                        );
+                      
+                    $this->leave->attendance_update($data, $id, $date_id);
+
+                    $check = "$id.''.$date_id";
+                    }
+                }
+            }
+
+        $startdate1 = date ("Y-m-d", strtotime("+1 days", strtotime($startdate1)));
+
+        }
  
         $data = array(
                 
@@ -385,7 +422,7 @@ class Leave extends CI_Controller {
                 
             );
         $this->leave->update(array('user_id' => $id), $data);
-        echo json_encode(array("status" => TRUE));
+        echo json_encode(array("status" => TRUE, "check" => $check));
     }
 
 

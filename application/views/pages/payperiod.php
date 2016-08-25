@@ -1,109 +1,48 @@
-
    <div class="container">
-        
- <?php if($user == '2'){ ?>
-            <div class="panel with-nav-tabs panel-default">
-                <div class="panel-heading">
-                        <ul class="nav nav-tabs">
-                <li class="active"><a href="#tab1default" data-toggle="tab">Timesheet</a></li>
-                <li><a href="#tab2default" data-toggle="tab">Attendance</a></li>
 
-                         
-                           
-                        </ul>
-                </div>
-                <div class="panel-body">
-                    <div class="tab-content">
-
-
-              <div class="tab-pane fade in active" id="tab1default">
-
-        <button class="btn btn-success" onclick="add_timesheet()"><i class="glyphicon glyphicon-plus"></i> Timesheet </button>
-
-               <h3>Manage Timesheet</h3>
+  <h3>Payperiod</h3>
+  
     <br>
- <button class="btn btn-default" onclick="reload_table_timesheet()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
-        <br />
-        <br />
-        <table id="table_timesheet" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Timesheet Date</th>
-                    
-                                
-                        
-                                <th style="width:180px;">Action</th>
-                            </tr>
-                        </thead>
-                       
-                    </table>
-              </div>
-
-<!--                                                 Employee List                                         -->
-
-
-                        <div class="tab-pane fade in" id="tab2default">
-
-<h3>My Attendnace</h3>
-    <br>
- <button class="btn btn-default" onclick="reload_table_attendance()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
+       <button class="btn btn-success" onclick="add_payperiod()"><i class="glyphicon glyphicon-plus"></i> Timesheet </button>
+ <button class="btn btn-default" onclick="reload_table()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
         <br />
         <br />
         <table id="table_attendance" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
-                                <th>Timesheet Date</th>
-                                <th>Time In</th>
-                                <th>Time Out</th>
-                                <th>Hours Worked</th>
-                                <th>Overtime</th>
-                                <th>Undertime</th>
-                                <th>Tardiness</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                       
-                    </table>
-
-<?php }else{ ?>
-
-<h3>My Atttendance</h3>
-    <br>
- <button class="btn btn-default" onclick="reload_table_attendance()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
-        <br />
-        <br />
-        <table id="table_attendance" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                        <thead>
-                            <tr>
-                                <th>Timesheet Date</th>
-                                <th>Time In</th>
-                                <th>Time Out</th>
-                                <th>Hours Worked</th>
-                                <th>Overtime</th>
-                                <th>Undertime</th>
-                                <th>Tardiness</th>
-                                <th>Status</th>
+                                <th>Period</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Gross Income</th>
+                                <th>Taxable Income</th>
+                                <th>Withholding Tax</th>
+                                <th>Deduction</th>
+                                 <th style="width:160px;">Action</th>
                            
                             </tr>
                         </thead>
                        
                     </table>
 
+</div>
 
 
-<?php } ?>
+
+
+
+
 
 
 <script type="text/javascript">
+
+
 var table1;
-var table2;
 
    $(document).ready(function () {
 
+
        //datatables
-    table1 = $('#table_timesheet').DataTable({
+    table1 = $('#table_attendance').DataTable({
  
         "processing": true, //Feature control the processing indicator.
         "serverSide": true, //Feature control DataTables' server-side processing mode.
@@ -111,7 +50,7 @@ var table2;
  
         // Load data for the table's content from an Ajax source
         "ajax": {
-            "url": "<?php echo site_url('time/timesheet_list')?>",
+            "url": "<?php echo site_url('payroll/payperiod_list')?>",
             "type": "POST"
         },
  
@@ -125,32 +64,8 @@ var table2;
  
     });
 
-    table2 = $('#table_attendance').DataTable({
- 
-        "processing": true, //Feature control the processing indicator.
-        "serverSide": true, //Feature control DataTables' server-side processing mode.
-        "order": [], //Initial no order.
- 
-        // Load data for the table's content from an Ajax source
-        "ajax": {
-            "url": "<?php echo site_url('time/emp_attendance_list')?>",
-            "type": "POST"
-        },
- 
-        //Set column definition initialisation properties.
-        "columnDefs": [
-        {
-            "targets": [ -1 ], //last column
-            "orderable": false, //set not orderable
-        },
-        ],
-
- 
-
- 
-    });
-
-      $("input").change(function(){
+    
+     $("input").change(function(){
         $(this).parent().parent().removeClass('has-error');
         $(this).next().empty();
     });
@@ -173,7 +88,7 @@ var table2;
             }).on('changeDate', function(){
                 // set the "toDate" start to not be later than "fromDate" ends:
                 $('#toDate').datepicker('setStartDate', new Date($(this).val()));
-                calcDiff();
+              
             }); 
 
             $('#toDate').datepicker({
@@ -184,32 +99,37 @@ var table2;
             }).on('changeDate', function(){
                 // set the "fromDate" end to not be later than "toDate" starts:
                 $('#fromDate').datepicker('setEndDate', new Date($(this).val()));
-                calcDiff();
+            
             });
 
- 
-});
 
-function add_timesheet()
+  
+
+            
+    });
+
+   function add_payperiod()
 {
 
     $('#form')[0].reset(); // reset form on modals
     $('.form-group').removeClass('has-error'); // clear error class
     $('.help-block').empty(); // clear error string
     $('#modal_form').modal('show'); // show bootstrap modal
-    $('.modal-title').text('Add Timesheet'); // Set Title to Bootstrap modal title
+    $('.modal-title').text('Add Payperiod'); // Set Title to Bootstrap modal title
 }
+
 
 function save()
 {
     $('#btnSave').text('saving...'); //change button text
     $('#btnSave').attr('disabled',true); //set button disable
+   
 
+    
  
-
-    // ajax adding data to database
+    
     $.ajax({
-        url : "<?php echo site_url('time/add_timesheet')?>",
+        url : "<?php echo site_url('payroll/add_payperiod')?>",
         type: "POST",
         data: $('#form').serialize(),
         dataType: "JSON",
@@ -219,15 +139,15 @@ function save()
             if(data.status) //if success close modal and reload ajax table
             {
              
-                if(data.warning == false){
+               if(data.warning){
 
-                     alert('Invalid entered date');
-
-                }else{
+                alert(data.info);
+               }else{
+               
                 $('#modal_form').modal('hide');
-                reload_table_timesheet();
+                reload_table();
                 }
-              
+            
             }
             else
             {
@@ -254,20 +174,22 @@ function save()
         }
     });
 }
-function delete_leave(id)
+
+
+function delete_payperiod(id)
 {
     if(confirm('Are you sure delete this data?'))
     {
         // ajax delete data to database
         $.ajax({
-            url : "<?php echo site_url('leave/delete_leave')?>/"+id,
+            url : "<?php echo site_url('payroll/delete_payperiod')?>/"+id,
             type: "POST",
             dataType: "JSON",
             success: function(data)
             {
                 //if success reload ajax table
                 $('#modal_form').modal('hide');
-                reload_table_timesheet();
+                reload_table();
             },
             error: function (jqXHR, textStatus, errorThrown)
             {
@@ -277,30 +199,15 @@ function delete_leave(id)
  
     }
 }
- 
 
-function reload_table_timesheet()
+function reload_table()
 {
     table1.ajax.reload(null,false); //reload datatable ajax
 }
-function reload_table_attendance()
-{
-    table2.ajax.reload(null,false); //reload datatable ajax
-}
+
+
 
  </script>
-
-
-
-                </div>
-
-
-                       
-          
-            </div><!-- tab content-->
-        </div> <!--panel body-->           
-     </div><!-- panel default -->
-   </div>   <!-- container -->      
 
 
 
@@ -317,7 +224,6 @@ function reload_table_attendance()
             <div class="modal-body form">
                 <form action="#" id="form" class="form-horizontal">
                     <input type="hidden" value="" name="id"/>
-                     <input type="hidden" value="" name="sub_id"/>
                     <div class="form-body">
                         <div class="row">
 
@@ -354,7 +260,4 @@ function reload_table_attendance()
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
- 
-
-  <!-- Modal Structure -->
  
