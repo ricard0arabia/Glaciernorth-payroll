@@ -7,7 +7,7 @@
 
 			parent::__construct();
 			$this->load->helper('url');
-			$this->load->model('Contents','payperiod');
+			$this->load->model('Contents','payroll');
 		}
 
 		public function index(){
@@ -33,7 +33,7 @@
 
 		$this->load->view('header');
         $data['user'] = $this->session->userdata('username');
-        $data['payperiod'] = $this->payperiod->get_specific_payperiod($id);
+        $data['payperiod'] = $this->payroll->get_specific_payperiod($id);
         $this->load->view('pages/payroll',$data);
 		$this->load->view('footer');
 
@@ -41,27 +41,27 @@
 
 	 public function payperiod_list()
     {
-        $list = $this->payperiod->payperiod_get_datatables();
+        $list = $this->payroll->payperiod_get_datatables();
 
         $data = array();
         $no = $_POST['start'];
-        foreach ($list as $payperiod) {
+        foreach ($list as $payroll) {
             $no++;
             $row = array();
          
 
-            $row[] = $payperiod->period;
-            $row[] = date("F j,Y", strtotime($payperiod->date_from));
-            $row[] = date("F j,Y", strtotime($payperiod->date_to));
-            $row[] = $payperiod->total_gross;
-            $row[] = $payperiod->total_income;
-            $row[] = $payperiod->total_withholding_tax;
-            $row[] = $payperiod->total_deduction;
+            $row[] = $payroll->period;
+            $row[] = date("F j,Y", strtotime($payroll->date_from));
+            $row[] = date("F j,Y", strtotime($payroll->date_to));
+            $row[] = $payroll->total_gross;
+            $row[] = $payroll->total_income;
+            $row[] = $payroll->total_withholding_tax;
+            $row[] = $payroll->total_deduction;
 
            
             //add html for action
-            $row[] = '<a class="btn btn-sm btn-primary"  title="Edit" href="'.site_url('payroll/payroll/'.$payperiod->payperiod_id).'"><i class="glyphicon glyphicon-search"></i> View</a>
-            <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_payperiod('."'".$payperiod->payperiod_id."'".')"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
+            $row[] = '<a class="btn btn-sm btn-primary"  title="Edit" href="'.site_url('payroll/payroll/'.$payroll->payperiod_id).'"><i class="glyphicon glyphicon-search"></i> View</a>
+            <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_payperiod('."'".$payroll->payperiod_id."'".')"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
 
                   $data[] = $row;
      
@@ -69,8 +69,94 @@
  
         $output = array(
                         "draw" => $_POST['draw'],
-                        "recordsTotal" => $this->payperiod->payperiod_count_all(),
-                        "recordsFiltered" => $this->payperiod->payperiod_count_filtered(),
+                        "recordsTotal" => $this->payroll->payperiod_count_all(),
+                        "recordsFiltered" => $this->payroll->payperiod_count_filtered(),
+                        "data" => $data,
+                );
+        //output to json format
+        echo json_encode($output);
+    }
+
+       public function payroll_table()
+    {
+        $list = $this->payroll->payslip_get_datatables();
+
+        $data = array();
+        $no = $_POST['start'];
+        foreach ($list as $payroll) {
+            $no++;
+            $row = array();
+         
+
+           $row[] = ucfirst($payroll->lastname).', '.ucfirst($payroll->firstname).' '.ucfirst(substr($payroll->middlename,0,1)).'. ';
+            $row[] = $payroll->position;
+            $row[] = $payroll->department;
+      
+            $row[] = '&#x20B1; '.$payroll->salary;
+            $row[] = $payroll->allowance;
+            $row[] = $payroll->overtime_pay;
+            $row[] = $payroll->gross_salary;
+            $row[] = $payroll->deductions;
+            $row[] = $payroll->deductions;
+            $row[] = $payroll->withholding_tax;
+            $row[] = $payroll->net_pay;
+
+           
+            //add html for action
+            $row[] = '<a class="btn btn-sm btn-primary"  title="Edit" href="'.site_url('payroll/payroll/'.$payroll->user_id).'"><i class="glyphicon glyphicon-search"></i> View</a>
+            <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_payperiod('."'".$payroll->user_id."'".')"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
+
+                  $data[] = $row;
+     
+        }
+ 
+        $output = array(
+                        "draw" => $_POST['draw'],
+                        "recordsTotal" => $this->payroll->payslip_count_all(),
+                        "recordsFiltered" => $this->payroll->payslip_count_filtered(),
+                        "data" => $data,
+                );
+        //output to json format
+        echo json_encode($output);
+    }
+
+       public function payroll_data($id)
+    {
+        $list = $this->payroll->emp_payslip_get_datatables($id);
+
+        $data = array();
+        $no = $_POST['start'];
+        foreach ($list as $payroll) {
+            $no++;
+            $row = array();
+         
+
+           $row[] = ucfirst($payroll->lastname).', '.ucfirst($payroll->firstname).' '.ucfirst(substr($payroll->middlename,0,1)).'. ';
+            $row[] = $payroll->position;
+            $row[] = $payroll->department;
+      
+            $row[] = '&#x20B1; '.$payroll->salary;
+            $row[] = $payroll->allowance;
+            $row[] = $payroll->overtime_pay;
+            $row[] = $payroll->gross_salary;
+            $row[] = $payroll->deductions;
+            $row[] = $payroll->deductions;
+            $row[] = $payroll->withholding_tax;
+            $row[] = $payroll->net_pay;
+
+           
+            //add html for action
+            $row[] = '<a class="btn btn-sm btn-primary"  title="Edit" href="'.site_url('payroll/payroll/'.$payroll->user_id).'"><i class="glyphicon glyphicon-search"></i> View</a>
+            <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_payperiod('."'".$payroll->user_id."'".')"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
+
+                  $data[] = $row;
+     
+        }
+ 
+        $output = array(
+                        "draw" => $_POST['draw'],
+                        "recordsTotal" => $this->payroll->payslip_count_all(),
+                        "recordsFiltered" => $this->payroll->payslip_count_filtered(),
                         "data" => $data,
                 );
         //output to json format
@@ -108,7 +194,7 @@ $enddate = $this->input->post('enddate');
      }
 
 
-        $list = $this->payperiod->get_payperiod();
+        $list = $this->payroll->get_payperiod();
 
           foreach($list as $check){
 
@@ -144,7 +230,7 @@ $enddate = $this->input->post('enddate');
 			        
 
 			        );
-			    $insert = $this->payperiod->payperiod_save($data);
+			    $insert = $this->payroll->payperiod_save($data);
 
                  echo json_encode(array("status" => TRUE));
             }
@@ -158,7 +244,7 @@ $enddate = $this->input->post('enddate');
 
       public function delete_payperiod($id)
     {
-        $this->payperiod->payperiod_delete_by_id($id);
+        $this->payroll->payperiod_delete_by_id($id);
         echo json_encode(array("status" => TRUE));
     }
 

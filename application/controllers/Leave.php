@@ -149,7 +149,7 @@ class Leave extends CI_Controller {
             $datetime = date_create($value->start);
             $date = date_format($datetime,"Y-m-d");
                 if($this->input->post('startdate') == $date){
-                    if($value->work_status != 'active'){
+                    if($value->work_status != ''){
 
                         $start = false;
                         break;
@@ -166,7 +166,7 @@ class Leave extends CI_Controller {
             $date = date_format($datetime,"Y-m-d");
 
                 if($this->input->post('enddate') == $date){
-                    if($value->work_status != 'active'){
+                    if($value->work_status != ''){
 
                         $end = false;
                         break;
@@ -350,6 +350,7 @@ class Leave extends CI_Controller {
        $enddate = $date->enddate;
 
        while ($startdate <= $enddate) {
+        $work_status = "";
 
                 $list = $this->leave->get_sched($id);
 
@@ -360,11 +361,17 @@ class Leave extends CI_Controller {
 
                 if($startdate == $date){
 
-                    if($value->work_status == 'active'){
+                    if($value->sched_type == 'day shift' || $value->sched_type == 'night shift'){
+
+                        $work_status = "leave";  
+                    }else{
+
+                         $work_status = "";
+                    }
                        
                         $data = array(
                 
-                            'work_status' => 'leave',
+                            'work_status' => $work_status,
                             'color' => '#f7bc38',
                                 
                         );
@@ -373,11 +380,12 @@ class Leave extends CI_Controller {
 
                     }
                 }
+
+                 $startdate = date ("Y-m-d", strtotime("+1 days", strtotime($startdate)));
+
             }
 
-        $startdate = date ("Y-m-d", strtotime("+1 days", strtotime($startdate)));
-
-        }
+       
          $date1 = $this->leave->get_leave_date($id);
        $startdate1 = $date1->startdate;
        $enddate1 = $date1->enddate;
@@ -396,20 +404,25 @@ class Leave extends CI_Controller {
 
                 if($startdate1 == $date){
 
-                    if($value->attnd_status == 'active'){
+                   if($value->sched_type == 'day shift' || $value->sched_type == 'night shift'){
+
+                        $work_status = "leave";  
+                    }else{
+
+                         $work_status = "";
+                    }
                        
                         $data = array(
                 
-                            'attnd_status' => 'leave',
+                            'work_status' => $work_status,
+                         
                                 
                         );
                       
                     $this->leave->attendance_update($data, $id, $date_id);
 
-                    $check = "$id.''.$date_id";
                     }
                 }
-            }
 
         $startdate1 = date ("Y-m-d", strtotime("+1 days", strtotime($startdate1)));
 

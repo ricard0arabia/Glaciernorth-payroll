@@ -7,7 +7,7 @@
  <button class="btn btn-default" onclick="reload_table()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
         <br />
         <br />
-        <table id="table_attendance" class="table table-striped table-bordered" cellspacing="0" width="100%">
+        <table id="table_payperiod" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
                                 <th>Period</th>
@@ -42,11 +42,55 @@ var table1;
 
 
        //datatables
-    table1 = $('#table_attendance').DataTable({
+   table2 = $('#table_payperiod').DataTable({
  
         "processing": true, //Feature control the processing indicator.
         "serverSide": true, //Feature control DataTables' server-side processing mode.
         "order": [], //Initial no order.
+        "dom": 'Bfrtip',
+         "buttons": [
+        {
+            extend: 'pdf',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5,6]
+            },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Payperiod Summary Table ',
+               orientation: 'portrait',
+               customize: function(doc) {
+                  doc.defaultStyle.fontSize = 16; //<-- set fontsize to 16 instead of 10 
+               }  
+       },
+       {
+           extend: 'csv',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5,6]
+             },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Payperiod Summary Table ',
+          
+       },
+       {
+           extend: 'excel',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5,6]
+             },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Payperiod Summary Table ',
+       },
+       {
+           extend: 'print',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5,6]
+            },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Payperiod Summary Table ',
+       }          
+        ],
  
         // Load data for the table's content from an Ajax source
         "ajax": {

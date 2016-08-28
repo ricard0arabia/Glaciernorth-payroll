@@ -545,7 +545,8 @@ $end_date = $this->input->post('enddate');
 
 while (strtotime($start_date) <= strtotime($end_date)) {
 
-$work_status = 'active';
+$sched_type = '';
+$color = '';
 
     $timestamp = strtotime($start_date);
     $day = date('D', $timestamp);
@@ -555,104 +556,153 @@ $work_status = 'active';
     $temp_day = $day;
 
      if($mon_start == '00:00:00'){
-            $work_status = 'inactive';
-        }
-
-    if($mon_end == '06:00:00'){
-
-    $temp_enddate = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)))." $mon_end ";
-    $temp_day = date('D', strtotime(date("Y-m-d",strtotime("+1 days", strtotime($start_date)))));
-    }
-
-    else{
          $temp_enddate = "$start_date"." $mon_end ";
-        }
+            $sched_type = 'day off';
+            $color = '#34a853';
+     
+    }else{
+
+            if($mon_end == '06:00:00'){
+
+            $temp_enddate = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)))." $mon_end ";
+            $temp_day = date('D', strtotime(date("Y-m-d",strtotime("+1 days", strtotime($start_date)))));
+            $sched_type = 'night shift';
+            $color = '#050f25';
+            }
+
+            else{
+
+                 $temp_enddate = "$start_date"." $mon_end ";
+                  $sched_type = 'day shift';
+                  $color = '#264281';
+
+
+                }
+         }
     }
 
     else if($day == 'Tue'){
     $temp_startdate =  "$start_date"." $tue_start";
     $temp_day = $day;
 
-     if($tue_start == '00:00:00'){
-            $work_status = 'inactive';
-        }
+    if($tue_start == '00:00:00'){
+         $temp_enddate = "$start_date"." $mon_end ";
+            $sched_type = 'day off';
+             $color = '#34a853';
+        }else{
 
     if($tue_end == '06:00:00'){
     $temp_enddate = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)))." $tue_end ";
     $temp_day = date('D', strtotime(date("Y-m-d",strtotime("+1 days", strtotime($start_date)))));
+    $sched_type = 'night shift';
+    $color = '#050f25';
     }
         else{
            $temp_enddate =  "$start_date"." $tue_end ";
+           $sched_type  = 'day shift';
+            $color = '#264281';
             }
+        }
     }
 
     else if($day == 'Wed'){
     $temp_startdate = "$start_date"." $wed_start";
     $temp_day = $day;
 
-     if($wed_start == '00:00:00'){
-            $work_status = 'inactive';
-        }
+    if($wed_start == '00:00:00'){
+         $temp_enddate = "$start_date"." $mon_end ";
+           $sched_type = 'day off';
+           $color = '#34a853';
+        }else{
 
      if($wed_end == '06:00:00'){
     $temp_enddate = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)))." $wed_end ";
     $temp_day = date('D', strtotime(date("Y-m-d",strtotime("+1 days", strtotime($start_date)))));
+    $sched_type = 'night shift';
+    $color = '#050f25';
     }
     else{
             $temp_enddate =  "$start_date"." $wed_end ";
+            $sched_type = 'day shift';
+             $color = '#264281';
             }
+        }
     }
 
     else if($day == 'Thu'){
     $temp_startdate = "$start_date"." $thurs_start";
     $temp_day = $day;
 
-     if($thurs_start == '00:00:00'){
-            $work_status = 'inactive';
-        }
+    if($thurs_start == '00:00:00'){
+         $temp_enddate = "$start_date"." $mon_end ";
+           $sched_type = 'day off';
+           $color = '#34a853';
+          
+        }else{
 
      if($thurs_end == '06:00:00'){
      $temp_enddate = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)))." $thurs_end ";
     $temp_day = date('D', strtotime(date("Y-m-d",strtotime("+1 days", strtotime($start_date)))));
+    $sched_type = 'night shift';
+    $color = '#050f25';
     }
     else{
             $temp_enddate =  "$start_date"." $thurs_end ";
+            $sched_type = 'day shift';
+            $color = '#264281';
             }
+        }
     }
 
     else if($day == 'Fri'){
     $temp_startdate = "$start_date"." $fri_start";
     $temp_day = $day;
 
-     if($fri_start == '00:00:00'){
-            $work_status = 'inactive';
-        }
+    if($fri_start == '00:00:00'){
+         $temp_enddate = "$start_date"." $mon_end ";
+            $sched_type = 'day off';
+            $color = '#34a853';
+            
+        }else{
 
     if($fri_end == '06:00:00'){
     $temp_enddate = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)))." $fri_end ";
      $temp_day = date('D', strtotime(date("Y-m-d",strtotime("+1 days", strtotime($start_date)))));
+     $sched_type = 'night shift';
+     $color = '#050f25';
     }
         
     else{
             $temp_enddate =  "$start_date"." $fri_end ";
+            $sched_type = 'day shift';
+            $color = '#264281';
             }
+        }
     }
 
     else if($day == 'Sat'){
      $temp_startdate = "$start_date"." $sat_start";
     $temp_day = $day;
 
-     if($sat_start == '00:00:00'){
-            $work_status = 'inactive';
-        }
+    if($sat_start == '00:00:00'){
+         $temp_enddate = "$start_date"." $mon_end ";
+           $sched_type = 'day off';
+           $color = '#34a853';
+           
+        }else{
 
      if($sat_end == '06:00:00'){
      $temp_enddate = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)))." $sat_end ";
     $temp_day = date('D', strtotime(date("Y-m-d",strtotime("+1 days", strtotime($start_date)))));
+    $sched_type = 'night shift';
+    $color = '#050f25';
     }
         else{
           $temp_enddate =  "$start_date"." $sat_end ";
+          $sched_type = 'day shift';
+          $color = '#264281';
             }
+        }
     }
 
 
@@ -660,27 +710,67 @@ $work_status = 'active';
     $temp_startdate = "$start_date"." $sun_start";
     $temp_day = $day;
 
-     if($sun_start == '00:00:00'){
-            $work_status = 'inactive';
-        }
+    if($sun_start == '00:00:00'){
+         $temp_enddate = "$start_date"." $mon_end ";
+            $sched_type = 'day off';
+            $color = '#34a853';
+            
+        }else{
 
      if($sun_end == '06:00:00'){
     $temp_enddate = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)))." $sun_end ";
     $temp_day = date('D', strtotime(date("Y-m-d",strtotime("+1 days", strtotime($start_date)))));
+    $sched_type = 'night shift';
+    $color = '#050f25';
+   
     }
     else{
             $temp_enddate =  "$start_date"." $sun_end ";
+            $sched_type = 'day shift';
+            $color = '#264281';
+        
             }
+        }
     }
 
-    $data = array(
 
+      $list1 = $this->employee->get_sched($id);
+        
+    $checkdate = "";
+         foreach ($list1 as $value) {
+        $datetime = date_create($value->start);
+        $date = date_format($datetime,"Y-m-d");
+            if($start_date == $date){
+
+               $checkdate = $value->sched_id;
+                break;
+            }
+       }
+
+     $list2 = $this->employee->get_holiday();
+        
+    $holiday = "";
+         foreach ($list2 as $value) {
+    
+            if($start_date == $value->date){
+
+               $sched_type = $value->type;
+               $color = '#c2185b';
+                break;
+            }
+       }
+
+    $data = array(
         'user_id' => $id,
         'start' => $temp_startdate,
         'end' => $temp_enddate,
         'day' => $temp_day,
-        'work_status' => $work_status,
-        'color' => '#264281',
+        'sched_type' => $sched_type,
+        'color' => $color,
+        'work_status' => '',
+        'overtime_type' => '',
+
+
 
 
         );
@@ -696,7 +786,9 @@ $work_status = 'active';
         'overtime' => 0,
         'tardiness' => 0,
         'undertime' => 0,
-        'attnd_status' => $work_status,
+        'sched_type' => $sched_type,
+        'work_status' => '',
+        'overtime_type' => '',
 
 
         );
@@ -922,8 +1014,8 @@ $end_date = $this->input->post('enddate');
 
 
 while (strtotime($start_date) <= strtotime($end_date)) {
-
-$work_status = 'active';
+$sched_type = '';
+$color = '';
 
     $timestamp = strtotime($start_date);
     $day = date('D', $timestamp);
@@ -933,19 +1025,29 @@ $work_status = 'active';
     $temp_day = $day;
 
      if($mon_start == '00:00:00'){
-            $work_status = 'inactive';
-        }
+         $temp_enddate = "$start_date"." $mon_end ";
+            $sched_type = 'day off';
+            $color = '#34a853';
+     
+        }else{
 
     if($mon_end == '06:00:00'){
 
     $temp_enddate = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)))." $mon_end ";
     $temp_day = date('D', strtotime(date("Y-m-d",strtotime("+1 days", strtotime($start_date)))));
+    $sched_type = "night shift";
+    $color = '#050f25';
     }
 
     else{
 
          $temp_enddate = "$start_date"." $mon_end ";
+          $sched_type = "day shift";
+          $color = '#264281';
+
+
         }
+    }
     }
 
     else if($day == 'Tue'){
@@ -953,16 +1055,23 @@ $work_status = 'active';
     $temp_day = $day;
 
     if($tue_start == '00:00:00'){
-            $work_status = 'inactive';
-        }
+         $temp_enddate = "$start_date"." $mon_end ";
+            $sched_type = 'day off';
+             $color = '#34a853';
+        }else{
 
     if($tue_end == '06:00:00'){
     $temp_enddate = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)))." $tue_end ";
     $temp_day = date('D', strtotime(date("Y-m-d",strtotime("+1 days", strtotime($start_date)))));
+    $sched_type = "night shift";
+    $color = '#050f25';
     }
         else{
            $temp_enddate =  "$start_date"." $tue_end ";
+           $sched_type  = "day shift";
+            $color = '#264281';
             }
+        }
     }
 
     else if($day == 'Wed'){
@@ -970,16 +1079,23 @@ $work_status = 'active';
     $temp_day = $day;
 
     if($wed_start == '00:00:00'){
-            $work_status = 'inactive';
-        }
+         $temp_enddate = "$start_date"." $mon_end ";
+           $sched_type = "day off";
+           $color = '#34a853';
+        }else{
 
      if($wed_end == '06:00:00'){
     $temp_enddate = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)))." $wed_end ";
     $temp_day = date('D', strtotime(date("Y-m-d",strtotime("+1 days", strtotime($start_date)))));
+    $sched_type = "night shift";
+    $color = '#050f25';
     }
     else{
             $temp_enddate =  "$start_date"." $wed_end ";
+            $sched_type = "day shift";
+             $color = '#264281';
             }
+        }
     }
 
     else if($day == 'Thu'){
@@ -987,16 +1103,24 @@ $work_status = 'active';
     $temp_day = $day;
 
     if($thurs_start == '00:00:00'){
-            $work_status = 'inactive';
-        }
+         $temp_enddate = "$start_date"." $mon_end ";
+           $sched_type = 'day off';
+           $color = '#34a853';
+          
+        }else{
 
      if($thurs_end == '06:00:00'){
      $temp_enddate = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)))." $thurs_end ";
     $temp_day = date('D', strtotime(date("Y-m-d",strtotime("+1 days", strtotime($start_date)))));
+    $sched_type = "night shift";
+    $color = '#050f25';
     }
     else{
             $temp_enddate =  "$start_date"." $thurs_end ";
+            $sched_type = "day shift";
+            $color = '#264281';
             }
+        }
     }
 
     else if($day == 'Fri'){
@@ -1004,17 +1128,25 @@ $work_status = 'active';
     $temp_day = $day;
 
     if($fri_start == '00:00:00'){
-            $work_status = 'inactive';
-        }
+         $temp_enddate = "$start_date"." $mon_end ";
+            $sched_type = 'day off';
+            $color = '#34a853';
+            
+        }else{
 
     if($fri_end == '06:00:00'){
     $temp_enddate = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)))." $fri_end ";
      $temp_day = date('D', strtotime(date("Y-m-d",strtotime("+1 days", strtotime($start_date)))));
+     $sched_type = "night shift";
+     $color = '#050f25';
     }
         
     else{
             $temp_enddate =  "$start_date"." $fri_end ";
+            $sched_type = "day shift";
+            $color = '#264281';
             }
+        }
     }
 
     else if($day == 'Sat'){
@@ -1022,16 +1154,24 @@ $work_status = 'active';
     $temp_day = $day;
 
     if($sat_start == '00:00:00'){
-            $work_status = 'inactive';
-        }
+         $temp_enddate = "$start_date"." $mon_end ";
+           $sched_type = 'day off';
+           $color = '#34a853';
+           
+        }else{
 
      if($sat_end == '06:00:00'){
      $temp_enddate = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)))." $sat_end ";
     $temp_day = date('D', strtotime(date("Y-m-d",strtotime("+1 days", strtotime($start_date)))));
+    $sched_type = "night shift";
+    $color = '#050f25';
     }
         else{
           $temp_enddate =  "$start_date"." $sat_end ";
+          $sched_type = "day shift";
+          $color = '#264281';
             }
+        }
     }
 
 
@@ -1040,23 +1180,33 @@ $work_status = 'active';
     $temp_day = $day;
 
     if($sun_start == '00:00:00'){
-            $work_status = 'inactive';
-        }
+         $temp_enddate = "$start_date"." $mon_end ";
+            $sched_type = 'day off';
+            $color = '#34a853';
+            
+        }else{
 
      if($sun_end == '06:00:00'){
     $temp_enddate = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)))." $sun_end ";
     $temp_day = date('D', strtotime(date("Y-m-d",strtotime("+1 days", strtotime($start_date)))));
+    $sched_type = "night shift";
+    $color = '#050f25';
+   
     }
     else{
             $temp_enddate =  "$start_date"." $sun_end ";
+            $sched_type = "day shift";
+            $color = '#264281';
+        
             }
+        }
     }
 
 
-      $list = $this->employee->get_sched($id);
+      $list1 = $this->employee->get_sched($id);
         
     $checkdate = "";
-         foreach ($list as $value) {
+         foreach ($list1 as $value) {
         $datetime = date_create($value->start);
         $date = date_format($datetime,"Y-m-d");
             if($start_date == $date){
@@ -1066,17 +1216,55 @@ $work_status = 'active';
             }
        }
 
-    $data = array(
+     $list2 = $this->employee->get_holiday();
+        
+    $holiday = "";
+         foreach ($list2 as $value) {
+    
+            if($start_date == $value->date){
 
+               $sched_type = $value->type;
+               $color = '#c2185b';
+                break;
+            }
+       }
+
+    $data = array(
+        'user_id' => $id,
         'start' => $temp_startdate,
         'end' => $temp_enddate,
         'day' => $temp_day,
-        'work_status' => $work_status,
-        'color' => '#264281',
+        'sched_type' => $sched_type,
+        'color' => $color,
+        'work_status' => '',
+        'overtime_type' => '',
+
+
 
 
         );
      $this->employee->sched_update($data, $id, $checkdate);
+
+     $data1 = array(
+
+        'user_id' => $id,
+        'date' => $start_date,
+        'time_in' => "",
+        'time_out' => "",
+        'hours_worked' => 0,
+        'overtime' => 0,
+        'tardiness' => 0,
+        'undertime' => 0,
+        'sched_type' => $sched_type,
+        'work_status' => '',
+        'overtime_type' => '',
+
+
+        );
+
+      $this->employee->attendance_update($data1, $id, $start_date);
+
+
     $start_date = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)));
   }
 

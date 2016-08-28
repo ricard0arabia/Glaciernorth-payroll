@@ -140,7 +140,7 @@ class Overtime extends CI_Controller {
             $datetime = date_create($value->start);
             $date = date_format($datetime,"Y-m-d");
                 if($this->input->post('date') == $date){
-                    if($value->work_status != 'active'){
+                    if($value->work_status != ''){
 
                         $start = false;
                         break;
@@ -161,8 +161,7 @@ class Overtime extends CI_Controller {
                 'ot_status' => 'requested',
                 'cause' => $this->input->post('cause'),
                 'duration' => $this->input->post('duration'),
-                'date_submitted' => date("Y-m-d"),
-                
+                'date_submitted' => date("Y-m-d"),  
                 
             );
         $insert = $this->overtime->ot_save($data);
@@ -300,30 +299,56 @@ class Overtime extends CI_Controller {
     {
         
         $date = $this->overtime->get_ot_date($id);
+        $ot_date = $date->date;
 
-       $ot_date = $date->date;
-      
+
+
+
+        $overtime_type = "";
+    
+
                 $list = $this->overtime->get_sched($id);
 
             foreach ($list as $value) {
-                $date_id = $value->sched_id;
+                
                 $datetime = date_create($value->start);
                 $date = date_format($datetime,"Y-m-d");
 
                 if($ot_date == $date){
 
-                    if($value->work_status == 'active'){
+                    $date_id = $value->sched_id;
+
+                    if($value->sched_type == "night shift" || $value->sched_type == "day shift"){
+
+                        $overtime_type = "regular";
+
+                    }else if($value->sched_type == "day off"){
+
+                         $overtime_type = "rest day";
+
+                    }else if($value->sched_type == "regular"){
+
+                         $overtime_type = "regular holiday";
+
+                    }else if($value->sched_type == "special"){
+
+                         $overtime_type = "special holiday";
+
+                    }
+
+
                        
                         $data = array(
                 
                             'work_status' => 'overtime',
                             'color' => '#407f1e',
+                            'overtime_type' => $overtime_type,
                                 
                         );
                       
                     $this->overtime->sched_update($data, $id, $date_id);
 
-                    }
+                    
                 }
             }
 
@@ -339,18 +364,18 @@ class Overtime extends CI_Controller {
 
                 if($ot_date == $date){
 
-                    if($value->attnd_status == 'active'){
-                       
+                                          
                         $data = array(
                 
-                           'attnd_status' => 'overtime',
+                           'work_status' => 'overtime',
+                           'overtime_type' => $overtime_type,
                                 
                         );
                       
                     $this->overtime->attendance_update($data, $id, $date_id);
 
                    
-                    }
+                    
                 }
             }
 

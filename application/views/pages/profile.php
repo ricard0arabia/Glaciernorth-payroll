@@ -120,14 +120,22 @@ input, select{
                 background-color: #3A87AD;
                 color: #fff;
             }
+
 </style>
 <script type="text/javascript">
 
 save_method = 'add';
 $(document).ready(function () {
 
-   <?php if($this->uri->segment(1) == 'userprofile') { ?>
+  var table1;
+  var emp_id; 
+      
+    
 
+
+
+   <?php if($this->uri->segment(1) == 'userprofile') { ?>
+    var emp_id = "<?php echo $this->session->userdata('username');?>";
     $.ajax({
         url : "<?php echo site_url('userprofile/employee_details')?>",
         type: "GET",
@@ -167,10 +175,12 @@ $(document).ready(function () {
         },
        
     });
+
+   
     
 
       <?php }else if($this->uri->segment(1) == 'employees'){ ?>
-
+        var emp_id = "<?php echo $this->uri->segment(3);?>";
         $.ajax({
         url : "<?php echo site_url('employees/employee_details')?>/" + <?php echo $this->uri->segment(3); ?>,
         type: "GET",
@@ -195,7 +205,7 @@ $(document).ready(function () {
 
             $('[name="department"]').val(data.department);
             $('[name="position"]').val(data.position);
-            $('[name="salary"]').val(data.salary);
+            $('[name="salary"]').val('&#x20B1; '+data.salary);
             $('[name="datehired"]').val(data.datehired);
             $('[name="taxstatus"]').val(data.taxstatus);
             $('[name="userlevel"]').val(data.userlevel);
@@ -214,6 +224,72 @@ $(document).ready(function () {
 
 
         <?php } ?>
+
+     table1 = $('#payroll_table').DataTable({
+      
+        "processing": true, //Feature control the processing indicator.
+        "serverSide": true, //Feature control DataTables' server-side processing mode.
+        "order": [], //Initial no order.
+        "dom": 'Bfrtip',
+         "buttons": [
+        {
+            extend: 'pdf',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4]
+            },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n SSS Contribution Table ',
+               orientation: 'portrait',
+               customize: function(doc) {
+                  doc.defaultStyle.fontSize = 16; //<-- set fontsize to 16 instead of 10 
+               }  
+       },
+       {
+           extend: 'csv',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4]
+             },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n SSS Contribution Table ',
+          
+       },
+       {
+           extend: 'excel',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4]
+             },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n SSS Contribution Table ',
+       },
+       {
+           extend: 'print',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4]
+            },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n SSS Contribution Table ',
+       }          
+        ],
+ 
+        // Load data for the table's content from an Ajax source
+        "ajax": {
+            "url": "<?php echo site_url('payroll/payroll_data')?>/" +emp_id,
+            "type": "POST"
+        },
+ 
+        //Set column definition initialisation properties.
+        "columnDefs": [
+        {
+            "targets": [ -1 ], //last column
+            "orderable": false, //set not orderable
+        },
+        ],
+ 
+    });
 
 
 
@@ -307,7 +383,7 @@ $(document).ready(function () {
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#201file" data-toggle="tab">201 File</a></li>
                             
-                            <li><a href="#earnings" data-toggle="tab">Earnings</a></li>
+                            <li><a href="#payrolldata" data-toggle="tab">Payroll Data</a></li>
                             <li><a href="#schedule" data-toggle="tab">Schedule</a></li>
                           
                         </ul>
@@ -465,7 +541,7 @@ $(document).ready(function () {
   </tr>
   <tr>
      <th>Salary</th>
-    <td><input type="text" id="salary" class="detailed input2" name="salary" readonly></td>
+    <td>&#x20B1;&nbsp;<input type="text" id="salary" class="detailed input2" name="salary" readonly></td>
     <th></th>
     <td></td>
 
@@ -478,8 +554,38 @@ $(document).ready(function () {
 
                    
     
-                        </div>
-                         <div class="tab-pane fade" id="earnings">Primary 3</div>
+      </div>
+
+
+
+
+      <div class="tab-pane fade" id="payrolldata"> 
+        <button class="btn btn-default" onclick="reload_table()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
+         
+          <br />
+         <br />
+                  <table id="payroll_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                                  <thead>
+                                      <tr>
+                                          <th>Period Covered</th>
+                                          <th>Gross Amaount</th>
+                                          <th>Deductions</th>
+                                          <th>Withholding Tax</th>
+                                          <th>Net Amount</th>
+                                          <th style="width:160px;">Payslip</th>
+                                      </tr>
+                                  </thead>
+                                 
+                              </table>
+
+
+
+
+                                                                           
+          </div>
+
+        
+
                         <div class="tab-pane fade" id="schedule">
                        <?php if($level == '2'){ ?>   
                           <br>
@@ -508,7 +614,7 @@ $(document).ready(function () {
   </div>           
            
 </div>
-  </div>   
+</div>   
 
 
 
@@ -1079,9 +1185,25 @@ if($(this).hasClass('detailed')){
 
    
  }
+
+
+
+ //
 //
 //
 //
+
+
+
+function reload_table()
+{
+    table1.ajax.reload(null,false); //reload datatable ajax
+}
+
+
+
+
+
 //
 //
 //
@@ -1433,5 +1555,4 @@ $(function(){
 
 
  </script>
-
 

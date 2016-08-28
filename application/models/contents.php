@@ -17,10 +17,6 @@ class Contents extends CI_Model {
     var $ot_column_search = array('date','cause','overtime_status'); //set column field database for datatable searchable just firstname , lastname , address are searchable
     var $ot_order = array('id' => 'desc'); // default
 
-    var $empsched_table = 'emp_workschedule';
-    var $empsched_column_order = array('id','user_id','mon_start','mon_end','tue_start','tue_end','wed_start','wed_end','thurs_start','thurs_end','fri_start','fri_end','sat_start','sat_end','sun_start','sun_end',null); //set column field database for datatable orderable
-    var $empsched_column_search = array('mon_start','mon_end','tue_start','tue_end','wed_start','wed_end','thurs_start','thurs_end','fri_start','fri_end','sat_start','sat_end','sun_start','sun_end'); //set column field database for datatable searchable just firstname , lastname , address are searchable
-    var $empsched_order = array('id' => 'desc'); // default
 
     var $shift_table = 'rqst_shift';
     var $shift_column_order = array('id','user_id','startdate','enddate','duration','shift_days','reason','status','sub_department','sub_position','sub_id','mon_start','mon_end','tue_start','tue_end','wed_start','wed_end','thurs_start','thurs_end','fri_start','fri_end','sat_start','sat_end','sun_start','sun_end',null); //set column field database for datatable orderable
@@ -50,8 +46,8 @@ var $time_table = 'timesheet';
 
 
  var $attendance_table = 'attendance';
-    var $attendance_column_order = array('attendance_id','user_id','date','time_in','time_out','hours_worked','overtime','tardiness','undertime',null); //set column field database for datatable orderable
-    var $attendance_column_search = array('lastname','department','position','firstname','date'); //set column field database for datatable searchable just firstname , lastname , address are searchable
+    var $attendance_column_order = array('attendance_id','user_id','date','time_in','time_out','hours_worked','overtime','tardiness','undertime','sched_type','work_status','overtime_type',null); //set column field database for datatable orderable
+    var $attendance_column_search = array('lastname','department','position','firstname','date','sched_type','work_status'); //set column field database for datatable searchable just firstname , lastname , address are searchable
     var $attendance_order = array('attendance_id' => 'asc'); // default order
 
 
@@ -76,6 +72,11 @@ var $time_table = 'timesheet';
     var $philhealth_column_order = array('philhealth_id','min_salary','max_salary','employer','employee',null); //set column field database for datatable orderable
     var $philhealth_column_search = array('min_salary','max_salary','employer','employee'); //set column field database for datatable searchable just firstname , lastname , address are searchable
     var $philhealth_order = array('philhealth_id' => 'asc'); // default
+
+      var $payslip_table = 'payslip';
+    var $payslip_column_order = array('payslip_id','user_id','basic_salary','allowance','overtime_pay','special_holiday_pay','legal_holiday_pay','night_diff_pay','gross_salary','deductions','sss_contrib','hdmf_contrib','philhealth_contrib','withholding_tax','sss_loan','pagibig_loan','others','payslip_status','net_pay',null); //set column field database for datatable orderable
+    var $payslip_column_search = array('user_id','basic_salary'); //set column field database for datatable searchable just firstname , lastname , address are searchable
+    var $payslip_order = array('payslip_id' => 'desc'); // default
     
 
     public function __construct() {
@@ -483,110 +484,6 @@ var $time_table = 'timesheet';
         $this->db->delete($this->shift_table);
     }
 
-#emp_schedule
-#emp_schedule
-#emp_schedule
-
-
-          private function empsched_get_datatables_query()
-    {
-        
-        $this->db->from('emp_workschedule');
-        $this->db->join('employees','employees.user_id = emp_workschedule.user_id');
-
-
-  
-        $i = 0;
-     
-        foreach ($this->empsched_column_search as $item) // loop column
-        {
-            if($_POST['search']['value']) // if datatable send POST for search
-            {             
-              if($i===0) // first loop
-                {
-                    $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
-                    $this->db->like($item, $_POST['search']['value']);
-                }
-                else
-                {
-                    $this->db->or_like($item, $_POST['search']['value']);
-                }
- 
-                if(count($this->empsched_column_search) - 1 == $i) //last loop
-                    $this->db->group_end(); //close bracket
-            }
-            $i++;
-        }
-         
-        if(isset($_POST['order'])) // here order processing
-        {
-            $this->db->order_by($this->empsched_column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
-        }
-        else if(isset($this->empsched_order))
-        {
-            $order = $this->empsched_order;
-            $this->db->order_by(key($order), $order[key($order)]);
-        }
-    }
- 
-    function empsched_get_datatables($id)
-    {
-        $this->empsched_get_datatables_query();
-        if($_POST['length'] != -1)
-        $this->db->limit($_POST['length'], $_POST['start']);    
-        $this->db->where('emp_workschedule.user_id =', $id); 
-        $query = $this->db->get();
-        return $query->result();
-    }
-    function allempsched_get_datatables()
-    {
-        $this->empsched_get_datatables_query();
-        if($_POST['length'] != -1)
-        $this->db->limit($_POST['length'], $_POST['start']);    
-        $this->db->where('emp_workschedule.user_id !=', $this->session->userdata('username')); 
-        $query = $this->db->get();
-        return $query->result();
-    }
- 
-    function empsched_count_filtered()
-    {
-        $this->empsched_get_datatables_query();
-        $query = $this->db->get();
-        return $query->num_rows();
-    }
- 
-    public function empsched_count_all()
-    {
-        $this->db->from($this->empsched_table);
-        return $this->db->count_all_results();
-    }
- 
-    public function empsched_get_by_id($id)
-    {
-        $this->db->from($this->empsched_table);
-        $this->db->where('emp_workschedule.user_id =', $id); 
-        $query = $this->db->get();
- 
-        return $query->row();
-    }
- 
-    public function empsched_save($data)
-    {
-        $this->db->insert($this->empsched_table, $data);
-        return $this->db->insert_id();
-    }
- 
-    public function empsched_update($where, $data)
-    {
-        $this->db->update($this->empsched_table, $data, $where);
-        return $this->db->affected_rows();
-    }
- 
-    public function empsched_delete_by_id($id)
-    {
-        $this->db->where('emp_workschedule.user_id', $id);
-        $this->db->delete($this->empsched_table);
-    }
 
 #emp_list
 #emp_list
@@ -830,6 +727,8 @@ var $time_table = 'timesheet';
 
         $this->db->from('rqst_leaves');
         $this->db->where('user_id =', $id); 
+         $this->db->order_by('leave_id',"desc");
+        $this->db->limit(1);
         $query = $this->db->get();
  
         return $query->row();
@@ -839,6 +738,8 @@ var $time_table = 'timesheet';
 
         $this->db->from('rqst_overtime');
         $this->db->where('user_id =', $id); 
+        $this->db->order_by('overtime_id',"desc");
+        $this->db->limit(1);
         $query = $this->db->get();
  
         return $query->row();
@@ -1487,6 +1388,115 @@ var $time_table = 'timesheet';
         $this->db->delete($this->philhealth_table);
     }
 
+//payslip
+
+
+
+
+
+
+       private function payslip_get_datatables_query()
+    {
+    
+       $this->db->from('payslip');
+        $this->db->join('employees','payslip.user_id = employees.user_id','right');
+        
+        $i = 0;
+     
+        foreach ($this->payslip_column_search as $item) // loop column
+        {
+            if($_POST['search']['value']) // if datatable send POST for search
+            {
+                 
+                if($i===0) // first loop
+                {
+                    $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+                    $this->db->like($item, $_POST['search']['value']);
+                }
+                else
+                {
+                    $this->db->or_like($item, $_POST['search']['value']);
+                }
+ 
+                if(count($this->payslip_column_search) - 1 == $i) //last loop
+                    $this->db->group_end(); //close bracket
+            }
+            $i++;
+        }
+         
+        if(isset($_POST['order'])) // here order processing
+        {
+            $this->db->order_by($this->payslip_column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+        }
+        else if(isset($this->payslip_order))
+        {
+            $order = $this->payslip_order;
+            $this->db->order_by(key($order), $order[key($order)]);
+        }
+    }
+ 
+    function payslip_get_datatables()
+    {
+        $this->payslip_get_datatables_query();
+        if($_POST['length'] != -1)
+        $this->db->limit($_POST['length'], $_POST['start']);   
+    
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+     function emp_payslip_get_datatables($id)
+    {
+        $this->payslip_get_datatables_query();
+        if($_POST['length'] != -1)
+        $this->db->limit($_POST['length'], $_POST['start']);   
+        $this->db->where('payslip.user_id =', $id); 
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+  
+ 
+    function payslip_count_filtered()
+    {
+        $this->payslip_get_datatables_query();
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+ 
+    public function payslip_count_all()
+    {
+        $this->db->from($this->payslip_table);
+        return $this->db->count_all_results();
+    }
+ 
+    public function payslip_get_by_id($id)
+    {
+        $this->db->from($this->payslip_table);
+        $query = $this->db->get();
+ 
+        return $query->row();
+    }
+
+  
+ 
+    public function payslip_save($data)
+    {
+        $this->db->insert($this->payslip_table, $data);
+        return $this->db->insert_id();
+    }
+ 
+    public function payslip_update($where, $data)
+    {
+        $this->db->update($this->payslip_table, $data, $where);
+        return $this->db->affected_rows();
+    }
+ 
+    public function payslip_delete_by_id($id)
+    {
+        $this->db->where('payslip_id', $id);
+        $this->db->delete($this->payslip_table);
+    }
 
 
 
@@ -1494,6 +1504,27 @@ var $time_table = 'timesheet';
 
 
 
+
+
+
+
+
+
+
+
+
+//
+
+
+
+
+  public function get_holiday()
+    {
+        $this->db->from('holiday');
+        $query = $this->db->get();
+ 
+        return $query->result();
+    }
 
 
 
@@ -1539,7 +1570,7 @@ var $time_table = 'timesheet';
 Public function getEvents($id)
     {
         
-    $sql = "SELECT * FROM schedule WHERE user_id = $id AND work_status != 'inactive' AND schedule.start BETWEEN ? AND ? ORDER BY schedule.start ASC";
+    $sql = "SELECT * FROM schedule WHERE user_id = $id AND sched_type != 'day off' AND schedule.start BETWEEN ? AND ? ORDER BY schedule.start ASC";
     return $this->db->query($sql, array($_GET['start'], $_GET['end']))->result();
 
     }

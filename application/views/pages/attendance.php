@@ -17,9 +17,11 @@
                                 <th>Time Out</th>
                                 <th>Hours Worked</th>
                                 <th>Overtime</th>
+                                 <th>Tardiness</th>
                                 <th>Undertime</th>
-                                <th>Tardiness</th>
-                                <th>Status</th>
+                                <th>Sched Type</th>
+                                <th>Work Status</th>
+                                <th>OT Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>

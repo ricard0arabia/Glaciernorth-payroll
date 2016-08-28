@@ -293,7 +293,7 @@ var table2;
         autoclose: true,
         format: "yyyy-mm-dd",
        startDate: '1d',  
-        endDate: '+2d',
+        endDate: '+3d',
         todayHighlight: true,
         orientation: "bottom auto",
         todayBtn: true,
@@ -310,7 +310,7 @@ function add_overtime()
     $('.form-group').removeClass('has-error'); // clear error class
     $('.help-block').empty(); // clear error string
     $('#modal_form').modal('show'); // show bootstrap modal
-    $('.modal-title').text('Add Leave Request'); // Set Title to Bootstrap modal title
+    $('.modal-title').text('Add Overtime Request'); // Set Title to Bootstrap modal title
 }
 
 function edit_overtime(id)

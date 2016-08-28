@@ -121,19 +121,33 @@ class Time extends CI_Controller {
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $time) {
-              $class = 'label label-success';
-        if ($time->attnd_status === 'absent') {
-            $class = 'label label-danger';
+//
+              $class1 = '';
+              $sched_type = $time->sched_type;
+        if ($time->sched_type === 'day off') {
+            $class1 = 'label label-default';
         }
-        else if ($time->attnd_status === 'inactive') {
-            $class = 'label label-info';
+        else if ($time->sched_type === 'day shift') {
+            $class1 = 'label label-success';
         }
-        else if ($time->attnd_status === 'leave') {
-            $class = 'label label-warning';
+        else if ($time->sched_type === 'night shift') {
+            $class1 = 'label label-primary';
         } 
-        else if ($time->attnd_status === 'overtime') {
-            $class = 'label label-primary';
+        else if ($time->sched_type === 'regular' || $time->sched_type === 'special') {
+            $class1 = 'label label-warning';
+            $sched_type = "Holiday";
         }
+//  
+         $class2 = '';
+         if ($time->work_status === 'absent') {
+            $class2 = 'label label-danger';
+        }
+        else if ($time->work_status === 'leave') {
+            $class2 = 'label label-warning';
+        }
+        else if ($time->work_status === 'overtime') {
+            $class2 = 'label label-primary';
+        } 
             $no++;
             $row = array();
          	
@@ -148,7 +162,9 @@ class Time extends CI_Controller {
             $row[] = $time->overtime;
             $row[] = $time->tardiness;
             $row[] = $time->undertime;
-            $row[] = '<h4><span class="'.$class.'">'.$time->attnd_status.'</span></h4>'; 
+            $row[] = '<h4><span class="'.$class1.'">'.$sched_type.'</span></h4>'; 
+             $row[] = '<h4><span class="'.$class2.'">'.$time->work_status.'</span></h4>'; 
+              $row[] = $time->overtime_type; 
        
            
             //add html for action
