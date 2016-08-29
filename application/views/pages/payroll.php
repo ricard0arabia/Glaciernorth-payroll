@@ -43,9 +43,9 @@
 
 
 <script type="text/javascript">
+var table1;
 
    $(document).ready(function () {
-var table1;
 
        //datatables
     table1 = $('#payroll_table').DataTable({
@@ -122,50 +122,18 @@ var table1;
 
 function generate_payroll(){
 
-
-    $.ajax({
-        url : url,
+ $.ajax({
+        url : "<?php echo site_url('payroll/generate_payroll')?>",
         type: "GET",
-        data:
         dataType: "JSON",
+
         success: function(data)
         {
- 
-            if(data.status) //if success close modal and reload ajax table
-            {
-              if(data.start == false || data.end == false){
-
-                  alert('Start date or End date not valid! Kingina mo! Leave pa more');
-
-                }
-                else{
-
-                  if(data.warning){
-
-                     alert(data.warning);
-
-                  }
-                  else{
-                $('#modal_form').modal('hide');
-                reload_table1();
-                }
-              }
-            }
-            else
-            {
-
-                for (var i = 0; i < data.inputerror.length; i++)
-                {
-                    $('[name="'+data.inputerror[i]+'"]').parent().parent().addClass('has-error'); //select parent twice to select div form-group class and add has-error class
-                    $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]); //select span help-block class set text error string
-                }
-            }
-            $('#btnSave').text('save'); //change button text
-            $('#btnSave').attr('disabled',false); //set button enable
- 
- 
+          alert(data.hello);
+          reload_table();
         },
-
+       
+    });
   
 }
 function reload_table()

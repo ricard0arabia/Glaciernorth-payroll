@@ -54,7 +54,7 @@ var $time_table = 'timesheet';
      var $payperiod_table = 'payperiod';
     var $payperiod_column_order = array('payperiod_id','date_from','date_to','payperiod_status','total_gross','total_income','total_withholding_tax','total_deduction',null); //set column field database for datatable orderable
     var $payperiod_column_search = array('date_to','date_from','sub_id'); //set column field database for datatable searchable just firstname , lastname , address are searchable
-    var $payperiod_order = array('payperiod_id' => 'desc'); // default
+    var $payperiod_order = array('payperiod_id' => 'asc'); // default
 
 
          var $bir_table = 'semi_birtable';
@@ -76,7 +76,13 @@ var $time_table = 'timesheet';
       var $payslip_table = 'payslip';
     var $payslip_column_order = array('payslip_id','user_id','basic_salary','allowance','overtime_pay','special_holiday_pay','legal_holiday_pay','night_diff_pay','gross_salary','deductions','sss_contrib','hdmf_contrib','philhealth_contrib','withholding_tax','sss_loan','pagibig_loan','others','payslip_status','net_pay',null); //set column field database for datatable orderable
     var $payslip_column_search = array('user_id','basic_salary'); //set column field database for datatable searchable just firstname , lastname , address are searchable
-    var $payslip_order = array('payslip_id' => 'desc'); // default
+    var $payslip_order = array('payslip_id' => 'asc'); // default
+
+
+      var $reports_period_table = 'reports_period';
+    var $reports_period_column_order = array('reports_period_id','date_from','date_to','total_employee_share','total_employer_share','total_share',null); //set column field database for datatable orderable
+    var $reports_period_column_search = array('date_to','date_from'); //set column field database for datatable searchable just firstname , lastname , address are searchable
+    var $reports_period_order = array('reports_period_id' => 'asc'); // default
     
 
     public function __construct() {
@@ -1204,6 +1210,47 @@ var $time_table = 'timesheet';
     {
     
        $this->db->from($this->sss_table);
+      
+        
+        $i = 0;
+     
+        foreach ($this->sss_column_search as $item) // loop column
+        {
+            if($_POST['search']['value']) // if datatable send POST for search
+            {
+                 
+                if($i===0) // first loop
+                {
+                    $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+                    $this->db->like($item, $_POST['search']['value']);
+                }
+                else
+                {
+                    $this->db->or_like($item, $_POST['search']['value']);
+                }
+ 
+                if(count($this->sss_column_search) - 1 == $i) //last loop
+                    $this->db->group_end(); //close bracket
+            }
+            $i++;
+        }
+         
+        if(isset($_POST['order'])) // here order processing
+        {
+            $this->db->order_by($this->sss_column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+        }
+        else if(isset($this->sss_order))
+        {
+            $order = $this->sss_order;
+            $this->db->order_by(key($order), $order[key($order)]);
+        }
+    }
+
+    private function sss_report_datatables_query()
+    {
+    
+       $this->db->from('sss');
+         $this->db->join('employees','employees.sss_code = sss.sss_id');
         
         $i = 0;
      
@@ -1242,6 +1289,14 @@ var $time_table = 'timesheet';
     function sss_get_datatables()
     {
         $this->sss_get_datatables_query();
+        if($_POST['length'] != -1)
+        $this->db->limit($_POST['length'], $_POST['start']);    
+        $query = $this->db->get();
+        return $query->result();
+    }
+     function sss_report_datatables()
+    {
+        $this->sss_report_datatables_query();
         if($_POST['length'] != -1)
         $this->db->limit($_POST['length'], $_POST['start']);    
         $query = $this->db->get();
@@ -1499,7 +1554,114 @@ var $time_table = 'timesheet';
     }
 
 
+//reports period
 
+
+      private function reports_period_get_datatables_query()
+    {
+    
+       $this->db->from($this->reports_period_table);
+        
+        $i = 0;
+     
+        foreach ($this->reports_period_column_search as $item) // loop column
+        {
+            if($_POST['search']['value']) // if datatable send POST for search
+            {
+                 
+                if($i===0) // first loop
+                {
+                    $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+                    $this->db->like($item, $_POST['search']['value']);
+                }
+                else
+                {
+                    $this->db->or_like($item, $_POST['search']['value']);
+                }
+ 
+                if(count($this->reports_period_column_search) - 1 == $i) //last loop
+                    $this->db->group_end(); //close bracket
+            }
+            $i++;
+        }
+         
+        if(isset($_POST['order'])) // here order processing
+        {
+            $this->db->order_by($this->reports_period_column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+        }
+        else if(isset($this->reports_period_order))
+        {
+            $order = $this->reports_period_order;
+            $this->db->order_by(key($order), $order[key($order)]);
+        }
+    }
+ 
+    function reports_period_get_datatables()
+    {
+        $this->reports_period_get_datatables_query();
+        if($_POST['length'] != -1)
+        $this->db->limit($_POST['length'], $_POST['start']);    
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+      public function get_reports_period()
+    {
+        $this->db->from('reports_period');
+        $query = $this->db->get();
+ 
+        return $query->result();
+    }
+
+      public function  get_specific_reports_period($id)
+    {
+        $this->db->from('reports_period');
+        $this->db->where('reports_period_id',$id);
+        $query = $this->db->get();
+ 
+        return $query->row();
+    }
+ 
+    function reports_period_count_filtered()
+    {
+        $this->reports_period_get_datatables_query();
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+ 
+    public function reports_period_count_all()
+    {
+        $this->db->from($this->reports_period_table);
+        return $this->db->count_all_results();
+    }
+ 
+    public function reports_period_get_by_id($id)
+    {
+        $this->db->from($this->reports_period_table);
+        $query = $this->db->get();
+ 
+        return $query->row();
+    }
+
+  
+ 
+    public function reports_period_save($data)
+    {
+        $this->db->insert($this->reports_period_table, $data);
+        return $this->db->insert_id();
+    }
+ 
+    public function reports_period_update($where, $data)
+    {
+        $this->db->update($this->reports_period_table, $data, $where);
+        return $this->db->affected_rows();
+    }
+ 
+    public function reports_period_delete_by_id($id)
+    {
+        $this->db->where('reports_period_id', $id);
+        $this->db->delete($this->reports_period_table);
+    }
 
 
 

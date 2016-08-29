@@ -1,22 +1,21 @@
    <div class="container">
 
-  <h3>Payperiod</h3>
+  <h3>Reports Period</h3>
   
     <br>
-       <button class="btn btn-success" onclick="add_payperiod()"><i class="glyphicon glyphicon-plus"></i> Payperiod </button>
+       <button class="btn btn-success" onclick="add_reports_period()"><i class="glyphicon glyphicon-plus"></i> Reports Period </button>
  <button class="btn btn-default" onclick="reload_table()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
         <br />
         <br />
-        <table id="table_payperiod" class="table table-striped table-bordered" cellspacing="0" width="100%">
+        <table id="table" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
                                 <th>Period</th>
                                 <th>From</th>
                                 <th>To</th>
-                                <th>Gross Income</th>
-                                <th>Taxable Income</th>
-                                <th>Withholding Tax</th>
-                                <th>Deduction</th>
+                                <th>Total Employee Share</th>
+                                <th>Total Employer Share</th>
+                                <th>Total Share</th>
                                  <th style="width:160px;">Action</th>
                            
                             </tr>
@@ -36,13 +35,13 @@
 <script type="text/javascript">
 
 
-var table1;
+var table;
 
    $(document).ready(function () {
 
 
        //datatables
-   table1 = $('#table_payperiod').DataTable({
+   table = $('#table').DataTable({
  
         "processing": true, //Feature control the processing indicator.
         "serverSide": true, //Feature control DataTables' server-side processing mode.
@@ -94,7 +93,7 @@ var table1;
  
         // Load data for the table's content from an Ajax source
         "ajax": {
-            "url": "<?php echo site_url('payroll/payperiod_list')?>",
+            "url": "<?php echo site_url('reports/reports_period_list')?>",
             "type": "POST"
         },
  
@@ -116,14 +115,15 @@ var table1;
 
 
 
-           
+       
 
             $('#fromDate').datepicker({
                 format: "yyyy-mm-dd",
-            }); 
+            });
 
             $('#toDate').datepicker({
                 format: "yyyy-mm-dd",
+        
             });
 
 
@@ -132,14 +132,14 @@ var table1;
             
     });
 
-   function add_payperiod()
+   function add_reports_period()
 {
 
     $('#form')[0].reset(); // reset form on modals
     $('.form-group').removeClass('has-error'); // clear error class
     $('.help-block').empty(); // clear error string
     $('#modal_form').modal('show'); // show bootstrap modal
-    $('.modal-title').text('Add Payperiod'); // Set Title to Bootstrap modal title
+    $('.modal-title').text('Add Reports Period'); // Set Title to Bootstrap modal title
 }
 
 
@@ -148,9 +148,12 @@ function save()
     $('#btnSave').text('saving...'); //change button text
     $('#btnSave').attr('disabled',true); //set button disable
    
+
+    
+ 
     
     $.ajax({
-        url : "<?php echo site_url('payroll/add_payperiod')?>",
+        url : "<?php echo site_url('reports/add_reports_period')?>",
         type: "POST",
         data: $('#form').serialize(),
         dataType: "JSON",
@@ -197,13 +200,13 @@ function save()
 }
 
 
-function delete_payperiod(id)
+function delete_reports_period(id)
 {
     if(confirm('Are you sure delete this data?'))
     {
         // ajax delete data to database
         $.ajax({
-            url : "<?php echo site_url('payroll/delete_payperiod')?>/"+id,
+            url : "<?php echo site_url('reports/delete_reports_Period')?>/"+id,
             type: "POST",
             dataType: "JSON",
             success: function(data)
@@ -223,7 +226,7 @@ function delete_payperiod(id)
 
 function reload_table()
 {
-    table1.ajax.reload(null,false); //reload datatable ajax
+    table.ajax.reload(null,false); //reload datatable ajax
 }
 
 
@@ -239,7 +242,7 @@ function reload_table()
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
-                <h3 class="modal-title">Add Timesheet</h3>
+                <h3 class="modal-title">Add Reports Period</h3>
                
             </div>
             <div class="modal-body form">

@@ -205,7 +205,7 @@ $(document).ready(function () {
 
             $('[name="department"]').val(data.department);
             $('[name="position"]').val(data.position);
-            $('[name="salary"]').val('&#x20B1; '+data.salary);
+            $('[name="salary"]').val(data.salary);
             $('[name="datehired"]').val(data.datehired);
             $('[name="taxstatus"]').val(data.taxstatus);
             $('[name="userlevel"]').val(data.userlevel);

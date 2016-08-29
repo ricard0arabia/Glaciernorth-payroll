@@ -168,30 +168,154 @@
        
         $this->_validate();
 
+
+         $first11 = date('Y-m-01');
+         $last11 = date('Y-m-15');
+
+         $first12 = date('Y-m-15');
+         $last12= date('Y-m-t');
+
+
+
+         $first21 = date('Y-m-01',strtotime( '+1 month' , strtotime ( date('Y-m-d') )));
+         $last21 = date('Y-m-15', strtotime( '+1 month' , strtotime ( date('Y-m-d') )));
+
+         $first22 = date('Y-m-15',strtotime( '+1 month' , strtotime ( date('Y-m-d') )));
+         $last22= date('Y-m-t',strtotime( '+1 month' , strtotime ( date('Y-m-d') )));
+
+
+
+         $first31 = date('Y-m-01',strtotime( '+2 month' , strtotime ( date('Y-m-d') )));
+         $last31 = date('Y-m-15', strtotime( '+2 month' , strtotime ( date('Y-m-d') )));
+
+         $first32 = date('Y-m-15',strtotime( '+2 month' , strtotime ( date('Y-m-d') )));
+         $last32= date('Y-m-t',strtotime( '+2 month' , strtotime ( date('Y-m-d') )));
+
+
+
+         $first41 = date('Y-m-01',strtotime( '+3 month' , strtotime ( date('Y-m-d') )));
+         $last41 = date('Y-m-15', strtotime( '+3 month' , strtotime ( date('Y-m-d') )));
+
+         $first42 = date('Y-m-15',strtotime( '+3 month' , strtotime ( date('Y-m-d') )));
+         $last42= date('Y-m-t',strtotime( '+3 month' , strtotime ( date('Y-m-d') )));
+
+
+
+         $first51 = date('Y-m-01',strtotime( '+4 month' , strtotime ( date('Y-m-d') )));
+         $last51 = date('Y-m-15', strtotime( '+4 month' , strtotime ( date('Y-m-d') )));
+
+         $first52 = date('Y-m-15',strtotime( '+4 month' , strtotime ( date('Y-m-d') )));
+         $last52= date('Y-m-t',strtotime( '+4 month' , strtotime ( date('Y-m-d') )));
+
+
+
 $startdate = $this->input->post('startdate');
 $enddate = $this->input->post('enddate');
       $checkstart = true;
       $info="";
 
-     if(date('d', strtotime($startdate)) == "1" || date('d',strtotime($startdate)) == "15"){
-     	if(date('d',strtotime($enddate)) == "15" || date('d',strtotime($enddate)) == "28" ||
-     		date('d',strtotime($enddate)) == "30" || date('d',strtotime($enddate)) == "31" || 
-     		date('d',strtotime($enddate)) == "29"){
+     if($startdate == $first11){
+            if($enddate == $last11){
 
-     		$checkstart = true;
-     	}
-     	else{
+              $checkstart = true;
+            }else{
 
-     		$checkstart = false;
-     		$info = "End date must be the 15th or lst day of the month";
-     	}
+              $checkstart = false;
+              $info = "End date must be the 15th day of the month";
+            }
+      }else if($startdate == $first12){
+            if($enddate == $last12){
 
-     }
-     else{
+              $checkstart = true;
+            }else{
 
-     	$checkstart = false;
-     	$info = "Start date must be the 1st or last day of the month";
-     }
+              $checkstart = false;
+              $info = "End date must be the last day of the month";
+            }
+      }else if($startdate == $first21){
+            if($enddate == $last21){
+
+              $checkstart = true;
+            }else{
+
+              $checkstart = false;
+              $info = "End date must be the 15th day of the month";
+            }
+      }else if($startdate == $first22){
+            if($enddate == $last22){
+
+              $checkstart = true;
+            }else{
+
+              $checkstart = false;
+              $info = "End date must be the last day of the month";
+            }
+      }else if($startdate == $first31){
+            if($enddate == $last31){
+
+              $checkstart = true;
+            }else{
+
+              $checkstart = false;
+              $info = "End date must be the 15th day of the month";
+            }
+      }else if($startdate == $first32){
+            if($enddate == $last32){
+
+              $checkstart = true;
+            }else{
+
+              $checkstart = false;
+              $info = "End date must be the last day of the month";
+            }
+      }else if($startdate == $first41){
+            if($enddate == $last41){
+
+              $checkstart = true;
+            }else{
+
+              $checkstart = false;
+              $info = "End date must be the 15th day of the month";
+            }
+      }else if($startdate == $first42){
+            if($enddate == $last42){
+
+              $checkstart = true;
+            }else{
+
+              $checkstart = false;
+              $info = "End date must be the last day of the month";
+            }
+      }else if($startdate == $first51){
+            if($enddate == $last51){
+
+              $checkstart = true;
+            }else{
+
+              $checkstart = false;
+              $info = "End date must be the 15th day of the month";
+            }
+      }else if($startdate == $first52){
+            if($enddate == $last52){
+
+              $checkstart = true;
+            }else{
+
+              $checkstart = false;
+              $info = "End date must be the last day of the month";
+            }
+      }else{
+
+          $checkstart = false;
+          $info = "Start date must be the 1st day of the month";
+         }
+
+
+
+
+
+
+
 
 
         $list = $this->payroll->get_payperiod();
@@ -278,6 +402,52 @@ $enddate = $this->input->post('enddate');
             exit();
         }
     } 
+
+    public function generate_payroll(){
+
+
+           $data = array(
+                    'user_id' => 2,
+                    'period' => '2016-08-28',
+                    'basic_salary' => 22.22,
+                    'special_holiday_pay' => 33.33,
+                    'legal_holiday_pay' => 44.44,
+                    'night_diff_pay' => 11.11,
+                    'sss_loan' => 22.22,
+                    'pagibig_loan' => 33.33,
+                    'others' => 44.44,
+                    'payslip_status' => 'GG well played',
+
+                    'allowance' => 11.11,
+                    'overtime_pay' => 22.22,
+                    'gross_salary' => 33.33,
+                    'deductions' => 44.44,
+
+                    'sss_contrib' => 66.66,
+                    'philhealth_contrib' => 77.77,
+                    'hdmf_contrib' => 88.88,
+                    'net_pay' => 99.99,
+                    
+                    
+                );
+        
+            $insert = $this->payroll->payslip_update(array('user_id' => '2'),$data);
+
+
+
+
+
+
+
+
+        $data1 = array(
+
+            'hello' => 'hi',
+
+            );
+        echo json_encode($data1);
+
+    }
 
 }
 ?>

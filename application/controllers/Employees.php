@@ -147,7 +147,25 @@ class Employees extends CI_Controller {
 
      public function update_otherdetails($id)
     {
- 
+                    $salary = $this->input->post('salary');
+                    $code = '0';
+
+                    if(1000 <= $salary && $salary <= 1249.99){
+                        $code = '1';
+                    }else{
+                        if(15750 <= $salary && $salary <= 1000000){
+                            $code = '31';
+                        }else{
+                            $ctr = 2;
+                            for($i = 1250; $i <= 15750; $i+=500){
+                                if($i <= $salary && $salary <= ($i+499.99)){
+                                    $code = $ctr;
+                                    break;
+                                }
+                                $ctr++;
+                            }
+                        }
+                    }
        $data = array(
                 
                 'department' => $this->input->post('department'),
@@ -160,6 +178,7 @@ class Employees extends CI_Controller {
                 'tin_no' => $this->input->post('tin_no'),           
                 'sss_no' => $this->input->post('sss_no'),
                 'philhealth_no' => $this->input->post('philhealth_no'),
+                'sss_code' => $code,
                
                 
             );

@@ -20,9 +20,8 @@
 
         <link href="<?php echo base_url('assets/fullcalendar-2.1.1/fullcalendar.min.css')?>" rel="stylesheet">
         <link href="//cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.2/css/bootstrapValidator.min.css" rel="stylesheet" />
-        
-        <link href="<?php echo base_url();?>assets/css/bootstrap-colorpicker.min.css" rel="stylesheet" />
-        <link href="<?php echo base_url();?>assets/css/bootstrap-timepicker.min.css" rel="stylesheet" />
+
+      <link href="<?php echo base_url();?>assets/css/bootstrap-timepicker.min.css" rel="stylesheet" />
 
 <link href="https://cdn.datatables.net/buttons/1.2.2/css/buttons.dataTables.min.css" rel="stylesheet" />
 
@@ -42,6 +41,7 @@
          url(../assets/font/billabong.woff) format('woff'),
          url(../../assets/font/billabong.woff) format('woff');
 }
+
 .bootstrap-timepicker-widget.dropdown-menu {
     z-index: 1050!important;
 }
@@ -145,10 +145,8 @@
 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports<b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                     <li ><a href="<?php echo site_url()."reports/sss";?>" >SSS</a></li>
-                      <li><a href="<?php echo site_url()."reports/philhealth";?>">Philhealth</a></li>
-                      <li><a href="<?php echo site_url()."reports/pagibig";?>" >Pagibig</a></li>      
-                       <li><a href="<?php echo site_url()."reports/bir";?>" >BIR</a></li>         
+                     <li ><a href="<?php echo site_url()."reports/tables";?>" >Tables</a></li>
+                      <li><a href="<?php echo site_url()."reports/reports_period";?>">Reports</a></li>
                      </ul>
                     </li>
 
@@ -205,11 +203,7 @@
 
          <script src='<?php echo base_url();?>assets/fullcalendar-2.1.1/fullcalendar.min.js'></script>
      
-
-        <script src='<?php echo base_url();?>assets/js/bootstrap-colorpicker.min.js'></script>
-        <script src='<?php echo base_url();?>assets/js/bootstrap-timepicker.min.js'></script>
-        <!-- <script src='<?php echo base_url();?>assets/js/main.js'></script> -->
-
+  <script src='<?php echo base_url();?>assets/js/bootstrap-timepicker.min.js'></script>
         
        <div class = "row">
          
