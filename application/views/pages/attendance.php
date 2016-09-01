@@ -18,7 +18,6 @@
                                 <th>Hours Worked</th>
                                 <th>Overtime</th>
                                  <th>Tardiness</th>
-                                <th>Undertime</th>
                                 <th>Sched Type</th>
                                 <th>Work Status</th>
                                 <th>OT Status</th>
@@ -42,10 +41,12 @@ var word_date = "<?php echo date("F j,Y", strtotime($timesheet_data->date)); ?>"
 var save_method; //for save method string
 var table1;
 var date_id = "<?php echo $timesheet_data->date; ?>";
+var temp_start;
+var temp_end;
+
    $(document).ready(function () {
 
 
-       //datatables
     table1 = $('#table_attendance').DataTable({
  
         "processing": true, //Feature control the processing indicator.
@@ -65,35 +66,12 @@ var date_id = "<?php echo $timesheet_data->date; ?>";
             "orderable": false, //set not orderable
         },
         ],
- 
     });
-
     
-    var date = "<?php echo $timesheet_data->date; ?>";
+    
          
-  // defualt script for datetimepicket
-  $('.startDateTime').datetimepicker({   
-    defaultDate: date
-    //uncomment following code to enable debug mode
-    //debug: true
-  });
-  $('.endDateTime').datetimepicker({
-    defaultDate:date,
-    //uncomment following code to enable debug mode
-    //debug: true,
-    
-    useCurrent: false
-  });
-  $(".startDateTime").on("dp.change", function(e) {
-    $('.endDateTime').data("DateTimePicker").minDate(e.date);
-    CalcDiff()
-  });
-  $(".endDateTime").on("dp.change", function(e) {
-    $('.startDateTime').data("DateTimePicker").maxDate(e.date);
-      CalcDiff()
-  });
-    
 
+    
 });
 
 
@@ -108,22 +86,48 @@ var b=$('.endDateTime').data("DateTimePicker").date();
     var wholetime = Math.floor(timeDiff/(60*60));
     var decimal = (timeDiff/(60*60)) % 1;
     var totaltime;
-    if(0.75 <= decimal && decimal <= 0.91){
+   
+        if(0.75 <= decimal && decimal <= 0.91){
 
-       totaltime = wholetime+0.75;
-       $('.time-here').val(totaltime)
-    }else if(0.5 <= decimal && decimal < 0.75){
+           totaltime = wholetime+0.75;
+           $('.time-here').val(totaltime)
+        }else if(0.5 <= decimal && decimal < 0.75){
 
-       totaltime = wholetime+0.5;
-       $('.time-here').val(totaltime)
-    }else if(0.25 <= decimal && decimal < 0.5){
+           totaltime = wholetime+0.5;
+           $('.time-here').val(totaltime)
+        }else if(0.25 <= decimal && decimal < 0.5){
 
-       totaltime = wholetime+0.25;
-       $('.time-here').val(totaltime)
-    }else if(0 <= decimal && decimal < 0.5){
+           totaltime = wholetime+0.25;
+           $('.time-here').val(totaltime)
+        }else if(0 <= decimal && decimal < 0.5){
 
-       totaltime = wholetime;
-       $('.time-here').val(totaltime)
+           totaltime = wholetime;
+           $('.time-here').val(totaltime)
+        }
+
+
+   if(totaltime > 8){
+       if(0.75 <= decimal && decimal <= 0.91){
+
+           totaltime = wholetime-8+0.75;
+           $('.overtime').val(totaltime)
+        }else if(0.5 <= decimal && decimal < 0.75){
+
+           totaltime = wholetime-8+0.5;
+           $('.overtime').val(totaltime)
+        }else if(0.25 <= decimal && decimal < 0.5){
+
+           totaltime = wholetime-8+0.25;
+           $('.overtime').val(totaltime)
+        }else if(0 <= decimal && decimal < 0.5){
+
+           totaltime = wholetime-8;
+           $('.overtime').val(totaltime)
+        }
+
+    }else{
+
+         $('.overtime').val(0)
     }
 
     
@@ -146,6 +150,7 @@ function formatDate(date) {
 
 function add_attendance(id)
 {
+
     save_method = 'add';
     $('#form')[0].reset(); // reset form on modals
     $('.form-group').removeClass('has-error'); // clear error class
@@ -157,12 +162,34 @@ function add_attendance(id)
         dataType: "JSON",
         success: function(data)
         {
+            temp_start = data.start;
+            temp_end = data.end; 
              var start = formatDate(data.start);
              var end = formatDate(data.end);
              $('[name="id"]').val(id);
             $('[name="start"]').val(start);
             $('[name="end"]').val(end);
             $('[name="status"]').val(data.work_status);
+
+
+            $('.startDateTime').datetimepicker({   
+                defaultDate:temp_start
+             
+              });
+              $('.endDateTime').datetimepicker({
+               defaultDate:temp_end,
+              
+              });
+              $(".startDateTime").on("dp.change", function(e) {
+                $('.endDateTime').data("DateTimePicker").minDate(e.date);
+                CalcDiff()
+              });
+              $(".endDateTime").on("dp.change", function(e) {
+                $('.startDateTime').data("DateTimePicker").maxDate(e.date);
+                  CalcDiff()
+              });
+              
+
            $('#modal_form').modal('show'); // show bootstrap modal
     $('.modal-title').text('Add Attendance ' + word_date ); // Set Title to Bootstrap modal title
  
@@ -342,14 +369,7 @@ function reload_table()
                         <div class="form-group">
                             <label class="control-label col-md-3">Overtime</label>
                            <div class="col-md-5">
-                                <input name="overtime" id="overtime" class="form-control"></input>
-                                <span class="help-block"></span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Undertime</label>
-                            <div class="col-md-5">
-                                <input name="undertime" id="undertime" class="form-control"></input>
+                                <input name="overtime" id="overtime" class="form-control overtime"></input>
                                 <span class="help-block"></span>
                             </div>
                         </div>

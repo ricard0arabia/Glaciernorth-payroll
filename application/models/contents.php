@@ -46,7 +46,7 @@ var $time_table = 'timesheet';
 
 
  var $attendance_table = 'attendance';
-    var $attendance_column_order = array('attendance_id','user_id','date','time_in','time_out','hours_worked','overtime','tardiness','undertime','sched_type','work_status','overtime_type',null); //set column field database for datatable orderable
+    var $attendance_column_order = array('attendance_id','user_id','date','time_in','time_out','hours_worked','overtime','tardiness','sched_type','work_status','overtime_type',null); //set column field database for datatable orderable
     var $attendance_column_search = array('lastname','department','position','firstname','date','sched_type','work_status'); //set column field database for datatable searchable just firstname , lastname , address are searchable
     var $attendance_order = array('attendance_id' => 'asc'); // default order
 

@@ -163,7 +163,7 @@ class Time extends CI_Controller {
             $row[] = $time->hours_worked;
             $row[] = $time->overtime;
             $row[] = $time->tardiness;
-            $row[] = $time->undertime;
+
             $row[] = '<h4><span class="'.$class1.'">'.$sched_type.'</span></h4>'; 
              $row[] = '<h4><span class="'.$class2.'">'.$time->work_status.'</span></h4>'; 
               $row[] = $time->overtime_type; 
@@ -210,7 +210,6 @@ class Time extends CI_Controller {
                 'time_out' => $time_out,
                 'hours_worked' => $this->input->post('totalhours'),
                 'overtime' => $this->input->post('overtime'),
-                'undertime' => 0,
                 'tardiness' => 0,
                 'sched_type' => 'day shift',
                 'work_status' => 'present',
@@ -321,12 +320,7 @@ class Time extends CI_Controller {
             $data['error_string'][] = 'Overitme is required';
             $data['status'] = FALSE;
         }
-          if($this->input->post('undertime') == '')
-        {
-            $data['inputerror'][] = 'undertime';
-            $data['error_string'][] = 'Undertime is required';
-            $data['status'] = FALSE;
-        }
+       
          if($this->input->post('tardiness') == '')
         {
             $data['inputerror'][] = 'tardiness';
@@ -398,7 +392,7 @@ class Time extends CI_Controller {
             $row[] = $time->hours_worked;
             $row[] = $time->overtime;
             $row[] = $time->tardiness;
-            $row[] = $time->undertime;
+
             $row[] = '<h4><span class="'.$class1.'">'.$sched_type.'</span></h4>'; 
              $row[] = '<h4><span class="'.$class2.'">'.$time->work_status.'</span></h4>'; 
               $row[] = $time->overtime_type; 
