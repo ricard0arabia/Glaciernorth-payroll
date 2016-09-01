@@ -147,6 +147,8 @@ class Time extends CI_Controller {
         }
         else if ($time->work_status === 'overtime') {
             $class2 = 'label label-primary';
+        }else if ($time->work_status === 'present') {
+            $class2 = 'label label-info';
         } 
             $no++;
             $row = array();
@@ -190,20 +192,36 @@ class Time extends CI_Controller {
        
         $this->_validate1();
 
+        $sched_start = date("Y-m-d",strtotime($this->input->post('start')));
+        $sched_end = date("Y-m-d",strtotime($this->input->post('end')));
+        $time_in =  date("Y-m-d",strtotime($this->input->post('time_in')));
+        $time_out =  date("Y-m-d",strtotime($this->input->post('time_out')));
+
+
+        if($sched_start == $time_in && $sched_end == $time_out){
+
+
+        $time_in = date("Y-m-d H:i", strtotime($this->input->post('time_in'))).":00";
+        $time_out = date("Y-m-d H:i", strtotime($this->input->post('time_out'))).":00";
+
          $data = array(
                 
-                'time_in' => $this->input->post('time_in'),
-                'time_out' => $this->input->post('time_out'),
+                'time_in' => $time_in,
+                'time_out' => $time_out,
                 'hours_worked' => $this->input->post('totalhours'),
                 'overtime' => $this->input->post('overtime'),
-                'undertime' => $this->input->post('undertime'),
-                'tardiness' => $this->input->post('tardiness'),
-                'attnd_status' => $this->input->post('status'),
+                'undertime' => 0,
+                'tardiness' => 0,
+                'sched_type' => 'day shift',
+                'work_status' => 'present',
+                'overtime_type' => '',
                
                 
             );
          $user_id = $this->input->post('id');
         $this->time->attendance_update($data,$user_id,$date);
+
+
         $color = '#264281';
         if($this->input->post('status') == 'absent'){
             $color = '#ea4335';
@@ -217,8 +235,13 @@ class Time extends CI_Controller {
                 
             );
          $this->time->sched_update1($data1,$user_id,$date);
-        echo json_encode(array("status" => TRUE));
+        echo json_encode(array("status" => TRUE, "warning" => true, "check" => $time_in));
+    }else{
 
+        echo json_encode(array("status" => TRUE, "warning" => false,"check" => 'Entered dates must be the same with the schedule'));
+
+
+        }
        
     }
     public function get_attendance($id,$date){
@@ -277,6 +300,7 @@ class Time extends CI_Controller {
         $data['error_string'] = array();
         $data['inputerror'] = array();
         $data['status'] = TRUE;
+         $data['check'] = array();
          $data['warning'] = array();
  
              if($this->input->post('time_in') == '')
@@ -313,6 +337,12 @@ class Time extends CI_Controller {
         {
             $data['inputerror'][] = 'totalhours';
             $data['error_string'][] = 'Total hours is required';
+            $data['status'] = FALSE;
+        }
+           if($this->input->post('status') == '')
+        {
+            $data['inputerror'][] = 'status';
+            $data['error_string'][] = 'Status is required';
             $data['status'] = FALSE;
         }
  

@@ -67,7 +67,7 @@
 <!--                                                 Employee List                                         -->
 
                         <div class="tab-pane fade in active" id="sss">
-  <h3>SSS Report</h3>
+  <h3>Social Security System Report from <?php echo $period->date_from;?> to <?php echo $period->date_to;?> </h3>
         <br />
         <button class="btn btn-default" onclick="reload_table1()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
         <br />
@@ -108,10 +108,13 @@
                         <thead>
                             <tr>
 
-                                <th>Minimum Salary</th>
-                                <th>Maximum Salary</th>
+                                <th>Employee ID</th>
+                                <th>Employee Name</th>
+                                <th>Period Covered</th>
+                                <th>Philhealth Number</th>
                                 <th>Employee Share</th>
                                 <th>Employer Share</th>
+                                <th>Total Share</th>
                  
                             </tr>
                         </thead>
@@ -163,7 +166,8 @@
 var save_method; //for save method string
 var table1;
 var table2;
-
+var table3;
+var period = "<?php echo $period->date_to;?>";
 
    $(document).ready(function () {
         table1 = $('#table1').DataTable({
@@ -218,7 +222,7 @@ var table2;
  
         // Load data for the table's content from an Ajax source
         "ajax": {
-            "url": "<?php echo site_url('reports/sss_reports')?>",
+            "url": "<?php echo site_url('reports/sss_reports')?>/" + period,
             "type": "POST"
         },
  
@@ -285,7 +289,7 @@ var table2;
  
         // Load data for the table's content from an Ajax source
         "ajax": {
-            "url": "<?php echo site_url('reports/philhealth_table')?>",
+            "url": "<?php echo site_url('reports/philhealth_reports')?>/"+period,
             "type": "POST"
         },
  

@@ -177,35 +177,35 @@
 
 
 
-         $first21 = date('Y-m-01',strtotime( '+1 month' , strtotime ( date('Y-m-d') )));
-         $last21 = date('Y-m-15', strtotime( '+1 month' , strtotime ( date('Y-m-d') )));
+         $first21 = date('Y-m-01',strtotime('first day of next month'));
+         $last21 = date('Y-m-15', strtotime('last day of next month'));
 
-         $first22 = date('Y-m-15',strtotime( '+1 month' , strtotime ( date('Y-m-d') )));
-         $last22= date('Y-m-t',strtotime( '+1 month' , strtotime ( date('Y-m-d') )));
-
-
-
-         $first31 = date('Y-m-01',strtotime( '+2 month' , strtotime ( date('Y-m-d') )));
-         $last31 = date('Y-m-15', strtotime( '+2 month' , strtotime ( date('Y-m-d') )));
-
-         $first32 = date('Y-m-15',strtotime( '+2 month' , strtotime ( date('Y-m-d') )));
-         $last32= date('Y-m-t',strtotime( '+2 month' , strtotime ( date('Y-m-d') )));
+         $first22 = date('Y-m-15',strtotime('first day of next month'));
+         $last22= date('Y-m-t',strtotime('last day of next month'));
 
 
 
-         $first41 = date('Y-m-01',strtotime( '+3 month' , strtotime ( date('Y-m-d') )));
-         $last41 = date('Y-m-15', strtotime( '+3 month' , strtotime ( date('Y-m-d') )));
+         $first31 = date('Y-m-01',strtotime('first day of +2 month'));
+         $last31 = date('Y-m-15',strtotime('last day of +2 month'));
 
-         $first42 = date('Y-m-15',strtotime( '+3 month' , strtotime ( date('Y-m-d') )));
-         $last42= date('Y-m-t',strtotime( '+3 month' , strtotime ( date('Y-m-d') )));
+         $first32 = date('Y-m-15',strtotime('first day of +2 month'));
+         $last32= date('Y-m-t',strtotime('last day of +2 month'));
 
 
 
-         $first51 = date('Y-m-01',strtotime( '+4 month' , strtotime ( date('Y-m-d') )));
-         $last51 = date('Y-m-15', strtotime( '+4 month' , strtotime ( date('Y-m-d') )));
+         $first41 = date('Y-m-01',strtotime('first day of +3 month'));
+         $last41 = date('Y-m-15', strtotime('last day of +3 month'));
 
-         $first52 = date('Y-m-15',strtotime( '+4 month' , strtotime ( date('Y-m-d') )));
-         $last52= date('Y-m-t',strtotime( '+4 month' , strtotime ( date('Y-m-d') )));
+         $first42 = date('Y-m-15',strtotime('first day of +3 month'));
+         $last42= date('Y-m-t',strtotime('last day of +3 month'));
+
+
+
+         $first51 = date('Y-m-01',strtotime('first day of +4 month'));
+         $last51 = date('Y-m-15', strtotime('last day of +4 month'));
+
+         $first52 = date('Y-m-15',strtotime('first day of +4 month'));
+         $last52= date('Y-m-t',strtotime('last day of +4 month'));
 
 
 

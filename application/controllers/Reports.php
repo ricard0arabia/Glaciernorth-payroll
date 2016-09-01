@@ -45,6 +45,7 @@
           $this->load->view('header');
           $data['level'] = $this->session->userdata('level');
           $data['user'] = $this->session->userdata('username');
+          $data['period'] = $this->reports->get_specific_reports_period($id);
           $this->load->view('pages/reports',$data);
           $this->load->view('footer');
 
@@ -93,7 +94,7 @@
       
                   //add html for action
             $row[] = '<a class="btn btn-sm btn-primary"  title="Edit" href="'.site_url('reports/reports/'.$reports->reports_period_id).'"><i class="glyphicon glyphicon-search"></i> View</a>
-            <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_reports_period('."'".$reports->reports_period_id."'".')"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
+            <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_reports_period('."'".$reports->reports_period_id."'".','."'".$reports->date_to."'".')"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
          
                   $data[] = $row;
      
@@ -117,17 +118,17 @@
         $first1 = date('Y-m-01');
          $last1 = date('Y-m-t');
 
-         $first2 = date('Y-m-01',strtotime( '+1 month' , strtotime ( date('Y-m-d') )));
-         $last2= date('Y-m-t',strtotime( '+1 month' , strtotime ( date('Y-m-d') )));
+         $first2 = date('Y-m-d',strtotime('first day of next month'));
+         $last2= date('Y-m-d',strtotime('last day of next month'));
 
-         $first3 = date('Y-m-01',strtotime( '+2 month' , strtotime ( date('Y-m-d') )));
-         $last3 = date('Y-m-t',strtotime( '+2 month' , strtotime ( date('Y-m-d') )));
+         $first3 = date('Y-m-d',strtotime('first day of +2 month'));
+         $last3 = date('Y-m-d',strtotime('last day of +2 month'));
 
-         $first4 = date('Y-m-01',strtotime( '+3 month' , strtotime ( date('Y-m-d') )));
-         $last4 = date('Y-m-t',strtotime( '+3 month' , strtotime ( date('Y-m-d') )));
+         $first4 = date('Y-m-d',strtotime('first day of +3 month'));
+         $last4 = date('Y-m-d',strtotime('last day of +3 month'));
 
-         $first5 = date('Y-m-01',strtotime( '+4 month' , strtotime ( date('Y-m-d') )));
-         $last5 = date('Y-m-t',strtotime( '+4 month' , strtotime ( date('Y-m-d') )));
+         $first5 = date('Y-m-d',strtotime('first day of +4 month'));
+         $last5 = date('Y-m-d',strtotime('last day of +4 month'));
          
 
 
@@ -207,10 +208,79 @@
                 break;
               }
            }
-         
 
+           $emplist = $this->reports->check_emp_id();
+
+          if($emplist->num_rows() == 0){
+            $checkstart = false;
+          }
+         
+//
            if($checkstart  == true){
-            $data = array();
+
+
+            $emplist = $this->reports->get_emp_id();
+
+            foreach ($emplist as $value) {
+
+               $salary = $value->salary;
+               
+                     $sss_code = '0';
+
+                    if(1000 <= $salary && $salary <= 1249.99){
+                        $sss_code = '1';
+                    }else{
+                        if(15750 <= $salary && $salary <= 1000000){
+                            $sss_code = '31';
+                        }else{
+                            $ctr = 2;
+                            for($i = 1250; $i <= 15750; $i+=500){
+                                if($i <= $salary && $salary <= ($i+499.99)){
+                                    $sss_code = $ctr;
+                                    break;
+                                }
+                                $ctr++;
+                            }
+                        }
+                    }
+
+                         $philhealth_code = '0';
+                    $ctr = 1;
+                    if($salary < 8000){
+
+                        $philhealth_code = '0';
+                    }
+                    else if($salary < 35000){
+                            for($i = 8000; $i <= 35000; $i+=1000){
+                                if($i <= $salary && $salary < ($i+1000)){
+                                    $philhealth_code = $ctr;
+                                    break;
+                                }
+                                $ctr++;
+                            }
+                     }else{
+
+                            $philhealth_code ='28';
+                      }
+
+
+              
+
+            $data = array(
+                    
+                    'user_id' => $value->user_id,
+                    'sss_code' => $sss_code,
+                    'philhealth_code' => $philhealth_code,
+                    'period' => $this->input->post('enddate'),       
+                    'salary' => $salary, 
+                    
+                );
+             $this->reports->emp_contributions_save($data);
+
+            }
+
+
+          
                     
                    
                         $data = array(
@@ -238,9 +308,10 @@
 
     }
 
-    public function delete_reports_period($id)
+    public function delete_reports_period($id,$date)
     {
         $this->reports->reports_period_delete_by_id($id);
+         $this->reports->emp_contributions_delete_by_id($date);
         echo json_encode(array("status" => TRUE));
     }
 
@@ -285,6 +356,43 @@
 
 
   //philhealth
+ public function philhealth_reports($period)
+    {
+
+
+
+
+        $list = $this->reports->philhealth_report_datatables($period);
+        $data = array();
+        $no = $_POST['start'];
+        foreach ($list as $reports) {
+
+            $no++;
+            $row = array();
+
+             $row[] = $reports->user_id;
+       $row[] = ucfirst($reports->lastname).', '.ucfirst($reports->firstname).' '.ucfirst(substr($reports->middlename,0,1)).'. ';
+       $row[] = date("F j,Y", strtotime($reports->period));
+         $row[] = $reports->philhealth_no;
+          $row[] = $reports->philhealth_employee;
+           $row[] = $reports->philhealth_employer;
+           $row[] = $reports->philhealth_total;
+      
+           
+         
+                  $data[] = $row;
+     
+        }
+ 
+        $output = array(
+                        "draw" => $_POST['draw'],
+                        "recordsTotal" => $this->reports->philhealth_count_all(),
+                        "recordsFiltered" => $this->reports->philhealth_count_filtered(),
+                        "data" => $data,
+                );
+        //output to json format
+        echo json_encode($output);
+    }
 
 
 
@@ -302,10 +410,10 @@
 
             $no++;
             $row = array();
-        $row[] = $reports->min_salary;
-         $row[] = $reports->max_salary;
-          $row[] = $reports->employee;
-           $row[] = $reports->employer;
+        $row[] = $reports->philhealth_min_salary;
+         $row[] = $reports->philhealth_max_salary;
+          $row[] = $reports->philhealth_employee;
+           $row[] = $reports->philhealth_employer;
      
            
          
@@ -327,13 +435,13 @@
 //sss
 
 
-   public function sss_reports()
+   public function sss_reports($period)
     {
 
 
 
 
-        $list = $this->reports->sss_report_datatables();
+        $list = $this->reports->sss_report_datatables($period);
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $reports) {
@@ -343,11 +451,11 @@
 
              $row[] = $reports->user_id;
        $row[] = ucfirst($reports->lastname).', '.ucfirst($reports->firstname).' '.ucfirst(substr($reports->middlename,0,1)).'. ';
-       $row[] = '2016-08-29';
+       $row[] = date("F j,Y", strtotime($reports->period));
          $row[] = $reports->sss_no;
-          $row[] = $reports->employee;
-           $row[] = $reports->employer;
-           $row[] = $reports->total;
+          $row[] = $reports->sss_employee;
+           $row[] = $reports->sss_employer;
+           $row[] = $reports->sss_total;
       
            
          
@@ -379,11 +487,11 @@
 
             $no++;
             $row = array();
-         $row[] = $reports->min_salary;
-         $row[] = $reports->max_salary;
-          $row[] = $reports->employee;
-           $row[] = $reports->employer;
-           $row[] = $reports->total;
+         $row[] = $reports->sss_min_salary;
+         $row[] = $reports->sss_max_salary;
+          $row[] = $reports->sss_employee;
+           $row[] = $reports->sss_employer;
+           $row[] = $reports->sss_total;
       
            
          

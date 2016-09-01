@@ -64,13 +64,13 @@ var $time_table = 'timesheet';
 
 
       var $sss_table = 'sss';
-    var $sss_column_order = array('sss_id','min_salary','max_salary','employer','employee','total','status',null); //set column field database for datatable orderable
-    var $sss_column_search = array('min_salary','max_salary','employer','employee'); //set column field database for datatable searchable just firstname , lastname , address are searchable
+    var $sss_column_order = array('sss_id','sss_min_salary','sss_max_salary','sss_employer','sss_employee','sss_total',null); //set column field database for datatable orderable
+    var $sss_column_search = array('sss_min_salary','sss_max_salary','sss_employer','sss_employee'); //set column field database for datatable searchable just firstname , lastname , address are searchable
     var $sss_order = array('sss_id' => 'asc'); // default
 
       var $philhealth_table = 'philhealth_table';
-    var $philhealth_column_order = array('philhealth_id','min_salary','max_salary','employer','employee',null); //set column field database for datatable orderable
-    var $philhealth_column_search = array('min_salary','max_salary','employer','employee'); //set column field database for datatable searchable just firstname , lastname , address are searchable
+    var $philhealth_column_order = array('philhealth_id','philhealth_min_salary','philhealth_max_salary','philhealth_employer','philhealth_employee','philhealth_total',null); //set column field database for datatable orderable
+    var $philhealth_column_search = array('philhealth_min_salary','philhealth_max_salary','philhealth_employer','philhealth_employee'); //set column field database for datatable searchable just firstname , lastname , address are searchable
     var $philhealth_order = array('philhealth_id' => 'asc'); // default
 
       var $payslip_table = 'payslip';
@@ -543,6 +543,21 @@ var $time_table = 'timesheet';
         $this->db->where('employees.user_id !=', $this->session->userdata('username')); 
         $query = $this->db->get();
         return $query->result();
+    }
+
+    public function get_emp_id()
+    {
+        $this->db->from('employees');
+        $query = $this->db->get();
+ 
+        return $query->result();
+    }
+
+    public function check_emp_id()
+    {
+        $this->db->from('employees');
+         return $this->db->get();
+
     }
  
     function emp_count_filtered()
@@ -1249,8 +1264,9 @@ var $time_table = 'timesheet';
     private function sss_report_datatables_query()
     {
     
-       $this->db->from('sss');
-         $this->db->join('employees','employees.sss_code = sss.sss_id');
+       $this->db->from('emp_contributions');
+         $this->db->join('employees','employees.user_id = emp_contributions.user_id');
+          $this->db->join('sss','sss.sss_id = emp_contributions.sss_code');
         
         $i = 0;
      
@@ -1294,11 +1310,12 @@ var $time_table = 'timesheet';
         $query = $this->db->get();
         return $query->result();
     }
-     function sss_report_datatables()
+     function sss_report_datatables($period)
     {
         $this->sss_report_datatables_query();
         if($_POST['length'] != -1)
         $this->db->limit($_POST['length'], $_POST['start']);    
+         $this->db->where('emp_contributions.period =', $period);  
         $query = $this->db->get();
         return $query->result();
     }
@@ -1390,12 +1407,66 @@ var $time_table = 'timesheet';
             $this->db->order_by(key($order), $order[key($order)]);
         }
     }
+
+      private function philhealth_report_datatables_query()
+    {
+    
+       $this->db->from('emp_contributions');
+         $this->db->join('employees','employees.user_id = emp_contributions.user_id');
+          $this->db->join('philhealth_table','philhealth_table.philhealth_id = emp_contributions.philhealth_code');
+        
+        $i = 0;
+     
+        foreach ($this->philhealth_column_search as $item) // loop column
+        {
+            if($_POST['search']['value']) // if datatable send POST for search
+            {
+                 
+                if($i===0) // first loop
+                {
+                    $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+                    $this->db->like($item, $_POST['search']['value']);
+                }
+                else
+                {
+                    $this->db->or_like($item, $_POST['search']['value']);
+                }
+ 
+                if(count($this->philhealth_column_search) - 1 == $i) //last loop
+                    $this->db->group_end(); //close bracket
+            }
+            $i++;
+        }
+         
+        if(isset($_POST['order'])) // here order processing
+        {
+            $this->db->order_by($this->philhealth_column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+        }
+        else if(isset($this->philhealth_order))
+        {
+            $order = $this->philhealth_order;
+            $this->db->order_by(key($order), $order[key($order)]);
+        }
+    }
+ 
  
     function philhealth_get_datatables()
     {
         $this->philhealth_get_datatables_query();
         if($_POST['length'] != -1)
         $this->db->limit($_POST['length'], $_POST['start']);    
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+
+
+        function philhealth_report_datatables($period)
+    {
+        $this->philhealth_report_datatables_query();
+        if($_POST['length'] != -1)
+        $this->db->limit($_POST['length'], $_POST['start']);    
+         $this->db->where('emp_contributions.period =', $period);  
         $query = $this->db->get();
         return $query->result();
     }
@@ -1666,10 +1737,46 @@ var $time_table = 'timesheet';
 
 
 
+// emp_contribution
 
 
 
+   public function get_emp_contributions($id)
+    {
+        $this->db->from('emp_contributions');
+        $this->db->where('user_id',$id);
+        $query = $this->db->get();
+        return $query->result();
+    }
 
+    public function check_emp_contributions($id)
+    {
+        $this->db->from('emp_contributions');
+        $this->db->where('user_id',$id);
+        return $this->db->get();
+        
+    }
+
+     public function emp_contributions_update($data,$user_id,$date)
+    {
+       $this->db->where('user_id', $user_id);
+        $this->db->where('period', $date);
+        $this->db->update('emp_contributions', $data);
+        return $this->db->affected_rows();
+    }
+
+     public function emp_contributions_save($data)
+    {
+        $this->db->insert('emp_contributions', $data);
+        return $this->db->insert_id();
+    }
+
+     public function emp_contributions_delete_by_id($date)
+    {
+        $this->db->where('period', $date);
+        $this->db->delete('emp_contributions');
+    }
+ 
 
 
 

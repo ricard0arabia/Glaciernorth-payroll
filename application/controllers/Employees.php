@@ -147,25 +147,73 @@ class Employees extends CI_Controller {
 
      public function update_otherdetails($id)
     {
-                    $salary = $this->input->post('salary');
-                    $code = '0';
+
+         $salary = $this->input->post('salary');
+                    $sss_code = '0';
 
                     if(1000 <= $salary && $salary <= 1249.99){
-                        $code = '1';
+                        $sss_code = '1';
                     }else{
                         if(15750 <= $salary && $salary <= 1000000){
-                            $code = '31';
+                            $sss_code = '31';
                         }else{
                             $ctr = 2;
                             for($i = 1250; $i <= 15750; $i+=500){
                                 if($i <= $salary && $salary <= ($i+499.99)){
-                                    $code = $ctr;
+                                    $sss_code = $ctr;
                                     break;
                                 }
                                 $ctr++;
                             }
                         }
                     }
+
+                    $philhealth_code = '0';
+                    $ctr = 1;
+                    if($salary < 8000){
+
+                        $philhealth_code = '0';
+                    }
+                    else if($salary < 35000){
+                            for($i = 8000; $i <= 35000; $i+=1000){
+                                if($i <= $salary && $salary < ($i+1000)){
+                                    $philhealth_code = $ctr;
+                                    break;
+                                }
+                                $ctr++;
+                            }
+                     }else{
+
+                            $philhealth_code ='28';
+                      }
+
+
+
+        $temp = false;
+        $list = $this->employee->get_emp_contributions($id);
+        foreach ($list as $value) {
+           if($value->period == date('Y-m-t')){
+
+            $temp = true;
+            break;
+
+           }
+        }
+
+        if($temp){
+            $data = array(
+                    
+                    'user_id' => $id,
+                    'sss_code' => $sss_code,
+                    'philhealth_code' => $philhealth_code,
+                    'period' => date('Y-m-t'),       
+                    'salary' => $this->input->post('salary'), 
+                    
+                );
+            $this->employee->emp_contributions_update($data,$id,date('Y-m-t'));
+            
+        }
+
        $data = array(
                 
                 'department' => $this->input->post('department'),
@@ -178,7 +226,7 @@ class Employees extends CI_Controller {
                 'tin_no' => $this->input->post('tin_no'),           
                 'sss_no' => $this->input->post('sss_no'),
                 'philhealth_no' => $this->input->post('philhealth_no'),
-                'sss_code' => $code,
+ 
                
                 
             );

@@ -200,13 +200,13 @@ function save()
 }
 
 
-function delete_reports_period(id)
+function delete_reports_period(id,date)
 {
     if(confirm('Are you sure delete this data?'))
     {
         // ajax delete data to database
         $.ajax({
-            url : "<?php echo site_url('reports/delete_reports_Period')?>/"+id,
+            url : "<?php echo site_url('reports/delete_reports_Period')?>/"+id+"/"+date,
             type: "POST",
             dataType: "JSON",
             success: function(data)

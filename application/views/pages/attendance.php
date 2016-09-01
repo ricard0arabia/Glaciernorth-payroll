@@ -69,11 +69,66 @@ var date_id = "<?php echo $timesheet_data->date; ?>";
     });
 
     
-  
+    var date = "<?php echo $timesheet_data->date; ?>";
+         
+  // defualt script for datetimepicket
+  $('.startDateTime').datetimepicker({   
+    defaultDate: date
+    //uncomment following code to enable debug mode
+    //debug: true
+  });
+  $('.endDateTime').datetimepicker({
+    defaultDate:date,
+    //uncomment following code to enable debug mode
+    //debug: true,
+    
+    useCurrent: false
+  });
+  $(".startDateTime").on("dp.change", function(e) {
+    $('.endDateTime').data("DateTimePicker").minDate(e.date);
+    CalcDiff()
+  });
+  $(".endDateTime").on("dp.change", function(e) {
+    $('.startDateTime').data("DateTimePicker").maxDate(e.date);
+      CalcDiff()
+  });
+    
 
-            
-    });
+});
 
+
+function CalcDiff(){
+var a=$('.startDateTime').data("DateTimePicker").date();
+var b=$('.endDateTime').data("DateTimePicker").date();
+    var timeDiff=0
+     if (b) {
+            timeDiff = (b - a) / 1000;
+        }
+    $('.days-here').val(Math.floor(timeDiff/(60*60*24)))
+    var wholetime = Math.floor(timeDiff/(60*60));
+    var decimal = (timeDiff/(60*60)) % 1;
+    var totaltime;
+    if(0.75 <= decimal && decimal <= 0.91){
+
+       totaltime = wholetime+0.75;
+       $('.time-here').val(totaltime)
+    }else if(0.5 <= decimal && decimal < 0.75){
+
+       totaltime = wholetime+0.5;
+       $('.time-here').val(totaltime)
+    }else if(0.25 <= decimal && decimal < 0.5){
+
+       totaltime = wholetime+0.25;
+       $('.time-here').val(totaltime)
+    }else if(0 <= decimal && decimal < 0.5){
+
+       totaltime = wholetime;
+       $('.time-here').val(totaltime)
+    }
+
+    
+   
+}
 
 function formatDate(date) {
     var date = new Date(date);
@@ -127,9 +182,9 @@ function save()
 {
     $('#btnSave').text('saving...'); //change button text
     $('#btnSave').attr('disabled',true); //set button disable
-    var url;
  
-
+ 
+    alert('asd');
     $.ajax({
         url : "<?php echo site_url('time/add_attendance')?>/"+date_id,
         type: "POST",
@@ -142,12 +197,12 @@ function save()
             {
               if(data.warning == false){
 
-                  alert('Entered date not valid');
-
+                 
+                  alert(data.check);
                 }
                 else{
 
-                  
+                  alert(data.check);
                 $('#modal_form').modal('hide');
                 reload_table();
                 
@@ -249,32 +304,40 @@ function reload_table()
                                         </div>  
                                 </div>   
                             </div>
+
+
+
                       
-                    <div class="form-group">
-                             <label class="control-label col-md-3">Time-in</label>
-                            <div class="col-md-5">                           
-                          <input id="time_in" name="time_in" placeholder="yyyy-mm-dd" class="time form-control" type="text">
+       
+
+
+                     <div class="form-group">
+                            <label class="control-label col-md-3">start time</label>
+                           <div class="col-md-5">
+                                  <input type="text" name="time_in"class="form-control startDateTime" placeholder="Select start date and hour">
                                 <span class="help-block"></span>
                             </div>
                         </div>
-                       
-                       
+
                         <div class="form-group">
-                             <label class="control-label col-md-3">Time-out</label>
-                            <div class="col-md-5">                           
-                          <input id="time_out" name="time_out" placeholder="yyyy-mm-dd" class="time form-control" type="text">
+                            <label class="control-label col-md-3">end time</label>
+                           <div class="col-md-5">
+                                 <input type="text" name="time_out"class="form-control endDateTime" placeholder="Select End date and hour">
                                 <span class="help-block"></span>
                             </div>
                         </div>
-                         
+
+                        
+
 
                          <div class="form-group">
-                            <label class="control-label col-md-3">Hours worked</label>
-                            <div class="col-md-5">
-                                <input name="totalhours" id="totalhours" class="form-control"></input>
+                            <label class="control-label col-md-3">Hours Worked</label>
+                           <div class="col-md-5">
+                                <input type="text" name="totalhours"class="form-control time-here" placeholder="Show Hours difference here">
                                 <span class="help-block"></span>
                             </div>
                         </div>
+
                     
                         <div class="form-group">
                             <label class="control-label col-md-3">Overtime</label>
@@ -302,10 +365,8 @@ function reload_table()
                              <div class="col-md-5">
                                <select name="status" class="form-control">
                                     <option value="">--Select status--</option>
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
-                                    <option value="overtime">Overtime</option>
-                                    <option value="leave">Leave</option>
+                                    <option value="present">Present</option>
+                                    <option value="absent">Absent</option>
                                 </select>
                                 <span class="help-block"></span>
                             </div>
