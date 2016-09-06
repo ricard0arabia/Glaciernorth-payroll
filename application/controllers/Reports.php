@@ -53,6 +53,24 @@
 
   }
 
+  public function test_tax(){
+    $list =  $this->reports->test();
+    $hours = 0;
+    $overtime = 0;
+
+    foreach ($list as  $value) {
+    
+        $hours += $value->hours_worked;
+        $overtime += $value->overtime;
+        echo $value->user_id." ".$value->date." ".$value->sched_type." ".$value->hours_worked." ".$value->overtime."<br>";
+
+   
+    }
+
+  
+
+  }
+
   public function reports_period(){
 
 

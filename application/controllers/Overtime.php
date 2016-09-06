@@ -300,6 +300,7 @@ class Overtime extends CI_Controller {
         
         $date = $this->overtime->get_ot_date($id);
         $ot_date = $date->date;
+        $ot_duration = $date->duration;
 
 
 
@@ -335,11 +336,16 @@ class Overtime extends CI_Controller {
                          $overtime_type = "special holiday";
 
                     }
+                    $given = $ot_duration;
+                    $hour = floor($given);
+                    $minutes = ($given-$hour)*60;
 
+                    $end = $value->end;
+                    $end = date('Y-m-d H:i:s',strtotime('+'.$hour.' hour +'.$minutes.'minutes',strtotime($end)));
 
                        
                         $data = array(
-                
+                            'end' => $end,
                             'work_status' => 'overtime',
                             'color' => '#407f1e',
                             'overtime_type' => $overtime_type,
@@ -364,9 +370,9 @@ class Overtime extends CI_Controller {
 
                 if($ot_date == $date){
 
-                                          
+    
                         $data = array(
-                
+                         
                            'work_status' => 'overtime',
                            'overtime_type' => $overtime_type,
                                 

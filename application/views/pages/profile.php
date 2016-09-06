@@ -832,6 +832,10 @@ $(document).ready(function () {
           });
           
           // When the image loads, release object URL
+
+          $("#sss_no").mask("99-9999999-9");
+          $("#tin_no").mask("999-999-999");
+          $("#philhealth_no").mask("99-999999999-9");
          
       })
       ();
@@ -857,7 +861,7 @@ $('#edit1').click(function(){
       document.getElementById("edit1").innerHTML = 'cancel';
       document.getElementById("res1").disabled = true;
       document.getElementById("res2").disabled = true;  
-       document.getElementById("cstatus").disabled = false;
+      document.getElementById("cstatus").disabled = false;
       document.getElementById("gender").disabled = false;
       document.getElementById("save1").style.display = "block";
  

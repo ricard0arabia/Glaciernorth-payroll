@@ -1795,6 +1795,40 @@ var $time_table = 'timesheet';
         return $query->result();
     }
 
+//
+
+
+
+
+
+
+
+
+    public function test(){
+
+      $query = $this->db->query("select *
+                                    from attendance
+                                    where user_id = 2016093 AND date BETWEEN '2016-09-01' AND '2016-09-15'");
+                                        
+        if($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return false;
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -21,6 +21,7 @@
                                 <th>Sched Type</th>
                                 <th>Work Status</th>
                                 <th>OT Status</th>
+                                <th>Attendance Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -169,7 +170,7 @@ function add_attendance(id)
              $('[name="id"]').val(id);
             $('[name="start"]').val(start);
             $('[name="end"]').val(end);
-            $('[name="status"]').val(data.work_status);
+            $('[name="status"]').val(data.attendance_status);
 
 
             $('.startDateTime').datetimepicker({   

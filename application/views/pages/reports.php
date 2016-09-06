@@ -139,12 +139,11 @@
                         <thead>
                             <tr>
 
-                                <th>Tax Status</th>
-                                <th>Dependents</th>
-                                <th>Min Range</th>
-                                <th>Max Range</th>
-                                <th>Tax 1</th>
-                                <th>Tax 2</th>
+                                <th>Employee ID</th>
+                                <th>Employee Name</th>
+                                <th>Period Covered</th>
+                                <th>TIN Number</th>
+                                <th>Withholding Tax</th>
                  
                             </tr>
                         </thead>

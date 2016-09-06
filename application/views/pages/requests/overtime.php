@@ -289,15 +289,8 @@ var table2;
     });
 
 
-        $('.datepicker').datepicker({
-        autoclose: true,
-        format: "yyyy-mm-dd",
-       startDate: '1d',  
-        endDate: '+3d',
-        todayHighlight: true,
-        orientation: "bottom auto",
-        todayBtn: true,
-        todayHighlight: true,  
+        $('.datepicker').datetimepicker({
+        format: 'YYYY-MM-DD'
     });
  
             

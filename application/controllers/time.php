@@ -139,17 +139,21 @@ class Time extends CI_Controller {
         }
 //  
          $class2 = '';
-         if ($time->work_status === 'absent') {
-            $class2 = 'label label-danger';
-        }
-        else if ($time->work_status === 'leave') {
+         if ($time->work_status === 'leave') {
             $class2 = 'label label-warning';
         }
         else if ($time->work_status === 'overtime') {
             $class2 = 'label label-primary';
-        }else if ($time->work_status === 'present') {
-            $class2 = 'label label-info';
-        } 
+        }
+
+        $class3 = '';
+         if ($time->attendance_status === 'absent') {
+            $class3 = 'label label-danger';
+        }
+        else if ($time->attendance_status === 'present') {
+            $class3 = 'label label-info';
+        }
+      
             $no++;
             $row = array();
          	
@@ -166,7 +170,8 @@ class Time extends CI_Controller {
 
             $row[] = '<h4><span class="'.$class1.'">'.$sched_type.'</span></h4>'; 
              $row[] = '<h4><span class="'.$class2.'">'.$time->work_status.'</span></h4>'; 
-              $row[] = $time->overtime_type; 
+              $row[] = '<strong>'.$time->overtime_type.'</strong>'; 
+                $row[] = '<h4><span class="'.$class3.'">'.$time->attendance_status.'</span></h4>'; 
        
            
             //add html for action
@@ -211,9 +216,7 @@ class Time extends CI_Controller {
                 'hours_worked' => $this->input->post('totalhours'),
                 'overtime' => $this->input->post('overtime'),
                 'tardiness' => 0,
-                'sched_type' => 'day shift',
-                'work_status' => 'present',
-                'overtime_type' => '',
+                'attendance_status'=> $this->input->post('status'),
                
                 
             );
@@ -228,7 +231,7 @@ class Time extends CI_Controller {
 
         $data1 = array(
                 
-                'work_status' => $this->input->post('status'),
+                'attendance_status' => $this->input->post('status'),
                 'color' => $color,
                
                 
@@ -248,7 +251,7 @@ class Time extends CI_Controller {
         $data = $this->time->get_emp_sched($id,$date);
 
         $sched = array(
-                 "work_status" => $data->work_status,         
+                 "attendance_status" => $data->attendance_status,         
                 "start" => $data->start,
                 "end" => $data->end,
         );
@@ -373,15 +376,20 @@ class Time extends CI_Controller {
         }
 //  
          $class2 = '';
-         if ($time->work_status === 'absent') {
-            $class2 = 'label label-danger';
-        }
-        else if ($time->work_status === 'leave') {
+        if ($time->work_status === 'leave') {
             $class2 = 'label label-warning';
         }
         else if ($time->work_status === 'overtime') {
             $class2 = 'label label-primary';
         } 
+
+         $class3 = '';
+         if ($time->attendance_status === 'absent') {
+            $class3 = 'label label-danger';
+        }
+        else if ($time->attendance_status === 'present') {
+            $class3 = 'label label-info';
+        }
             $no++;
             $row = array();
             
@@ -396,7 +404,7 @@ class Time extends CI_Controller {
             $row[] = '<h4><span class="'.$class1.'">'.$sched_type.'</span></h4>'; 
              $row[] = '<h4><span class="'.$class2.'">'.$time->work_status.'</span></h4>'; 
               $row[] = $time->overtime_type; 
-       
+        $row[] = '<h4><span class="'.$class3.'">'.$time->attendance_status.'</span></h4>'; 
            
 
                   $data[] = $row;

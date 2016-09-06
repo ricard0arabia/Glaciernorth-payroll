@@ -161,12 +161,7 @@ var table2;
  
     });
 
-      table2.rows().every( function ( rowIdx, tableLoop, rowLoop ) {       
-        var cell = table.cell({ row: rowIdx, column: 0 }).node();
-        $(cell).addClass('warning');        
-    });
-
-
+   
 
       $("input").change(function(){
         $(this).parent().parent().removeClass('has-error');
@@ -177,7 +172,7 @@ var table2;
 
             //
             var start = new Date();
-            start.setDate(start.getDate());
+          
 
             // set end date to max one year period:
             var end = new Date(new Date().setYear(start.getFullYear()+1));
@@ -185,8 +180,7 @@ var table2;
             $('#fromDate').datepicker({
                 format: "yyyy-mm-dd",
             
-                startDate : start,
-                endDate   : end
+               
             // update "toDate" defaults whenever "fromDate" changes
             }).on('changeDate', function(){
                 // set the "toDate" start to not be later than "fromDate" ends:

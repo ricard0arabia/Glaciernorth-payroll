@@ -4,6 +4,7 @@
   
     <br>
        <button class="btn btn-success" onclick="add_reports_period()"><i class="glyphicon glyphicon-plus"></i> Reports Period </button>
+       <button class="btn btn-success pull-right" onclick="test()"><i class="glyphicon glyphicon-plus"></i> test </button>
  <button class="btn btn-default" onclick="reload_table()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
         <br />
         <br />
@@ -131,6 +132,24 @@ var table;
 
             
     });
+
+
+    function test()
+{
+
+    $.ajax({
+        url : "<?php echo site_url('reports/test_tax')?>",
+        type: "GET",
+        dataType: "JSON",
+
+        success: function(data)
+        {
+ 
+
+        },
+       
+    });
+}
 
    function add_reports_period()
 {
