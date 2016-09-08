@@ -170,9 +170,9 @@ class Employees extends CI_Controller {
 
                     $philhealth_code = '0';
                     $ctr = 1;
-                    if($salary < 8000){
+                    if($salary < 9000){
 
-                        $philhealth_code = '0';
+                        $philhealth_code = '1';
                     }
                     else if($salary < 35000){
                             for($i = 8000; $i <= 35000; $i+=1000){
@@ -187,6 +187,32 @@ class Employees extends CI_Controller {
                             $philhealth_code ='28';
                       }
 
+
+
+$pagibig_employee_share = 0;
+$pagibig_employer_share = 0;                
+$pagibig_total_share = 0;
+
+
+                if($salary <= 1500){
+
+                    $pagibig_employee_share = $salary*.01;
+                    $pagibig_employer_share = $salary*.02;   
+                    $pagibig_total_share =  $pagibig_employee_share + $pagibig_employer_share;
+
+                }else if(1500 < $salary && $salary < 5000){
+
+                    $pagibig_employee_share = $salary*.02;
+                    $pagibig_employer_share = $salary*.02;   
+                    $pagibig_total_share =  $pagibig_employee_share + $pagibig_employer_share;
+
+                }else{
+
+                    $pagibig_employee_share = 100;
+                    $pagibig_employer_share = 100;   
+                    $pagibig_total_share =  $pagibig_employee_share + $pagibig_employer_share;
+
+                }
 
 
         $temp = false;
@@ -204,10 +230,13 @@ class Employees extends CI_Controller {
             $data = array(
                     
                     'user_id' => $id,
-                    'sss_code' => $sss_code,
-                    'philhealth_code' => $philhealth_code,
                     'period' => date('Y-m-t'),       
                     'salary' => $this->input->post('salary'), 
+                    'sss_code' => $sss_code,
+                    'philhealth_code' => $philhealth_code,
+                    'pagibig_employee_share' => $pagibig_employee_share,
+                    'pagibig_employer_share' => $pagibig_employer_share,
+                    'pagibig_total_share' => $pagibig_total_share,
                     
                 );
             $this->employee->emp_contributions_update($data,$id,date('Y-m-t'));
@@ -611,7 +640,7 @@ $end_date = $this->input->post('enddate');
 
 
 while (strtotime($start_date) <= strtotime($end_date)) {
-
+$attendance_status = '';
 $sched_type = '';
 $color = '';
 
@@ -625,6 +654,7 @@ $color = '';
      if($mon_start == '00:00:00'){
          $temp_enddate = "$start_date"." $mon_end ";
             $sched_type = 'day off';
+            $attendance_status = 'inactive';
             $color = '#34a853';
      
     }else{
@@ -653,8 +683,9 @@ $color = '';
     $temp_day = $day;
 
     if($tue_start == '00:00:00'){
-         $temp_enddate = "$start_date"." $mon_end ";
+         $temp_enddate = "$start_date"." $tue_end ";
             $sched_type = 'day off';
+            $attendance_status = 'inactive';
              $color = '#34a853';
         }else{
 
@@ -677,8 +708,9 @@ $color = '';
     $temp_day = $day;
 
     if($wed_start == '00:00:00'){
-         $temp_enddate = "$start_date"." $mon_end ";
+         $temp_enddate = "$start_date"." $wed_end ";
            $sched_type = 'day off';
+           $attendance_status = 'inactive';
            $color = '#34a853';
         }else{
 
@@ -701,8 +733,9 @@ $color = '';
     $temp_day = $day;
 
     if($thurs_start == '00:00:00'){
-         $temp_enddate = "$start_date"." $mon_end ";
+         $temp_enddate = "$start_date"." $thurs_end ";
            $sched_type = 'day off';
+           $attendance_status = 'inactive';
            $color = '#34a853';
           
         }else{
@@ -726,8 +759,9 @@ $color = '';
     $temp_day = $day;
 
     if($fri_start == '00:00:00'){
-         $temp_enddate = "$start_date"." $mon_end ";
+         $temp_enddate = "$start_date"." $fri_end ";
             $sched_type = 'day off';
+            $attendance_status = 'inactive';
             $color = '#34a853';
             
         }else{
@@ -752,8 +786,9 @@ $color = '';
     $temp_day = $day;
 
     if($sat_start == '00:00:00'){
-         $temp_enddate = "$start_date"." $mon_end ";
+         $temp_enddate = "$start_date"." $sat_end ";
            $sched_type = 'day off';
+           $attendance_status = 'inactive';
            $color = '#34a853';
            
         }else{
@@ -778,8 +813,9 @@ $color = '';
     $temp_day = $day;
 
     if($sun_start == '00:00:00'){
-         $temp_enddate = "$start_date"." $mon_end ";
+         $temp_enddate = "$start_date"." $sun_end ";
             $sched_type = 'day off';
+            $attendance_status = 'inactive';
             $color = '#34a853';
             
         }else{
@@ -816,12 +852,12 @@ $color = '';
 
      $list2 = $this->employee->get_holiday();
         
-    $holiday = "";
+    $holiday_type = "";
          foreach ($list2 as $value) {
     
             if($start_date == $value->date){
-
-               $sched_type = $value->type;
+                $attendance_status = 'inactive';
+               $holiday_type = $value->type;
                $color = '#c2185b';
                 break;
             }
@@ -836,6 +872,8 @@ $color = '';
         'color' => $color,
         'work_status' => '',
         'overtime_type' => '',
+        'attendance_status' => $attendance_status,
+        'holiday_type' => $holiday_type,
 
 
 
@@ -855,6 +893,8 @@ $color = '';
         'sched_type' => $sched_type,
         'work_status' => '',
         'overtime_type' => '',
+        'attendance_status' => $attendance_status,
+        'holiday_type' => $holiday_type,
 
 
         );
@@ -1080,6 +1120,7 @@ $end_date = $this->input->post('enddate');
 
 
 while (strtotime($start_date) <= strtotime($end_date)) {
+$attendance_status = '';
 $sched_type = '';
 $color = '';
 
@@ -1093,6 +1134,7 @@ $color = '';
      if($mon_start == '00:00:00'){
          $temp_enddate = "$start_date"." $mon_end ";
             $sched_type = 'day off';
+            $attendance_status = 'inactive';
             $color = '#34a853';
      
         }else{
@@ -1121,8 +1163,9 @@ $color = '';
     $temp_day = $day;
 
     if($tue_start == '00:00:00'){
-         $temp_enddate = "$start_date"." $mon_end ";
+         $temp_enddate = "$start_date"." $tue_end ";
             $sched_type = 'day off';
+            $attendance_status = 'inactive';
              $color = '#34a853';
         }else{
 
@@ -1145,8 +1188,9 @@ $color = '';
     $temp_day = $day;
 
     if($wed_start == '00:00:00'){
-         $temp_enddate = "$start_date"." $mon_end ";
+         $temp_enddate = "$start_date"." $wed_end ";
            $sched_type = "day off";
+           $attendance_status = 'inactive';
            $color = '#34a853';
         }else{
 
@@ -1169,8 +1213,9 @@ $color = '';
     $temp_day = $day;
 
     if($thurs_start == '00:00:00'){
-         $temp_enddate = "$start_date"." $mon_end ";
+         $temp_enddate = "$start_date"." $thurs_end ";
            $sched_type = 'day off';
+           $attendance_status = 'inactive';
            $color = '#34a853';
           
         }else{
@@ -1194,8 +1239,9 @@ $color = '';
     $temp_day = $day;
 
     if($fri_start == '00:00:00'){
-         $temp_enddate = "$start_date"." $mon_end ";
+         $temp_enddate = "$start_date"." $fri_end ";
             $sched_type = 'day off';
+            $attendance_status = 'inactive';
             $color = '#34a853';
             
         }else{
@@ -1220,8 +1266,9 @@ $color = '';
     $temp_day = $day;
 
     if($sat_start == '00:00:00'){
-         $temp_enddate = "$start_date"." $mon_end ";
+         $temp_enddate = "$start_date"." $sat_end ";
            $sched_type = 'day off';
+           $attendance_status = 'inactive';
            $color = '#34a853';
            
         }else{
@@ -1246,8 +1293,9 @@ $color = '';
     $temp_day = $day;
 
     if($sun_start == '00:00:00'){
-         $temp_enddate = "$start_date"." $mon_end ";
+         $temp_enddate = "$start_date"." $sun_end ";
             $sched_type = 'day off';
+            $attendance_status = 'inactive';
             $color = '#34a853';
             
         }else{
@@ -1284,12 +1332,12 @@ $color = '';
 
      $list2 = $this->employee->get_holiday();
         
-    $holiday = "";
+   $holiday_type = "";
          foreach ($list2 as $value) {
     
             if($start_date == $value->date){
-
-               $sched_type = $value->type;
+                $attendance_status = 'inactive';
+               $holiday_type = $value->type;
                $color = '#c2185b';
                 break;
             }
@@ -1304,6 +1352,8 @@ $color = '';
         'color' => $color,
         'work_status' => '',
         'overtime_type' => '',
+        'attendance_status' => $attendance_status,
+        'holiday_type' => $holiday_type,
 
 
 
@@ -1323,7 +1373,8 @@ $color = '';
         'sched_type' => $sched_type,
         'work_status' => '',
         'overtime_type' => '',
-
+        'attendance_status' => $attendance_status,
+        'holiday_type' => $holiday_type,
 
         );
 

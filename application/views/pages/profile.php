@@ -832,7 +832,7 @@ $(document).ready(function () {
           });
           
           // When the image loads, release object URL
-
+          $("#hdmf_no").mask("999999999999");
           $("#sss_no").mask("99-9999999-9");
           $("#tin_no").mask("999-999-999");
           $("#philhealth_no").mask("99-999999999-9");

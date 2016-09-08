@@ -1,6 +1,6 @@
    <div class="container">
 
-  <h3>Timesheet for <?php echo date("F j,Y", strtotime($timesheet_data->date)); ?></h3>
+  <h3>Timesheet for <?php echo date("F j,Y", strtotime($timesheet_data->date))." (".date("l", strtotime($timesheet_data->date)).")"; ?></h3>
     <br>
  <button class="btn btn-default" onclick="reload_table()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
         <br />
@@ -12,15 +12,16 @@
                                 <th>Name</th>
                                 <th>Position</th>
                                 <th>Department</th>
-                                <th>Timesheet Date</th>
                                 <th>Time In</th>
                                 <th>Time Out</th>
                                 <th>Hours Worked</th>
                                 <th>Overtime</th>
                                  <th>Tardiness</th>
+                                 <th>Undertime</th>
                                 <th>Sched Type</th>
                                 <th>Work Status</th>
-                                <th>OT Status</th>
+                                <th>Overtime Type</th>
+                                <th>Holiday Type</th>
                                 <th>Attendance Status</th>
                                 <th>Action</th>
                             </tr>
@@ -340,7 +341,7 @@ function reload_table()
 
 
                      <div class="form-group">
-                            <label class="control-label col-md-3">start time</label>
+                            <label class="control-label col-md-3">Time-in</label>
                            <div class="col-md-5">
                                   <input type="text" name="time_in"class="form-control startDateTime" placeholder="Select start date and hour">
                                 <span class="help-block"></span>
@@ -348,7 +349,7 @@ function reload_table()
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label col-md-3">end time</label>
+                            <label class="control-label col-md-3">Time-out</label>
                            <div class="col-md-5">
                                  <input type="text" name="time_out"class="form-control endDateTime" placeholder="Select End date and hour">
                                 <span class="help-block"></span>
@@ -378,6 +379,13 @@ function reload_table()
                             <label class="control-label col-md-3">Tardiness</label>
                              <div class="col-md-5">
                                 <input name="tardiness" id="tardiness" class="form-control"></input>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Undertime</label>
+                             <div class="col-md-5">
+                                <input name="undertime" id="undertime" class="form-control"></input>
                                 <span class="help-block"></span>
                             </div>
                         </div>

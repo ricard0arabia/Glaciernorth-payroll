@@ -172,7 +172,7 @@
          $first11 = date('Y-m-01');
          $last11 = date('Y-m-15');
 
-         $first12 = date('Y-m-15');
+         $first12 = date('Y-m-16');
          $last12= date('Y-m-t');
 
 
@@ -180,7 +180,7 @@
          $first21 = date('Y-m-01',strtotime('first day of next month'));
          $last21 = date('Y-m-15', strtotime('last day of next month'));
 
-         $first22 = date('Y-m-15',strtotime('first day of next month'));
+         $first22 = date('Y-m-16',strtotime('first day of next month'));
          $last22= date('Y-m-t',strtotime('last day of next month'));
 
 
@@ -188,7 +188,7 @@
          $first31 = date('Y-m-01',strtotime('first day of +2 month'));
          $last31 = date('Y-m-15',strtotime('last day of +2 month'));
 
-         $first32 = date('Y-m-15',strtotime('first day of +2 month'));
+         $first32 = date('Y-m-16',strtotime('first day of +2 month'));
          $last32= date('Y-m-t',strtotime('last day of +2 month'));
 
 
@@ -196,7 +196,7 @@
          $first41 = date('Y-m-01',strtotime('first day of +3 month'));
          $last41 = date('Y-m-15', strtotime('last day of +3 month'));
 
-         $first42 = date('Y-m-15',strtotime('first day of +3 month'));
+         $first42 = date('Y-m-16',strtotime('first day of +3 month'));
          $last42= date('Y-m-t',strtotime('last day of +3 month'));
 
 
@@ -204,7 +204,7 @@
          $first51 = date('Y-m-01',strtotime('first day of +4 month'));
          $last51 = date('Y-m-15', strtotime('last day of +4 month'));
 
-         $first52 = date('Y-m-15',strtotime('first day of +4 month'));
+         $first52 = date('Y-m-16',strtotime('first day of +4 month'));
          $last52= date('Y-m-t',strtotime('last day of +4 month'));
 
 
@@ -307,7 +307,7 @@ $enddate = $this->input->post('enddate');
       }else{
 
           $checkstart = false;
-          $info = "Start date must be the 1st day of the month";
+          $info = "Start date must be the 1st/16th day of the month";
          }
 
 

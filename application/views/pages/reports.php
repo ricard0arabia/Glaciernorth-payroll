@@ -55,7 +55,8 @@
                         <ul class="nav nav-tabs">
                     <li class="active"><a href="#sss" onclick="reload_table1()" data-toggle="tab">SSS Report</a></li>
                     <li><a href="#philhealth" onclick="reload_table2()" data-toggle="tab">Philhealth Report</a></li>
-                    <li><a href="#bir" onclick="reload_table3()" data-toggle="tab">Withholding Tax Report</a></li>
+                    <li><a href="#pagibig" onclick="reload_table3()" data-toggle="tab">HDMF Report</a></li>
+                    <li><a href="#bir" onclick="reload_table4()" data-toggle="tab">Withholding Tax Report</a></li>
                          
                            
                         </ul>
@@ -127,15 +128,46 @@
                 </div>
 
 
+      <div class="tab-pane fade" id="pagibig">
 
-       <div class="tab-pane fade in" id="bir">
 
-         <h3>BIR Tax Table</h3>
+                           <h3>HDMF Contribution Table</h3>
         <br />
         <button class="btn btn-default" onclick="reload_table3()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
         <br />
         <br />
         <table id="table3" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+
+                                <th>Employee ID</th>
+                                <th>Employee Name</th>
+                                <th>Period Covered</th>
+                                <th>HDMF Number</th>
+                                <th>Employee Share</th>
+                                <th>Employer Share</th>
+                                <th>Total Share</th>
+                 
+                            </tr>
+                        </thead>
+                       
+                    </table>
+
+
+                  
+    
+                </div>
+
+
+
+       <div class="tab-pane fade in" id="bir">
+
+         <h3>BIR Tax Table</h3>
+        <br />
+        <button class="btn btn-default" onclick="reload_table4()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
+        <br />
+        <br />
+        <table id="table4" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
 
@@ -247,7 +279,7 @@ var period = "<?php echo $period->date_to;?>";
             extend: 'pdf',
            footer: true,
            exportOptions: {
-                columns: [0,1,2,3]
+                columns: [0,1,2,3,4,5,6]
             },
              header: true,
                title: 'Glacier North Refrigeration Inc. \n Philhealth Contribution Table ',
@@ -260,7 +292,7 @@ var period = "<?php echo $period->date_to;?>";
            extend: 'csv',
            footer: true,
            exportOptions: {
-                columns: [0,1,2,3]
+                columns: [0,1,2,3,4,5,6]
              },
              header: true,
                title: 'Glacier North Refrigeration Inc. \n Philhealth Contribution Table ',
@@ -270,7 +302,7 @@ var period = "<?php echo $period->date_to;?>";
            extend: 'excel',
            footer: true,
            exportOptions: {
-                columns: [0,1,2,3]
+                columns: [0,1,2,3,4,5,6]
              },
              header: true,
                title: 'Glacier North Refrigeration Inc. \n Philhealth Contribution Table ',
@@ -279,7 +311,7 @@ var period = "<?php echo $period->date_to;?>";
            extend: 'print',
            footer: true,
            exportOptions: {
-                columns: [0,1,2,3]
+                columns: [0,1,2,3,4,5,6]
             },
              header: true,
                title: 'Glacier North Refrigeration Inc. \n Philhealth Contribution Table ',
@@ -302,7 +334,78 @@ var period = "<?php echo $period->date_to;?>";
  
     });
 
-      table3 = $('#table3').DataTable({
+
+  table3 = $('#table3').DataTable({
+ 
+        "processing": true, //Feature control the processing indicator.
+        "serverSide": true, //Feature control DataTables' server-side processing mode.
+        "order": [], //Initial no order.
+        "dom": 'Bfrtip',
+         "buttons": [
+        {
+            extend: 'pdf',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5,6]
+            },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Home and Development Mutual Fund Contribution Table ',
+               orientation: 'portrait',
+               customize: function(doc) {
+                  doc.defaultStyle.fontSize = 16; //<-- set fontsize to 16 instead of 10 
+               }  
+       },
+       {
+           extend: 'csv',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5,6]
+             },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Home and Development Mutual Fund Contribution Table ',
+          
+       },
+       {
+           extend: 'excel',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5,6]
+             },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Home and Development Mutual Fund Contribution Table ',
+       },
+       {
+           extend: 'print',
+           footer: true,
+           exportOptions: {
+                columns: [0,1,2,3,4,5,6]
+            },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Home and Development Mutual Fund Contribution Table ',
+       }          
+        ],
+ 
+        // Load data for the table's content from an Ajax source
+        "ajax": {
+            "url": "<?php echo site_url('reports/pagibig_reports')?>/"+period,
+            "type": "POST"
+        },
+ 
+        //Set column definition initialisation properties.
+        "columnDefs": [
+        {
+            "targets": [ -1 ], //last column
+            "orderable": false, //set not orderable
+        },
+        ],
+ 
+    });
+
+
+
+
+
+      table4 = $('#table4').DataTable({
  
         "processing": true, //Feature control the processing indicator.
         "serverSide": true, //Feature control DataTables' server-side processing mode.
@@ -383,6 +486,10 @@ function reload_table2()
 function reload_table3()
 {
     table3.ajax.reload(null,false); //reload datatable ajax
+}
+function reload_table4()
+{
+    table4.ajax.reload(null,false); //reload datatable ajax
 }
  </script>
 

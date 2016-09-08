@@ -321,34 +321,61 @@ class Overtime extends CI_Controller {
 
                     if($value->sched_type == "night shift" || $value->sched_type == "day shift"){
 
-                        $overtime_type = "regular";
+                        $overtime_type = "ordinary";
 
                     }else if($value->sched_type == "day off"){
 
                          $overtime_type = "rest day";
 
-                    }else if($value->sched_type == "regular"){
+                    }
+
+
+                    if($value->sched_type == "night shift" || $value->sched_type == "day shift" && $value->holiday_type == "regular"){
 
                          $overtime_type = "regular holiday";
 
-                    }else if($value->sched_type == "special"){
+                    }else if($value->sched_type == "night shift" || $value->sched_type == "day shift" && $value->holiday_type == "special"){
 
                          $overtime_type = "special holiday";
 
+                    }else if($value->sched_type == "night shift" || $value->sched_type == "day shift" && $value->holiday_type == "double"){
+
+                         $overtime_type = "double holiday";
+
+                    }else if($value->sched_type == "day off" && $value->holiday_type == "regular"){
+
+                         $overtime_type = "rest day/regular holiday";
+
+                    }else if($value->sched_type == "day off"  && $value->holiday_type == "special"){
+
+                         $overtime_type = "rest day/special holiday";
+
+                    }else if($value->sched_type == "day off"  && $value->holiday_type == "double"){
+
+                         $overtime_type = "rest day/double holiday";
+
                     }
+                    $end;
+                    if($value->sched_type != "day off"){
                     $given = $ot_duration;
                     $hour = floor($given);
                     $minutes = ($given-$hour)*60;
 
                     $end = $value->end;
                     $end = date('Y-m-d H:i:s',strtotime('+'.$hour.' hour +'.$minutes.'minutes',strtotime($end)));
+                    }else{
 
+                    $end = $value->end;
+                
+
+                    }
                        
                         $data = array(
                             'end' => $end,
                             'work_status' => 'overtime',
                             'color' => '#407f1e',
                             'overtime_type' => $overtime_type,
+                            'attendance_status' => '',
                                 
                         );
                       
@@ -375,6 +402,7 @@ class Overtime extends CI_Controller {
                          
                            'work_status' => 'overtime',
                            'overtime_type' => $overtime_type,
+                           'attendance_status' => '',
                                 
                         );
                       

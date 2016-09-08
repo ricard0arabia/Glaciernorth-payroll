@@ -298,7 +298,7 @@ var table2;
 
      // set default dates
             var start = new Date();
-            start.setDate(start.getDate() + 2);
+         
 
             // set end date to max one year period:
             var end = new Date(new Date().setYear(start.getFullYear()+1));
@@ -306,8 +306,7 @@ var table2;
             $('#fromDate').datepicker({
                 format: "yyyy-mm-dd",
             
-                startDate : start,
-                endDate   : end
+             
             // update "toDate" defaults whenever "fromDate" changes
             }).on('changeDate', function(){
                 // set the "toDate" start to not be later than "fromDate" ends:

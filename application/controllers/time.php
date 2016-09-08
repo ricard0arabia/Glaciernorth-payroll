@@ -133,10 +133,7 @@ class Time extends CI_Controller {
         else if ($time->sched_type === 'night shift') {
             $class1 = 'label label-primary';
         } 
-        else if ($time->sched_type === 'regular' || $time->sched_type === 'special') {
-            $class1 = 'label label-warning';
-            $sched_type = "Holiday";
-        }
+      
 //  
          $class2 = '';
          if ($time->work_status === 'leave') {
@@ -145,12 +142,15 @@ class Time extends CI_Controller {
         else if ($time->work_status === 'overtime') {
             $class2 = 'label label-primary';
         }
-
+//
         $class3 = '';
          if ($time->attendance_status === 'absent') {
             $class3 = 'label label-danger';
         }
         else if ($time->attendance_status === 'present') {
+            $class3 = 'label label-success';
+        }
+         else if ($time->attendance_status === 'inactive') {
             $class3 = 'label label-info';
         }
       
@@ -161,16 +161,17 @@ class Time extends CI_Controller {
             $row[] = ucfirst($time->firstname).' '.ucfirst(substr($time->middlename,0,1)).'. '.ucfirst($time->lastname);
             $row[] = $time->position;
             $row[] = $time->department;
-            $row[] = date("F j,Y", strtotime($time->date));
             $row[] = $time->time_in;
             $row[] = $time->time_out;
             $row[] = $time->hours_worked;
             $row[] = $time->overtime;
             $row[] = $time->tardiness;
+            $row[] = $time->undertime;
 
             $row[] = '<h4><span class="'.$class1.'">'.$sched_type.'</span></h4>'; 
              $row[] = '<h4><span class="'.$class2.'">'.$time->work_status.'</span></h4>'; 
               $row[] = '<strong>'.$time->overtime_type.'</strong>'; 
+               $row[] = '<h4><span class="label label-warning">'.$time->holiday_type.'</span></h4>'; 
                 $row[] = '<h4><span class="'.$class3.'">'.$time->attendance_status.'</span></h4>'; 
        
            
@@ -197,50 +198,66 @@ class Time extends CI_Controller {
        
         $this->_validate1();
 
+        $user_id = $this->input->post('id');
+
         $sched_start = date("Y-m-d",strtotime($this->input->post('start')));
         $sched_end = date("Y-m-d",strtotime($this->input->post('end')));
         $time_in =  date("Y-m-d",strtotime($this->input->post('time_in')));
         $time_out =  date("Y-m-d",strtotime($this->input->post('time_out')));
 
+        $check = $this->time->check_emp_attendance($user_id,$date);
 
-        if($sched_start == $time_in && $sched_end == $time_out){
+        $attendance_status = $check->attendance_status;
 
+        if($attendance_status != "inactive"){
 
-        $time_in = date("Y-m-d H:i", strtotime($this->input->post('time_in'))).":00";
-        $time_out = date("Y-m-d H:i", strtotime($this->input->post('time_out'))).":00";
-
-         $data = array(
-                
-                'time_in' => $time_in,
-                'time_out' => $time_out,
-                'hours_worked' => $this->input->post('totalhours'),
-                'overtime' => $this->input->post('overtime'),
-                'tardiness' => 0,
-                'attendance_status'=> $this->input->post('status'),
-               
-                
-            );
-         $user_id = $this->input->post('id');
-        $this->time->attendance_update($data,$user_id,$date);
+            if($sched_start == $time_in && $sched_end == $time_out){
 
 
-        $color = '#264281';
-        if($this->input->post('status') == 'absent'){
-            $color = '#ea4335';
-        }
+            $time_in = date("Y-m-d H:i", strtotime($this->input->post('time_in'))).":00";
+            $time_out = date("Y-m-d H:i", strtotime($this->input->post('time_out'))).":00";
 
-        $data1 = array(
-                
-                'attendance_status' => $this->input->post('status'),
-                'color' => $color,
-               
-                
-            );
-         $this->time->sched_update1($data1,$user_id,$date);
-        echo json_encode(array("status" => TRUE, "warning" => true, "check" => $time_in));
-    }else{
+             $data = array(
+                    
+                    'time_in' => $time_in,
+                    'time_out' => $time_out,
+                    'hours_worked' => $this->input->post('totalhours'),
+                    'overtime' => $this->input->post('overtime'),
+                    'tardiness' => $this->input->post('tardiness'),
+                    'undertime' => $this->input->post('undertime'),
+                    'attendance_status'=> $this->input->post('status'),
+                   
+                    
+                );
+             
+            $this->time->attendance_update($data,$user_id,$date);
 
-        echo json_encode(array("status" => TRUE, "warning" => false,"check" => 'Entered dates must be the same with the schedule'));
+
+            $color = '#264281';
+            if($this->input->post('status') == 'absent'){
+                $color = '#ea4335';
+            }
+
+            $data1 = array(
+                    
+                    'attendance_status' => $this->input->post('status'),
+                    'color' => $color,
+                   
+                    
+                );
+             $this->time->sched_update1($data1,$user_id,$date);
+            echo json_encode(array("status" => TRUE, "warning" => true, "check" => $time_in));
+            }else{
+
+            echo json_encode(array("status" => TRUE, "warning" => false,"check" => 'Entered dates must be the same with the schedule'));
+
+
+            }
+
+        }else{
+
+
+             echo json_encode(array("status" => TRUE, "warning" => false,"check" => 'Inactive attendance status is uneditable'));
 
 
         }
@@ -330,6 +347,12 @@ class Time extends CI_Controller {
             $data['error_string'][] = 'Tardiness is required';
             $data['status'] = FALSE;
         }
+          if($this->input->post('undertime') == '')
+        {
+            $data['inputerror'][] = 'undertime';
+            $data['error_string'][] = 'Undertime is required';
+            $data['status'] = FALSE;
+        }
           if($this->input->post('totalhours') == '')
         {
             $data['inputerror'][] = 'totalhours';
@@ -370,10 +393,6 @@ class Time extends CI_Controller {
         else if ($time->sched_type === 'night shift') {
             $class1 = 'label label-primary';
         } 
-        else if ($time->sched_type === 'regular' || $time->sched_type === 'special') {
-            $class1 = 'label label-warning';
-            $sched_type = "Holiday";
-        }
 //  
          $class2 = '';
         if ($time->work_status === 'leave') {
@@ -388,6 +407,9 @@ class Time extends CI_Controller {
             $class3 = 'label label-danger';
         }
         else if ($time->attendance_status === 'present') {
+            $class3 = 'label label-success';
+        }
+         else if ($time->attendance_status === 'inactive') {
             $class3 = 'label label-info';
         }
             $no++;
@@ -400,10 +422,12 @@ class Time extends CI_Controller {
             $row[] = $time->hours_worked;
             $row[] = $time->overtime;
             $row[] = $time->tardiness;
+            $row[] = $time->undertime;
 
             $row[] = '<h4><span class="'.$class1.'">'.$sched_type.'</span></h4>'; 
              $row[] = '<h4><span class="'.$class2.'">'.$time->work_status.'</span></h4>'; 
               $row[] = $time->overtime_type; 
+              $row[] = '<h4><span class="label label-warning">'.$time->holiday_type.'</span></h4>'; 
         $row[] = '<h4><span class="'.$class3.'">'.$time->attendance_status.'</span></h4>'; 
            
 

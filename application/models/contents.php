@@ -46,8 +46,8 @@ var $time_table = 'timesheet';
 
 
  var $attendance_table = 'attendance';
-    var $attendance_column_order = array('attendance_id','user_id','date','time_in','time_out','hours_worked','overtime','tardiness','sched_type','work_status','overtime_type',null); //set column field database for datatable orderable
-    var $attendance_column_search = array('lastname','department','position','firstname','date','sched_type','work_status'); //set column field database for datatable searchable just firstname , lastname , address are searchable
+    var $attendance_column_order = array('attendance_id','user_id','date','time_in','time_out','hours_worked','overtime','tardiness','sched_type','work_status','overtime_type','holiday_type',null); //set column field database for datatable orderable
+    var $attendance_column_search = array('lastname','holiday_type','department','position','firstname','date','sched_type','work_status'); //set column field database for datatable searchable just firstname , lastname , address are searchable
     var $attendance_order = array('attendance_id' => 'asc'); // default order
 
 
@@ -72,6 +72,12 @@ var $time_table = 'timesheet';
     var $philhealth_column_order = array('philhealth_id','philhealth_min_salary','philhealth_max_salary','philhealth_employer','philhealth_employee','philhealth_total',null); //set column field database for datatable orderable
     var $philhealth_column_search = array('philhealth_min_salary','philhealth_max_salary','philhealth_employer','philhealth_employee'); //set column field database for datatable searchable just firstname , lastname , address are searchable
     var $philhealth_order = array('philhealth_id' => 'asc'); // default
+
+     var $contrib_table = 'emp_contributions';
+    var $contrib_column_order = array('contrib_id','user_id','salary','period','sss_code','philhealth_code','pagibig_employee_share','pagibig_employer_share','pagibig_total_share',null); //set column field database for datatable orderable
+    var $contrib_column_search = array('pagibig_employee_share','pagibig_employer_share','pagibig_total_share','user_id'); //set column field database for datatable searchable just firstname , lastname , address are searchable
+    var $contrib_order = array('contrib_id' => 'asc'); // default
+
 
       var $payslip_table = 'payslip';
     var $payslip_column_order = array('payslip_id','user_id','basic_salary','allowance','overtime_pay','special_holiday_pay','legal_holiday_pay','night_diff_pay','gross_salary','deductions','sss_contrib','hdmf_contrib','philhealth_contrib','withholding_tax','sss_loan','pagibig_loan','others','payslip_status','net_pay',null); //set column field database for datatable orderable
@@ -972,6 +978,16 @@ var $time_table = 'timesheet';
         return $query->result();
     }
 
+     public function check_emp_attendance($id,$date)
+    {
+        $this->db->from('attendance');
+        $this->db->where('user_id =', $id); 
+        $this->db->where('date =', $date); 
+        $query = $this->db->get();
+ 
+        return $query->row();
+    }
+
     function attendance_count_filtered()
     {
         $this->attendance_get_datatables_query();
@@ -1514,6 +1530,82 @@ var $time_table = 'timesheet';
         $this->db->delete($this->philhealth_table);
     }
 
+
+//pagibig
+
+
+
+
+
+
+ private function pagibig_get_datatables_query()
+    {
+    
+       $this->db->from('emp_contributions');
+         $this->db->join('employees','employees.user_id = emp_contributions.user_id');
+        
+        $i = 0;
+     
+        foreach ($this->contrib_column_search as $item) // loop column
+        {
+            if($_POST['search']['value']) // if datatable send POST for search
+            {
+                 
+                if($i===0) // first loop
+                {
+                    $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+                    $this->db->like($item, $_POST['search']['value']);
+                }
+                else
+                {
+                    $this->db->or_like($item, $_POST['search']['value']);
+                }
+ 
+                if(count($this->contrib_column_search) - 1 == $i) //last loop
+                    $this->db->group_end(); //close bracket
+            }
+            $i++;
+        }
+         
+        if(isset($_POST['order'])) // here order processing
+        {
+            $this->db->order_by($this->contrib_column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+        }
+        else if(isset($this->contrib_order))
+        {
+            $order = $this->contrib_order;
+            $this->db->order_by(key($order), $order[key($order)]);
+        }
+    }
+ 
+ 
+    function pagibig_get_datatables($period)
+    {
+        $this->pagibig_get_datatables_query();
+        if($_POST['length'] != -1)
+        $this->db->limit($_POST['length'], $_POST['start']);  
+        $this->db->where('emp_contributions.period =', $period);    
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+
+    function pagibig_count_filtered()
+    {
+        $this->pagibig_get_datatables_query();
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+ 
+    public function pagibig_count_all()
+    {
+        $this->db->from($this->contrib_table);
+        return $this->db->count_all_results();
+    }
+ 
+
+
+
 //payslip
 
 
@@ -1807,11 +1899,27 @@ var $time_table = 'timesheet';
     public function test(){
 
       $query = $this->db->query("select *
-                                    from attendance
-                                    where user_id = 2016093 AND date BETWEEN '2016-09-01' AND '2016-09-15'");
+                                    from attendance a
+                                    LEFT JOIN employees b
+                                    ON a.user_id = b.user_id
+                                    where a.user_id = 2016093 AND a.date BETWEEN '2016-09-01' AND '2016-09-15'");
                                         
         if($query->num_rows() > 0) {
             return $query->result();
+        } else {
+            return false;
+        }
+
+    }
+
+     public function get_salary(){
+
+      $query = $this->db->query("select salary
+                                    from employees 
+                                    where user_id = 2016093");
+                                        
+        if($query->num_rows() > 0) {
+            return $query->row();
         } else {
             return false;
         }

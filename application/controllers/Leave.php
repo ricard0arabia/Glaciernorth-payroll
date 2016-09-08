@@ -149,7 +149,7 @@ class Leave extends CI_Controller {
             $datetime = date_create($value->start);
             $date = date_format($datetime,"Y-m-d");
                 if($this->input->post('startdate') == $date){
-                    if($value->work_status != ''){
+                    if($value->work_status != '' || $value->sched_type == 'day off' ){
 
                         $start = false;
                         break;
@@ -166,7 +166,7 @@ class Leave extends CI_Controller {
             $date = date_format($datetime,"Y-m-d");
 
                 if($this->input->post('enddate') == $date){
-                    if($value->work_status != ''){
+                    if($value->work_status != '' || $value->sched_type == 'day off'){
 
                         $end = false;
                         break;
@@ -355,29 +355,36 @@ class Leave extends CI_Controller {
                 $list = $this->leave->get_sched($id);
 
             foreach ($list as $value) {
-                $date_id = $value->sched_id;
-                $datetime = date_create($value->start);
-                $date = date_format($datetime,"Y-m-d");
+                 if($value->work_status == ""){
+                        $date_id = $value->sched_id;
+                        $datetime = date_create($value->start);
+                        $date = date_format($datetime,"Y-m-d");
 
-                if($startdate == $date){
+                        if($startdate == $date){
 
-                    if($value->sched_type == 'day shift' || $value->sched_type == 'night shift'){
+                            if($value->sched_type == 'day shift' || $value->sched_type == 'night shift'){
+                                if($value->holiday_type == ''){
+                                $work_status = "leave";  
 
-                        $work_status = "leave";  
-                    }else{
+                                }else{
 
-                         $work_status = "";
-                    }
-                       
-                        $data = array(
-                
-                            'work_status' => $work_status,
-                            'color' => '#f7bc38',
-                                
-                        );
-                      
-                    $this->leave->sched_update($data, $id, $date_id);
+                                 $work_status = "";
+                                }
+                            }else{
 
+                                 $work_status = "";
+                            }
+                               
+                                $data = array(
+                                    'attendance_status' => 'inactive',
+                                    'work_status' => $work_status,
+                                    'color' => '#f7bc38',
+                                        
+                                );
+                              
+                            $this->leave->sched_update($data, $id, $date_id);
+
+                        }
                     }
                 }
 
@@ -389,7 +396,7 @@ class Leave extends CI_Controller {
          $date1 = $this->leave->get_leave_date($id);
        $startdate1 = $date1->startdate;
        $enddate1 = $date1->enddate;
-
+       $leave_duration = 0;
        $check = "";
 
         while ($startdate1 <= $enddate1) {
@@ -397,30 +404,37 @@ class Leave extends CI_Controller {
                 $list = $this->leave->get_emp_attendance($id);
 
             foreach ($list as $value) {
-                $date_id = $value->date;
-                $datetime = date_create($value->date);
-                $date = date_format($datetime,"Y-m-d");
-            
-
-                if($startdate1 == $date){
-
-                   if($value->sched_type == 'day shift' || $value->sched_type == 'night shift'){
-
-                        $work_status = "leave";  
-                    }else{
-
-                         $work_status = "";
-                    }
-                       
-                        $data = array(
+                if($value->work_status == ""){
+                    $date_id = $value->date;
+                    $datetime = date_create($value->date);
+                    $date = date_format($datetime,"Y-m-d");
                 
-                            'work_status' => $work_status,
-                         
-                                
-                        );
-                      
-                    $this->leave->attendance_update($data, $id, $date_id);
 
+                    if($startdate1 == $date){
+
+                       if($value->sched_type == 'day shift' || $value->sched_type == 'night shift'){
+                             if($value->holiday_type == ''){
+                                $leave_duration++;
+                            $work_status = "leave";  
+                            }else{
+
+                             $work_status = "";
+                            }
+                        }else{
+
+                             $work_status = "";
+                        }
+                           
+                            $data = array(
+                                 'attendance_status' => 'inactive',
+                                'work_status' => $work_status,
+                             
+                                    
+                            );
+                          
+                        $this->leave->attendance_update($data, $id, $date_id);
+
+                        }
                     }
                 }
 
@@ -432,6 +446,7 @@ class Leave extends CI_Controller {
                 
                 'leave_status' => 'approved',
                 'date_approved' => date("Y-m-d"),
+                'duration' => $leave_duration,
                 
             );
         $this->leave->update(array('user_id' => $id), $data);

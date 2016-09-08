@@ -54,19 +54,130 @@
   }
 
   public function test_tax(){
+    echo "<table border = 1>";
+    echo "<tr>
+            <th>date</th>
+            <th>hours_worked </th>
+            <th>overtime </th>
+            <th>tardiness </th>
+            <th>undertime </th>
+            <th>sched_type </th>
+            <th>work_status </th>
+            <th>overtime_type </th>        
+            <th>holiday_type </th>
+            <th>attendance_status </th>
+
+            </tr>";
+       
+
+    $get =  $this->reports->test();
+
+     foreach ($get as $asd) {
+
+     echo "<tr>
+          <td>".$asd->date."</td>".
+          "<td>".$asd->hours_worked."</td>".
+          "<td>".$asd->overtime."</td>".
+          "<td>".$asd->tardiness."</td>".
+          "<td>".$asd->undertime."</td>".
+          "<td>".$asd->sched_type."</td>".
+          "<td>".$asd->work_status."</td>".
+          "<td>".$asd->overtime_type."</td>".
+          "<td>".$asd->holiday_type."</td>".
+          "<td>".$asd->attendance_status."</td>
+          </tr>";
+      
+    }
+       echo "</table>";
+
+
+  $basic_salary = $this->reports->get_salary();
+  $basic_salary = $basic_salary->salary;
+  $semi_monthly_salary = round($basic_salary/2,2);
+  $daily_rate =  round(($basic_salary * 12)/261,2);
+  $hourly_rate = round($daily_rate/8,2);
+
+  echo "<strong>basic salary</strong> ".$basic_salary."<br><br>";
+  echo "<strong>semi monthly salary</strong> ".$semi_monthly_salary."<br><br>";
+  echo "<strong>daily rate</strong>  ".$daily_rate."<br><br>";
+  echo "<strong>hourly rate</strong> ".$hourly_rate."<br><br>";
+
+  $total_hours_worked = 0;
+  $overtime_pay = 0;
+
     $list =  $this->reports->test();
-    $hours = 0;
-    $overtime = 0;
 
     foreach ($list as  $value) {
-    
-        $hours += $value->hours_worked;
-        $overtime += $value->overtime;
-        echo $value->user_id." ".$value->date." ".$value->sched_type." ".$value->hours_worked." ".$value->overtime."<br>";
 
-   
+      if($value->attendance_status == 'present'){
+
+          if($value->work_status == 'overtime'){
+
+              if($value->overtime_type == 'ordinary'){
+
+                $overtime_pay = ($value->overtime*$hourly_rate)*1.25;       
+
+              }else if($value->overtime_type == 'rest day'){
+
+                $rest_day_hourly_rate = $hourly_rate*1.3;
+
+                $overtime_pay = ($value->overtime*$rest_day_rate)*1.30;
+                    
+              }else if($value->overtime_type == 'regular holiday'){
+
+                $regular_holiday_hourly_rate = $hourly_rate*2;
+
+                $overtime_pay = ($value->overtime*$regular_holiday_hourly_rate)*1.30;
+
+              }else if($value->overtime_type == 'special holiday'){
+
+                $special_holiday_hourly_rate = $hourly_rate*1.3;
+
+                $overtime_pay = ($value->overtime*$special_holiday_hourly_rate)*1.3;
+                    
+              }else if($value->overtime_type == 'double holiday'){
+
+                $double_holiday_hourly_rate = $hourly_rate*3;
+
+                $overtime_pay = ($value->overtime*$double_holiday_hourly_rate)*3;   
+
+              }else if($value->overtime_type == 'rest day/regular holiday'){
+
+                $rest_regular_holiday_hourly_rate = $hourly_rate*2.6;
+
+                $overtime_pay = ($value->overtime*$rest_regular_holiday_hourly_rate)*1.30;
+
+              }else if($value->overtime_type == 'rest day/special holiday'){
+
+                $rest_special_holiday_hourly_rate = $hourly_rate*1.5;
+
+                $overtime_pay = ($value->overtime*$rest_special_holiday_hourly_rate)*1.30;
+
+              }else if($value->overtime_type == 'rest day/double holiday'){
+
+                $rest_double_holiday_hourly_rate = $hourly_rate*3;
+
+                $overtime_pay = ($value->overtime*$double_holiday_hourly_rate)*3; 
+
+                    
+
+              }
+
+          }
+
+
+      }else if($value->attendance_status == 'absent'){
+
+
+
+
+      
+      }
     }
 
+
+     echo "<strong>overtime pay</strong> ".$overtime_pay."<br><br>";
+  
   
 
   }
@@ -264,9 +375,9 @@
 
                          $philhealth_code = '0';
                     $ctr = 1;
-                    if($salary < 8000){
+                    if($salary < 9000){
 
-                        $philhealth_code = '0';
+                        $philhealth_code = '1';
                     }
                     else if($salary < 35000){
                             for($i = 8000; $i <= 35000; $i+=1000){
@@ -282,6 +393,33 @@
                       }
 
 
+
+
+$pagibig_employee_share = 0;
+$pagibig_employer_share = 0;                
+$pagibig_total_share = 0;
+
+
+                if($salary <= 1500){
+
+                    $pagibig_employee_share = $salary*.01;
+                    $pagibig_employer_share = $salary*.02;   
+                    $pagibig_total_share =  $pagibig_employee_share + $pagibig_employer_share;
+
+                }else if(1500 < $salary && $salary < 5000){
+
+                    $pagibig_employee_share = $salary*.02;
+                    $pagibig_employer_share = $salary*.02;   
+                    $pagibig_total_share =  $pagibig_employee_share + $pagibig_employer_share;
+
+                }else{
+
+                    $pagibig_employee_share = 100;
+                    $pagibig_employer_share = 100;   
+                    $pagibig_total_share =  $pagibig_employee_share + $pagibig_employer_share;
+
+                }
+
               
 
             $data = array(
@@ -291,6 +429,9 @@
                     'philhealth_code' => $philhealth_code,
                     'period' => $this->input->post('enddate'),       
                     'salary' => $salary, 
+                      'pagibig_employee_share' => $pagibig_employee_share,
+                    'pagibig_employer_share' => $pagibig_employer_share,
+                    'pagibig_total_share' => $pagibig_total_share,
                     
                 );
              $this->reports->emp_contributions_save($data);
@@ -443,6 +584,50 @@
                         "draw" => $_POST['draw'],
                         "recordsTotal" => $this->reports->philhealth_count_all(),
                         "recordsFiltered" => $this->reports->philhealth_count_filtered(),
+                        "data" => $data,
+                );
+        //output to json format
+        echo json_encode($output);
+    }
+
+
+
+//
+
+
+
+    public function pagibig_reports($period)
+    {
+
+
+
+
+        $list = $this->reports->pagibig_get_datatables($period);
+        $data = array();
+        $no = $_POST['start'];
+        foreach ($list as $reports) {
+
+            $no++;
+            $row = array();
+
+             $row[] = $reports->user_id;
+       $row[] = ucfirst($reports->lastname).', '.ucfirst($reports->firstname).' '.ucfirst(substr($reports->middlename,0,1)).'. ';
+       $row[] = date("F j,Y", strtotime($reports->period));
+         $row[] = $reports->hdmf_no;
+          $row[] = $reports->pagibig_employee_share;
+           $row[] = $reports->pagibig_employer_share;
+           $row[] = $reports->pagibig_total_share;
+      
+           
+         
+                  $data[] = $row;
+     
+        }
+ 
+        $output = array(
+                        "draw" => $_POST['draw'],
+                        "recordsTotal" => $this->reports->pagibig_count_all(),
+                        "recordsFiltered" => $this->reports->pagibig_count_filtered(),
                         "data" => $data,
                 );
         //output to json format
