@@ -3,13 +3,13 @@
 
 class Time extends CI_Controller {
 
-	
-	public function __construct() {
-		parent::__construct();
-		$this->load->model('Contents','time');
-	}
+    
+    public function __construct() {
+        parent::__construct();
+        $this->load->model('Contents','time');
+    }
 
-	public function index() {	
+    public function index() {   
 
         if($this->session->userdata('isLogin') == FALSE)
         {
@@ -18,26 +18,26 @@ class Time extends CI_Controller {
         }
         else{
 
-		$this->load->helper('url');	
+        $this->load->helper('url'); 
         $this->load->view('header');
         $data['user'] = $this->session->userdata('username');
         $this->load->view('pages/timesheet',$data);
-		$this->load->view('footer');
+        $this->load->view('footer');
         }
-	
-	}	
+    
+    }   
 
-	public function attendance($id){
+    public function attendance($id){
 
-		$this->load->view('header');
+        $this->load->view('header');
         $data['user'] = $this->session->userdata('username');
         $data['timesheet_data'] = $this->time->emp_get_time($id);
         $this->load->view('pages/attendance',$data);
-		$this->load->view('footer');
+        $this->load->view('footer');
 
-	}
+    }
 
-	 public function timesheet_list()
+     public function timesheet_list()
     {
         $list = $this->time->time_get_datatables();
 
@@ -80,11 +80,11 @@ class Time extends CI_Controller {
        $temp = true;
        foreach($list as $check){
 
-       		if($check->date == $startdate){
+            if($check->date == $startdate){
 
-       			$temp = false;
-       			break;
-       		}
+                $temp = false;
+                break;
+            }
        }
 
 
@@ -94,23 +94,23 @@ class Time extends CI_Controller {
                 while($startdate <= $enddate){
 
 
-                	  $data = array(
-			        
-			        'date' => $startdate,
-			        
+                      $data = array(
+                    
+                    'date' => $startdate,
+                    
 
-			        )
-                	  ;
-			    $insert = $this->time->time_save($data);
-			    $startdate = date ("Y-m-d", strtotime("+1 days", strtotime($startdate)));
-			  
+                    )
+                      ;
+                $insert = $this->time->time_save($data);
+                $startdate = date ("Y-m-d", strtotime("+1 days", strtotime($startdate)));
+              
 
                 }
                  echo json_encode(array("status" => TRUE));
             }
             else{
         echo json_encode(array("status" => TRUE, "warning" => false));
-   	 }
+     }
     }
 
      public function attendance_list($date)
@@ -156,8 +156,8 @@ class Time extends CI_Controller {
       
             $no++;
             $row = array();
-         	
-         	$row[] = '<img height="60" width="60" src="'.base_url().'uploads/'.$time->thumb_name.$time->ext.'">';
+            
+            $row[] = '<img height="60" width="60" src="'.base_url().'uploads/'.$time->thumb_name.$time->ext.'">';
             $row[] = ucfirst($time->firstname).' '.ucfirst(substr($time->middlename,0,1)).'. '.ucfirst($time->lastname);
             $row[] = $time->position;
             $row[] = $time->department;
@@ -193,7 +193,7 @@ class Time extends CI_Controller {
         echo json_encode($output);
     }
 
-     public function add_attendance($date)
+      public function add_attendance($date)
     {
        
         $this->_validate1();
@@ -209,48 +209,109 @@ class Time extends CI_Controller {
 
         $attendance_status = $check->attendance_status;
 
+        $check_date_validity = false;
+
         if($attendance_status != "inactive"){
+//
+            if($check->sched_type == "day off"){
 
-            if($sched_start == $time_in && $sched_end == $time_out){
+                $sched_end1 =  date("Y-m-d", strtotime("+1 days", strtotime($this->input->post('end'))));
 
+                if(($sched_start == $time_in && $sched_end == $time_out) || ($sched_start == $time_in && $sched_end1 == $time_out)){
 
-            $time_in = date("Y-m-d H:i", strtotime($this->input->post('time_in'))).":00";
-            $time_out = date("Y-m-d H:i", strtotime($this->input->post('time_out'))).":00";
+                    $check_date_validity = true;
 
-             $data = array(
-                    
-                    'time_in' => $time_in,
-                    'time_out' => $time_out,
-                    'hours_worked' => $this->input->post('totalhours'),
-                    'overtime' => $this->input->post('overtime'),
-                    'tardiness' => $this->input->post('tardiness'),
-                    'undertime' => $this->input->post('undertime'),
-                    'attendance_status'=> $this->input->post('status'),
-                   
-                    
-                );
-             
-            $this->time->attendance_update($data,$user_id,$date);
+                }else{
 
+                    echo json_encode(array("status" => TRUE, "warning" => false,"check" => 'Entered dates must be the same with the schedule'));
 
-            $color = '#264281';
-            if($this->input->post('status') == 'absent'){
-                $color = '#ea4335';
-            }
+                }
 
-            $data1 = array(
-                    
-                    'attendance_status' => $this->input->post('status'),
-                    'color' => $color,
-                   
-                    
-                );
-             $this->time->sched_update1($data1,$user_id,$date);
-            echo json_encode(array("status" => TRUE, "warning" => true, "check" => $time_in));
+//
             }else{
 
-            echo json_encode(array("status" => TRUE, "warning" => false,"check" => 'Entered dates must be the same with the schedule'));
+                    if($sched_start == $time_in && $sched_end == $time_out){
 
+                        $check_date_validity = true;
+                 
+                    }else{
+
+                    echo json_encode(array("status" => TRUE, "warning" => false,"check" => 'Entered dates must be the same with the schedule'));
+
+
+                    }
+                }
+
+
+            if($check_date_validity){
+
+
+                $time_in = date("Y-m-d H:i", strtotime($this->input->post('time_in'))).":00";
+                $time_out = date("Y-m-d H:i", strtotime($this->input->post('time_out'))).":00";
+
+                $night_diff_start = date('Y-m-d 22:00:00',strtotime($sched_start));
+                $night_diff_end = date('Y-m-d 06:00:00',strtotime("+1 days", strtotime($sched_start)));
+
+                $given = $this->input->post('overtime');
+                $hour = floor($given);
+                $minutes = ($given-$hour)*60;
+
+                $ot_start = date('Y-m-d H:i:s',strtotime('-'.$hour.' hour -'.$minutes.'minutes',strtotime($time_out)));
+
+
+                $non_night_diff_hours = 0;
+                $night_diff_hours = 0;
+
+                for($i = 0; $i < $given; $i+=.25){
+
+                    $temp = $i*60;
+                    $time =  date('Y-m-d H:i:s',strtotime('+'.$temp.'minutes',strtotime($ot_start)));
+
+                    if($night_diff_start <= $time && $time <= $night_diff_end){
+
+                        $night_diff_hours += .25;
+
+                    }else{
+
+                        $non_night_diff_hours += .25;
+
+                    }
+
+                }
+
+                $total_ot_hours = $non_night_diff_hours + $night_diff_hours;
+
+                $data = array(
+                            
+                            'time_in' => $time_in,
+                            'time_out' => $time_out,
+                            'hours_worked' => $this->input->post('totalhours'),
+                            'overtime' => $total_ot_hours,
+                            'tardiness' => $this->input->post('tardiness'),
+                            'undertime' => $this->input->post('undertime'),
+                            'attendance_status'=> $this->input->post('status'),
+                            'night_diff_ot'=> $night_diff_hours,
+                           
+                            
+                        );
+                     
+                    $this->time->attendance_update($data,$user_id,$date);
+
+
+                    $color = '#264281';
+                        if($this->input->post('status') == 'absent'){
+                            $color = '#ea4335';
+                        }
+
+                    $data1 = array(
+                            
+                            'attendance_status' => $this->input->post('status'),
+                            'color' => $color,
+                           
+                            
+                        );
+                     $this->time->sched_update1($data1,$user_id,$date);
+                    echo json_encode(array("status" => TRUE, "warning" => true, "check" => $time_in));
 
             }
 
@@ -263,14 +324,23 @@ class Time extends CI_Controller {
         }
        
     }
-    public function get_attendance($id,$date){
+     public function get_attendance($id,$date){
         $date = str_replace('_', '-', $date);
-        $data = $this->time->get_emp_sched($id,$date);
+        $sched_data = $this->time->get_emp_sched($id,$date);
+        $ot_data = $this->time->get_overtime_duration($id,$date);
+        if($ot_data == false){
 
+            $ot_duration = 0;
+        }else{
+
+           $ot_duration = $ot_data->duration;
+        }
         $sched = array(
-                 "attendance_status" => $data->attendance_status,         
-                "start" => $data->start,
-                "end" => $data->end,
+
+                 "attendance_status" => $sched_data->attendance_status,         
+                "start" => $sched_data->start,
+                "end" => $sched_data->end,
+                "overtime" => $ot_duration,
         );
 
         echo json_encode($sched);
@@ -279,7 +349,7 @@ class Time extends CI_Controller {
 
     public function hello()
     {
-    	  $result = $this->time->attendance_get_datatables($this->session->userdata('username'));
+          $result = $this->time->attendance_get_datatables($this->session->userdata('username'));
         echo json_encode($result);
 
     }
@@ -445,6 +515,6 @@ class Time extends CI_Controller {
         echo json_encode($output);
     }
 
-	
+    
 }
 ?>

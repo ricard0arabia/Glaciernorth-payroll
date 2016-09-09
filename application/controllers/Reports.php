@@ -57,6 +57,8 @@
     echo "<table border = 1>";
     echo "<tr>
             <th>date</th>
+             <th>time_in </th>
+              <th>time_out </th>
             <th>hours_worked </th>
             <th>overtime </th>
             <th>tardiness </th>
@@ -66,6 +68,7 @@
             <th>overtime_type </th>        
             <th>holiday_type </th>
             <th>attendance_status </th>
+            <th>night_diff_ot </th>
 
             </tr>";
        
@@ -76,6 +79,8 @@
 
      echo "<tr>
           <td>".$asd->date."</td>".
+          "<td>".$asd->time_in."</td>".
+          "<td>".$asd->time_out."</td>".
           "<td>".$asd->hours_worked."</td>".
           "<td>".$asd->overtime."</td>".
           "<td>".$asd->tardiness."</td>".
@@ -84,7 +89,9 @@
           "<td>".$asd->work_status."</td>".
           "<td>".$asd->overtime_type."</td>".
           "<td>".$asd->holiday_type."</td>".
-          "<td>".$asd->attendance_status."</td>
+          "<td>".$asd->attendance_status."</td>".
+          "<td>".$asd->night_diff_ot."</td>
+
           </tr>";
       
     }
@@ -97,13 +104,18 @@
   $daily_rate =  round(($basic_salary * 12)/261,2);
   $hourly_rate = round($daily_rate/8,2);
 
-  echo "<strong>basic salary</strong> ".$basic_salary."<br><br>";
-  echo "<strong>semi monthly salary</strong> ".$semi_monthly_salary."<br><br>";
-  echo "<strong>daily rate</strong>  ".$daily_rate."<br><br>";
-  echo "<strong>hourly rate</strong> ".$hourly_rate."<br><br>";
+  echo "<strong>basic salary</strong> ".$basic_salary." ";
+  echo "<strong>semi monthly salary</strong> ".$semi_monthly_salary." ";
+  echo "<strong>daily rate</strong>  ".$daily_rate." ";
+  echo "<strong>hourly rate</strong> ".$hourly_rate."<br>";
 
   $total_hours_worked = 0;
   $overtime_pay = 0;
+  $ot_ordinary = 0;
+  $ot_restday = 0;
+  $ot_special_holiday = 0;
+  $ot_regular_holiday = 0;
+  $ot_nightdiff = 0;
 
     $list =  $this->reports->test();
 
@@ -115,51 +127,50 @@
 
               if($value->overtime_type == 'ordinary'){
 
-                $overtime_pay = ($value->overtime*$hourly_rate)*1.25;       
+                $ot_ordinary += ($value->overtime*$hourly_rate)*1.25;
+                $overtime_pay += ($value->overtime*$hourly_rate)*1.25;       
 
               }else if($value->overtime_type == 'rest day'){
 
                 $rest_day_hourly_rate = $hourly_rate*1.3;
-
-                $overtime_pay = ($value->overtime*$rest_day_rate)*1.30;
+                $ot_restday += ($value->overtime*$rest_day_rate)*1.30;
+                $overtime_pay += ($value->overtime*$rest_day_rate)*1.30;
                     
               }else if($value->overtime_type == 'regular holiday'){
 
                 $regular_holiday_hourly_rate = $hourly_rate*2;
-
-                $overtime_pay = ($value->overtime*$regular_holiday_hourly_rate)*1.30;
+                $ot_regular_holiday += ($value->overtime*$regular_holiday_hourly_rate)*1.30;
+                $overtime_pay += ($value->overtime*$regular_holiday_hourly_rate)*1.30;
 
               }else if($value->overtime_type == 'special holiday'){
 
                 $special_holiday_hourly_rate = $hourly_rate*1.3;
-
-                $overtime_pay = ($value->overtime*$special_holiday_hourly_rate)*1.3;
+                $ot_special_holiday += ($value->overtime*$special_holiday_hourly_rate)*1.3;
+                $overtime_pay += ($value->overtime*$special_holiday_hourly_rate)*1.3;
                     
               }else if($value->overtime_type == 'double holiday'){
 
                 $double_holiday_hourly_rate = $hourly_rate*3;
 
-                $overtime_pay = ($value->overtime*$double_holiday_hourly_rate)*3;   
+                $overtime_pay += ($value->overtime*$double_holiday_hourly_rate)*3;   
 
               }else if($value->overtime_type == 'rest day/regular holiday'){
 
                 $rest_regular_holiday_hourly_rate = $hourly_rate*2.6;
 
-                $overtime_pay = ($value->overtime*$rest_regular_holiday_hourly_rate)*1.30;
+                $overtime_pay += ($value->overtime*$rest_regular_holiday_hourly_rate)*1.30;
 
               }else if($value->overtime_type == 'rest day/special holiday'){
 
                 $rest_special_holiday_hourly_rate = $hourly_rate*1.5;
 
-                $overtime_pay = ($value->overtime*$rest_special_holiday_hourly_rate)*1.30;
+                $overtime_pay += ($value->overtime*$rest_special_holiday_hourly_rate)*1.30;
 
               }else if($value->overtime_type == 'rest day/double holiday'){
 
                 $rest_double_holiday_hourly_rate = $hourly_rate*3;
 
-                $overtime_pay = ($value->overtime*$double_holiday_hourly_rate)*3; 
-
-                    
+                $overtime_pay += ($value->overtime*$double_holiday_hourly_rate)*3;                   
 
               }
 
@@ -176,7 +187,13 @@
     }
 
 
-     echo "<strong>overtime pay</strong> ".$overtime_pay."<br><br>";
+     echo "<strong>Ordinary overtime</strong> ".$ot_ordinary."<br><br>";
+     echo "<strong>Rest day overtime</strong> ".$ot_restday."<br><br>";
+     echo "<strong>Special holiday overtime</strong> ".$ot_special_holiday."<br><br>";
+     echo "<strong>regular holiday overtime</strong> ".$ot_regular_holiday."<br><br>";
+     echo "<strong>night differential overtime</strong> ".$ot_nightdiff."<br><br>";
+     echo "<strong>Total overtime pay</strong> ".$overtime_pay."<br><br>";
+
   
   
 

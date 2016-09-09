@@ -46,7 +46,7 @@ var $time_table = 'timesheet';
 
 
  var $attendance_table = 'attendance';
-    var $attendance_column_order = array('attendance_id','user_id','date','time_in','time_out','hours_worked','overtime','tardiness','sched_type','work_status','overtime_type','holiday_type',null); //set column field database for datatable orderable
+    var $attendance_column_order = array('attendance_id','user_id','date','time_in','time_out','hours_worked','overtime','tardiness','sched_type','work_status','overtime_type','holiday_type','night_diff_ot',null); //set column field database for datatable orderable
     var $attendance_column_search = array('lastname','holiday_type','department','position','firstname','date','sched_type','work_status'); //set column field database for datatable searchable just firstname , lastname , address are searchable
     var $attendance_order = array('attendance_id' => 'asc'); // default order
 
@@ -246,6 +246,8 @@ var $time_table = 'timesheet';
  
         return $query->row();
     }
+
+
  
     public function save($data)
     {
@@ -770,6 +772,21 @@ var $time_table = 'timesheet';
         $query = $this->db->get();
  
         return $query->row();
+    }
+
+    public function get_overtime_duration($id,$date){
+
+        $this->db->from('rqst_overtime');
+        $this->db->where('user_id =', $id); 
+        $this->db->where('date =', $date); 
+        $query = $this->db->get();
+        
+        if($query->num_rows() == 0){
+
+            return false;
+        }else{
+            return $query->row();
+        }
     }
 
       public function sched_count_all($id)
@@ -2034,5 +2051,6 @@ Public function getEvents($id)
  
     
 }
+
 
 ?>

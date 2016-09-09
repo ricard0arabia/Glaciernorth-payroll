@@ -172,6 +172,7 @@ function add_attendance(id)
             $('[name="start"]').val(start);
             $('[name="end"]').val(end);
             $('[name="status"]').val(data.attendance_status);
+            $('[name="overtime"]').val(data.overtime);
 
 
             $('.startDateTime').datetimepicker({   
