@@ -160,11 +160,11 @@ class Time extends CI_Controller {
             $row[] = '<img height="60" width="60" src="'.base_url().'uploads/'.$time->thumb_name.$time->ext.'">';
             $row[] = ucfirst($time->firstname).' '.ucfirst(substr($time->middlename,0,1)).'. '.ucfirst($time->lastname);
             $row[] = $time->position;
-            $row[] = $time->department;
             $row[] = $time->time_in;
             $row[] = $time->time_out;
             $row[] = $time->hours_worked;
             $row[] = $time->overtime;
+            $row[] = $time->night_diff_ot;
             $row[] = $time->tardiness;
             $row[] = $time->undertime;
 

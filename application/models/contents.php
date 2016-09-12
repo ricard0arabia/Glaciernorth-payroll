@@ -63,7 +63,7 @@ var $time_table = 'timesheet';
     var $bir_order = array('bir_id' => 'asc'); // default
 
 
-      var $sss_table = 'sss';
+      var $sss_table = 'sss_table';
     var $sss_column_order = array('sss_id','sss_min_salary','sss_max_salary','sss_employer','sss_employee','sss_total',null); //set column field database for datatable orderable
     var $sss_column_search = array('sss_min_salary','sss_max_salary','sss_employer','sss_employee'); //set column field database for datatable searchable just firstname , lastname , address are searchable
     var $sss_order = array('sss_id' => 'asc'); // default
@@ -80,7 +80,7 @@ var $time_table = 'timesheet';
 
 
       var $payslip_table = 'payslip';
-    var $payslip_column_order = array('payslip_id','user_id','basic_salary','allowance','overtime_pay','special_holiday_pay','legal_holiday_pay','night_diff_pay','gross_salary','deductions','sss_contrib','hdmf_contrib','philhealth_contrib','withholding_tax','sss_loan','pagibig_loan','others','payslip_status','net_pay',null); //set column field database for datatable orderable
+    var $payslip_column_order = array('payslip_id','user_id','period','basic_salary','allowance' ,'ordinary_ot_pay','rest_day_pay' ,'special_holiday_pay','regular_holiday_pay','double_holiday_pay' ,'rest_special_holiday_pay','rest_regular_holiday_pay','rest_double_holiday_pay','night_diff_pay','total_overtime_pay','gross_salary','deductions','sss_contrib','hdmf_contrib' ,'philhealth_contrib','withholding_tax','sss_loan' ,'pagibig_loan','others','payslip_status','net_pay',null); //set column field database for datatable orderable
     var $payslip_column_search = array('user_id','basic_salary'); //set column field database for datatable searchable just firstname , lastname , address are searchable
     var $payslip_order = array('payslip_id' => 'asc'); // default
 
@@ -237,6 +237,13 @@ var $time_table = 'timesheet';
         $this->db->from($this->leave_table);
         return $this->db->count_all_results();
     }
+
+    public function leave_count_all($id)
+    {
+        $this->db->from($this->leave_table);
+        $this->db->where('user_id =', $id); 
+        return $this->db->count_all_results();
+    }
  
     public function get_by_id($id)
     {
@@ -372,6 +379,13 @@ var $time_table = 'timesheet';
     public function ot_count_all()
     {
         $this->db->from($this->ot_table);
+        return $this->db->count_all_results();
+    }
+
+     public function overtime_count_all($id)
+    {
+        $this->db->from($this->ot_table);
+         $this->db->where('user_id =', $id); 
         return $this->db->count_all_results();
     }
  
@@ -1299,7 +1313,7 @@ var $time_table = 'timesheet';
     
        $this->db->from('emp_contributions');
          $this->db->join('employees','employees.user_id = emp_contributions.user_id');
-          $this->db->join('sss','sss.sss_id = emp_contributions.sss_code');
+          $this->db->join('sss_table','sss_table.sss_id = emp_contributions.sss_code');
         
         $i = 0;
      
@@ -1634,7 +1648,7 @@ var $time_table = 'timesheet';
     {
     
        $this->db->from('payslip');
-        $this->db->join('employees','payslip.user_id = employees.user_id','right');
+        $this->db->join('employees','employees.user_id = payslip.user_id');
         
         $i = 0;
      
@@ -1670,12 +1684,12 @@ var $time_table = 'timesheet';
         }
     }
  
-    function payslip_get_datatables()
+    function payslip_get_datatables($date)
     {
         $this->payslip_get_datatables_query();
         if($_POST['length'] != -1)
         $this->db->limit($_POST['length'], $_POST['start']);   
-    
+         $this->db->where('payslip.period =', $date); 
         $query = $this->db->get();
         return $query->result();
     }
@@ -1685,7 +1699,7 @@ var $time_table = 'timesheet';
         $this->payslip_get_datatables_query();
         if($_POST['length'] != -1)
         $this->db->limit($_POST['length'], $_POST['start']);   
-        $this->db->where('payslip.user_id =', $id); 
+        $this->db->where('payslip.period =', $id); 
         $query = $this->db->get();
         return $query->result();
     }
@@ -1887,7 +1901,24 @@ var $time_table = 'timesheet';
     }
  
 
+//
 
+
+    public function get_emp_payrollperiod(){
+
+
+          $query = $this->db->query("select *
+                                    from schedule a
+                                    where a.minrange <= ".$taxable_income." AND ".$taxable_income." <= a.maxrange AND a.taxstatus = '".$taxstatus."'
+                                    ");
+                                        
+        if($query->num_rows() > 0) {
+            return $query->row();
+        } else {
+            return false;
+        }
+
+    }
 
 
 
@@ -1909,17 +1940,61 @@ var $time_table = 'timesheet';
 
 
 
+    public function get_tax($taxstatus,$taxable_income){
+
+        $query = $this->db->query("select *
+                                    from semi_birtable a
+                                    where a.minrange <= ".$taxable_income." AND ".$taxable_income." <= a.maxrange AND a.taxstatus = '".$taxstatus."'
+                                    ");
+                                        
+        if($query->num_rows() > 0) {
+            return $query->row();
+        } else {
+            return false;
+        }
 
 
+    }
 
-
-    public function test(){
+     public function get_distinct_employee(){
 
       $query = $this->db->query("select *
                                     from attendance a
                                     LEFT JOIN employees b
                                     ON a.user_id = b.user_id
-                                    where a.user_id = 2016093 AND a.date BETWEEN '2016-09-01' AND '2016-09-15'");
+
+                                    where a.date BETWEEN '2016-09-01' AND '2016-09-15'
+                                    group by a.user_id
+                                    order by a.date");
+                                        
+        if($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return false;
+        }
+
+    }
+
+
+
+    public function get_specific_emp_details($id,$startdate,$enddate){
+
+      $query = $this->db->query("select *
+                                    from attendance a
+                                    LEFT JOIN employees b
+                                    ON a.user_id = b.user_id
+
+                                    LEFT JOIN emp_contributions c
+                                    ON c.user_id = a.user_id
+
+                                    LEFT JOIN philhealth_table d
+                                    ON c.philhealth_code = d.philhealth_id
+
+                                    LEFT JOIN sss_table e
+                                    ON c.sss_code = e.sss_id
+
+                                    where a.user_id = ".$id." AND a.date BETWEEN '".$startdate."' AND '".$enddate."'
+                                    order by a.date");
                                         
         if($query->num_rows() > 0) {
             return $query->result();

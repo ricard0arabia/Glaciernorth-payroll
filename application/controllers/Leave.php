@@ -134,7 +134,7 @@ class Leave extends CI_Controller {
     {
             $this->_validate();
 
-            $count = $this->leave->count_all($this->session->userdata('username'));
+            $count = $this->leave->leave_count_all($this->session->userdata('username'));
             $date_now = date('Y-m-d');
 
             $dates = $this->leave->get_leave_date($this->session->userdata('username'));
@@ -347,6 +347,7 @@ class Leave extends CI_Controller {
         $date = $this->leave->get_leave_date($id);
 
        $startdate = $date->startdate;
+       $leave_date = $date->startdate;
        $enddate = $date->enddate;
 
        while ($startdate <= $enddate) {
@@ -445,11 +446,11 @@ class Leave extends CI_Controller {
         $data = array(
                 
                 'leave_status' => 'approved',
-                'date_approved' => date("Y-m-d"),
+                'date_approved' => date('Y-m-d'),
                 'duration' => $leave_duration,
                 
             );
-        $this->leave->update(array('user_id' => $id), $data);
+        $this->leave->update(array('user_id' => $id, 'startdate' => $leave_date), $data);
         echo json_encode(array("status" => TRUE, "check" => $check));
     }
 

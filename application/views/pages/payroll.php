@@ -10,7 +10,7 @@
     <br>
 
  <button class="btn btn-default" onclick="reload_table()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
-  <button class="btn btn-success pull-right" onclick="generate_payroll()"><i class="glyphicon glyphicon-plus"></i> Generate Payroll</button>
+ 
         <br />
         <br />
         <table id="payroll_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
@@ -27,7 +27,7 @@
                                 <th>Gov't Contributions</th>
                                 <th>Withholding Tax</th>
                                 <th>Net Income</th>
-                                <th style="width:160px;">Action</th>
+                                <th style="width:100px;">Action</th>
                             </tr>
                         </thead>
                        
@@ -44,6 +44,7 @@
 
 <script type="text/javascript">
 var table1;
+var period = "<?php echo $payperiod->period; ?>";
 
    $(document).ready(function () {
 
@@ -100,7 +101,7 @@ var table1;
  
         // Load data for the table's content from an Ajax source
         "ajax": {
-            "url": "<?php echo site_url('payroll/payroll_table')?>",
+            "url": "<?php echo site_url('payroll/payroll_table')?>/" + period,
             "type": "POST"
         },
  

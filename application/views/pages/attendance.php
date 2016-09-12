@@ -11,11 +11,11 @@
                                 <th>Image</th>
                                 <th>Name</th>
                                 <th>Position</th>
-                                <th>Department</th>
                                 <th>Time In</th>
                                 <th>Time Out</th>
                                 <th>Hours Worked</th>
-                                <th>Overtime</th>
+                                <th>Total OT Hrs.</th>
+                                <th>NSD OT Hrs.</th>
                                  <th>Tardiness</th>
                                  <th>Undertime</th>
                                 <th>Sched Type</th>
@@ -54,6 +54,50 @@ var temp_end;
         "processing": true, //Feature control the processing indicator.
         "serverSide": true, //Feature control DataTables' server-side processing mode.
         "order": [], //Initial no order.
+         "dom": 'Bfrtip',
+         "buttons": [
+        {
+            extend: 'pdf',
+           footer: true,
+           exportOptions: {
+                columns: [1,2,3,4,5,6,7,8,9,10,11,12,13,14]
+            },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Timesheet for <?php echo date("F j,Y", strtotime($timesheet_data->date))." (".date("l", strtotime($timesheet_data->date)).")"; ?> \n ',
+               orientation: 'landscape',
+               customize: function(doc) {
+                  doc.defaultStyle.fontSize = 16; //<-- set fontsize to 16 instead of 10 
+               }  
+       },
+       {
+           extend: 'csv',
+           footer: true,
+           exportOptions: {
+                columns:  [1,2,3,4,5,6,7,8,9,10,11,12,13,14]
+             },
+             header: true,
+                title: 'Glacier North Refrigeration Inc. \n Timesheet for <?php echo date("F j,Y", strtotime($timesheet_data->date))." (".date("l", strtotime($timesheet_data->date)).")"; ?> \n ',
+          
+       },
+       {
+           extend: 'excel',
+           footer: true,
+           exportOptions: {
+                columns:  [1,2,3,4,5,6,7,8,9,10,11,12,13,14]
+             },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Timesheet for <?php echo date("F j,Y", strtotime($timesheet_data->date))." (".date("l", strtotime($timesheet_data->date)).")"; ?> \n ',
+       },
+       {
+           extend: 'print',
+           footer: true,
+           exportOptions: {
+                columns:  [1,2,3,4,5,6,7,8,9,10,11,12,13,14]
+            },
+             header: true,
+               title: 'Glacier North Refrigeration Inc. \n Timesheet for <?php echo date("F j,Y", strtotime($timesheet_data->date))." (".date("l", strtotime($timesheet_data->date)).")"; ?> \n ',
+       }          
+        ],
  
         // Load data for the table's content from an Ajax source
         "ajax": {

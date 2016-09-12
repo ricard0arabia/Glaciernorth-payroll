@@ -525,16 +525,16 @@ $(document).ready(function () {
    <th>Tax Status</th>
    <td><select id="taxstatus" name="taxstatus" class="detailed input2" disabled="disabled" readonly>
                                     <option value="">--Select civil status--</option>
-                                    <option value="s">Single</option>
-                                    <option value="s1">Single/With 1 Dependent</option>
-                                    <option value="s2">Single/With 2 Dependent</option>
-                                    <option value="s3">Single/With 3 Dependent</option>
-                                    <option value="s4">Single/With 4 Dependent</option>
-                                    <option value="me">Married</option>
-                                    <option value="me1">Married With 1 Dependent</option>
-                                    <option value="me2">Married With 2 Dependent</option>
-                                    <option value="me3">Married With 3 Dependent</option>
-                                    <option value="me4">Married With 4 Dependent</option>
+                                    <option value="s/me">Single</option>
+                                    <option value="s1/me1">Single/With 1 Dependent</option>
+                                    <option value="s2/me2">Single/With 2 Dependent</option>
+                                    <option value="s3/me3">Single/With 3 Dependent</option>
+                                    <option value="s4/me4">Single/With 4 Dependent</option>
+                                    <option value="s/me">Married</option>
+                                    <option value="s1/me1">Married With 1 Dependent</option>
+                                    <option value="s2/me2">Married With 2 Dependent</option>
+                                    <option value="s3/me3">Married With 3 Dependent</option>
+                                    <option value="s4/me4">Married With 4 Dependent</option>
                                 </select></td>
     <th></th>
     <td></td>

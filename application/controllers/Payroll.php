@@ -77,34 +77,36 @@
         echo json_encode($output);
     }
 
-       public function payroll_table()
+       public function payroll_table($date)
     {
-        $list = $this->payroll->payslip_get_datatables();
+        $list = $this->payroll->payslip_get_datatables($date);
 
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $payroll) {
             $no++;
             $row = array();
-         
+          
+        $total_deductions = $payroll->sss_contrib + $payroll->hdmf_contrib + $payroll->philhealth_contrib;
+        
 
            $row[] = ucfirst($payroll->lastname).', '.ucfirst($payroll->firstname).' '.ucfirst(substr($payroll->middlename,0,1)).'. ';
             $row[] = $payroll->position;
             $row[] = $payroll->department;
       
-            $row[] = '&#x20B1; '.$payroll->salary;
-            $row[] = $payroll->allowance;
-            $row[] = $payroll->overtime_pay;
-            $row[] = $payroll->gross_salary;
-            $row[] = $payroll->deductions;
-            $row[] = $payroll->deductions;
-            $row[] = $payroll->withholding_tax;
-            $row[] = $payroll->net_pay;
+            $row[] = '&#x20B1; '.number_format($payroll->basic_salary,2,'.',',');
+            $row[] = '&#x20B1; '.number_format($payroll->allowance,2,'.',',');
+            $row[] = '&#x20B1; '.number_format($payroll->total_overtime_pay,2,'.',',');
+            $row[] = '&#x20B1; '.number_format($payroll->gross_salary,2,'.',',');
+            $row[] = '&#x20B1; '.number_format($payroll->deductions,2,'.',',');
+            $row[] = '&#x20B1; '.number_format($total_deductions,2,'.',',');
+            $row[] = '&#x20B1; '.number_format($payroll->withholding_tax,2,'.',',');
+            $row[] = '&#x20B1; '.number_format($payroll->net_pay,2,'.',',');
 
            
             //add html for action
-            $row[] = '<a class="btn btn-sm btn-primary"  title="Edit" href="'.site_url('payroll/payroll/'.$payroll->user_id).'"><i class="glyphicon glyphicon-search"></i> View</a>
-            <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_payperiod('."'".$payroll->user_id."'".')"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
+            $row[] = '<a class="btn btn-sm btn-primary"  title="Edit" href="'.site_url('payroll/payroll/'.$payroll->user_id).'"><i class="glyphicon glyphicon-search"></i></a>
+            <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_payperiod('."'".$payroll->user_id."'".')"><i class="glyphicon glyphicon-trash"></i></a>';
 
                   $data[] = $row;
      
@@ -311,13 +313,6 @@ $enddate = $this->input->post('enddate');
          }
 
 
-
-
-
-
-
-
-
         $list = $this->payroll->get_payperiod();
 
           foreach($list as $check){
@@ -339,9 +334,192 @@ $enddate = $this->input->post('enddate');
      
 
        if($checkstart  == true){
-        $data = array();
-                
-               
+//
+
+
+ $distinct_emplist = $this->payroll->get_distinct_employee();
+
+    foreach ($distinct_emplist as $employee) {
+   
+      $employee_id = $employee->user_id;
+
+      $basic_salary = $employee->salary;
+      $semi_monthly_salary = round($basic_salary/2,2);
+      $daily_rate =  round(($basic_salary * 12)/261,2);
+      $hourly_rate = round($daily_rate/8,2);
+
+
+      $tax_status = "";
+      $taxable_income = 0;
+      $total_hours_worked = 0;
+      //                        
+      $overtime_pay = 0;
+      $ot_ordinary = 0;
+      $ot_restday = 0;
+      $ot_special_holiday = 0;
+      $ot_regular_holiday = 0;
+      $ot_double_holiday = 0;
+      $ot_rest_special = 0;
+      $ot_rest_regular = 0;
+      $ot_rest_double = 0;
+      $ot_nightdiff = 0;
+      $night_shift_diff = 0;
+      //
+      $total_deduction = 0;
+      $total_absent_dedcution = 0;
+      $late_deduction = 0;
+      $undertime_deduction = 0;
+      $sss = 0;
+      $pagibig = 0;
+      $philhealth = 0;
+      
+        $emp_list =  $this->payroll->get_specific_emp_details($employee_id,$startdate,$enddate);
+
+        foreach ($emp_list as  $value) {
+
+          if($value->attendance_status == 'present'){
+
+              if($value->work_status == 'overtime'){
+
+                  if($value->overtime_type == 'ordinary'){
+
+                    $ot_nightdiff += (($hourly_rate*1.25)*.10)*$value->night_diff_ot;
+                    $ot_ordinary += ($value->overtime*$hourly_rate)*1.25;
+                    $overtime_pay += ($value->overtime*$hourly_rate)*1.25;       
+
+                  }else if($value->overtime_type == 'rest day'){
+
+                    $ot_nightdiff += (($hourly_rate*1.3)*.10)*$value->night_diff_ot;
+                    $rest_day_hourly_rate = $hourly_rate*1.3;
+                    $ot_restday += ($value->overtime*$rest_day_hourly_rate)*1.30;
+                    $overtime_pay += ($value->overtime*$rest_day_hourly_rate)*1.30;
+                        
+                  }else if($value->overtime_type == 'regular holiday'){
+
+                    $ot_nightdiff += (($hourly_rate*2)*.10)*$value->night_diff_ot;
+                    $regular_holiday_hourly_rate = $hourly_rate*2;
+                    $ot_regular_holiday += ($value->overtime*$regular_holiday_hourly_rate)*1.30;
+                    $overtime_pay += ($value->overtime*$regular_holiday_hourly_rate)*1.30;
+
+                  }else if($value->overtime_type == 'special holiday'){
+
+                    $ot_nightdiff += (($hourly_rate*1.3)*.10)*$value->night_diff_ot;
+                    $special_holiday_hourly_rate = $hourly_rate*1.3;
+                    $ot_special_holiday += ($value->overtime*$special_holiday_hourly_rate)*1.3;
+                    $overtime_pay += ($value->overtime*$special_holiday_hourly_rate)*1.3;
+                        
+                  }else if($value->overtime_type == 'double holiday'){
+
+                    $ot_nightdiff += (($hourly_rate*3)*.10)*$value->night_diff_ot;
+                    $double_holiday_hourly_rate = $hourly_rate*3;
+                    $ot_double_holiday += ($value->overtime*$double_holiday_hourly_rate)*3;   
+                    $overtime_pay += ($value->overtime*$double_holiday_hourly_rate)*3;   
+
+                  }else if($value->overtime_type == 'rest day/regular holiday'){
+
+                    $ot_nightdiff += (($hourly_rate*2.6)*.10)*$value->night_diff_ot;
+                    $rest_regular_holiday_hourly_rate = $hourly_rate*2.6;
+                    $ot_rest_regular += ($value->overtime*$rest_regular_holiday_hourly_rate)*1.30;
+                    $overtime_pay += ($value->overtime*$rest_regular_holiday_hourly_rate)*1.30;
+
+                  }else if($value->overtime_type == 'rest day/special holiday'){
+
+                    $ot_nightdiff += (($hourly_rate*1.5)*.10)*$value->night_diff_ot;
+                    $rest_special_holiday_hourly_rate = $hourly_rate*1.5;
+                    $ot_rest_special += ($value->overtime*$rest_special_holiday_hourly_rate)*1.30;
+                    $overtime_pay += ($value->overtime*$rest_special_holiday_hourly_rate)*1.30;
+
+                  }else if($value->overtime_type == 'rest day/double holiday'){
+
+                    $ot_nightdiff += (($hourly_rate*3)*.10)*$value->night_diff_ot;
+                    $rest_double_holiday_hourly_rate = $hourly_rate*3;
+                    $ot_rest_double += ($value->overtime*$rest_double_holiday_hourly_rate)*3; 
+                    $overtime_pay += ($value->overtime*$rest_double_holiday_hourly_rate)*3;                   
+
+                  }
+              }
+
+              if($value->sched_type == "night shift"){
+
+                $night_shift_diff += $hourly_rate*.10*8;
+
+              }
+
+
+              $undertime_deduction += $hourly_rate*$value->undertime;
+              $late_deduction += $hourly_rate*$value->tardiness;
+
+
+          }else if($value->attendance_status == 'absent'){
+
+          
+          $total_absent_dedcution += $hourly_rate*8;
+
+          
+          }
+
+          $sss = $value->sss_employee/2;
+          $pagibig = $value->pagibig_employee_share/2;
+          $philhealth = $value->philhealth_employee/2;
+          $tax_status = $value->taxstatus;
+   
+        }
+
+        $overtime_pay += $ot_nightdiff;
+        $overtime_pay += $night_shift_diff;
+        $total_deduction = $sss + $pagibig + $philhealth + $total_absent_dedcution + $undertime_deduction                 + $late_deduction;
+
+        $taxable_income = $basic_salary + $overtime_pay - $total_deduction;
+
+        $tax_list = $this->payroll->get_tax($tax_status,$taxable_income);
+       
+        $minrange = $tax_list->minrange;
+        $tax1 = $tax_list->tax1;
+        $tax2 = $tax_list->tax2;
+
+        $gross_salary = $basic_salary + $overtime_pay;
+
+        $withholding_tax = (($taxable_income-$minrange)*$tax2)+$tax1;
+
+        $net_pay = $taxable_income - $withholding_tax;
+
+
+         $payslip_data = array(
+              
+            'user_id' => $employee_id,
+            'period' => $enddate,
+            'basic_salary' => $basic_salary,
+            'allowance' => 0,
+            'ordinary_ot_pay' => $ot_ordinary,
+            'rest_day_pay' => $ot_restday,
+            'special_holiday_pay' => $ot_special_holiday,
+            'regular_holiday_pay' => $ot_regular_holiday,
+            'double_holiday_pay' => $ot_double_holiday,
+            'rest_special_holiday_pay' => $ot_rest_special,
+            'rest_regular_holiday_pay' => $ot_rest_regular,
+            'rest_double_holiday_pay' => $ot_rest_double,
+            'night_diff_pay' => $ot_nightdiff,
+            'total_overtime_pay' => $overtime_pay,
+            'gross_salary' => $gross_salary,
+            'deductions' => $total_deduction,
+            'sss_contrib' => $sss,
+            'hdmf_contrib' => $pagibig,
+            'philhealth_contrib' => $philhealth,
+            'withholding_tax' => $withholding_tax,
+            'sss_loan' => 0,
+            'pagibig_loan' => 0,
+            'others' => 0,
+            'payslip_status' => 0,
+            'net_pay' => $net_pay,
+              
+
+              );
+          $insert = $this->payroll->payslip_save($payslip_data);
+
+    }
+   
+//
+
                 	  $data = array(
 			        
 			        'date_from' => $this->input->post('startdate'),
@@ -354,10 +532,10 @@ $enddate = $this->input->post('enddate');
 			        
 
 			        );
-			    $insert = $this->payroll->payperiod_save($data);
+			    $insert1 = $this->payroll->payperiod_save($data);
 
                  echo json_encode(array("status" => TRUE));
-            }
+      }
             else{
 
         echo json_encode(array("status" => TRUE, "warning" => true, "info" => $info));

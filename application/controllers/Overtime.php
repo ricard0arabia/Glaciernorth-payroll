@@ -125,7 +125,7 @@ class Overtime extends CI_Controller {
     {
         $this->_validate();
 
-         $count = $this->overtime->ot_count_all($this->session->userdata('username'));
+         $count = $this->overtime->overtime_count_all($this->session->userdata('username'));
             $date_now = date('Y-m-d');
 
             $dates = $this->overtime->get_ot_date($this->session->userdata('username'));
@@ -330,15 +330,15 @@ class Overtime extends CI_Controller {
                     }
 
 
-                    if($value->sched_type == "night shift" || $value->sched_type == "day shift" && $value->holiday_type == "regular"){
+                    if(($value->sched_type == "night shift" || $value->sched_type == "day shift") && $value->holiday_type == "regular"){
 
                          $overtime_type = "regular holiday";
 
-                    }else if($value->sched_type == "night shift" || $value->sched_type == "day shift" && $value->holiday_type == "special"){
+                    }else if(($value->sched_type == "night shift" || $value->sched_type == "day shift") && $value->holiday_type == "special"){
 
                          $overtime_type = "special holiday";
 
-                    }else if($value->sched_type == "night shift" || $value->sched_type == "day shift" && $value->holiday_type == "double"){
+                    }else if(($value->sched_type == "night shift" || $value->sched_type == "day shift") && $value->holiday_type == "double"){
 
                          $overtime_type = "double holiday";
 
@@ -423,7 +423,7 @@ class Overtime extends CI_Controller {
                 'date_approved' => date("Y-m-d"),
                 
             );
-        $this->overtime->ot_update(array('user_id' => $id), $data);
+        $this->overtime->ot_update(array('user_id' => $id, "date" => $ot_date), $data);
         echo json_encode(array("status" => TRUE));
     }
 

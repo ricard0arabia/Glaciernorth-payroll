@@ -32,6 +32,7 @@
   }
 
 
+
     public function reports($id){
 
 
@@ -53,151 +54,6 @@
 
   }
 
-  public function test_tax(){
-    echo "<table border = 1>";
-    echo "<tr>
-            <th>date</th>
-             <th>time_in </th>
-              <th>time_out </th>
-            <th>hours_worked </th>
-            <th>overtime </th>
-            <th>tardiness </th>
-            <th>undertime </th>
-            <th>sched_type </th>
-            <th>work_status </th>
-            <th>overtime_type </th>        
-            <th>holiday_type </th>
-            <th>attendance_status </th>
-            <th>night_diff_ot </th>
-
-            </tr>";
-       
-
-    $get =  $this->reports->test();
-
-     foreach ($get as $asd) {
-
-     echo "<tr>
-          <td>".$asd->date."</td>".
-          "<td>".$asd->time_in."</td>".
-          "<td>".$asd->time_out."</td>".
-          "<td>".$asd->hours_worked."</td>".
-          "<td>".$asd->overtime."</td>".
-          "<td>".$asd->tardiness."</td>".
-          "<td>".$asd->undertime."</td>".
-          "<td>".$asd->sched_type."</td>".
-          "<td>".$asd->work_status."</td>".
-          "<td>".$asd->overtime_type."</td>".
-          "<td>".$asd->holiday_type."</td>".
-          "<td>".$asd->attendance_status."</td>".
-          "<td>".$asd->night_diff_ot."</td>
-
-          </tr>";
-      
-    }
-       echo "</table>";
-
-
-  $basic_salary = $this->reports->get_salary();
-  $basic_salary = $basic_salary->salary;
-  $semi_monthly_salary = round($basic_salary/2,2);
-  $daily_rate =  round(($basic_salary * 12)/261,2);
-  $hourly_rate = round($daily_rate/8,2);
-
-  echo "<strong>basic salary</strong> ".$basic_salary." ";
-  echo "<strong>semi monthly salary</strong> ".$semi_monthly_salary." ";
-  echo "<strong>daily rate</strong>  ".$daily_rate." ";
-  echo "<strong>hourly rate</strong> ".$hourly_rate."<br>";
-
-  $total_hours_worked = 0;
-  $overtime_pay = 0;
-  $ot_ordinary = 0;
-  $ot_restday = 0;
-  $ot_special_holiday = 0;
-  $ot_regular_holiday = 0;
-  $ot_nightdiff = 0;
-
-    $list =  $this->reports->test();
-
-    foreach ($list as  $value) {
-
-      if($value->attendance_status == 'present'){
-
-          if($value->work_status == 'overtime'){
-
-              if($value->overtime_type == 'ordinary'){
-
-                $ot_ordinary += ($value->overtime*$hourly_rate)*1.25;
-                $overtime_pay += ($value->overtime*$hourly_rate)*1.25;       
-
-              }else if($value->overtime_type == 'rest day'){
-
-                $rest_day_hourly_rate = $hourly_rate*1.3;
-                $ot_restday += ($value->overtime*$rest_day_rate)*1.30;
-                $overtime_pay += ($value->overtime*$rest_day_rate)*1.30;
-                    
-              }else if($value->overtime_type == 'regular holiday'){
-
-                $regular_holiday_hourly_rate = $hourly_rate*2;
-                $ot_regular_holiday += ($value->overtime*$regular_holiday_hourly_rate)*1.30;
-                $overtime_pay += ($value->overtime*$regular_holiday_hourly_rate)*1.30;
-
-              }else if($value->overtime_type == 'special holiday'){
-
-                $special_holiday_hourly_rate = $hourly_rate*1.3;
-                $ot_special_holiday += ($value->overtime*$special_holiday_hourly_rate)*1.3;
-                $overtime_pay += ($value->overtime*$special_holiday_hourly_rate)*1.3;
-                    
-              }else if($value->overtime_type == 'double holiday'){
-
-                $double_holiday_hourly_rate = $hourly_rate*3;
-
-                $overtime_pay += ($value->overtime*$double_holiday_hourly_rate)*3;   
-
-              }else if($value->overtime_type == 'rest day/regular holiday'){
-
-                $rest_regular_holiday_hourly_rate = $hourly_rate*2.6;
-
-                $overtime_pay += ($value->overtime*$rest_regular_holiday_hourly_rate)*1.30;
-
-              }else if($value->overtime_type == 'rest day/special holiday'){
-
-                $rest_special_holiday_hourly_rate = $hourly_rate*1.5;
-
-                $overtime_pay += ($value->overtime*$rest_special_holiday_hourly_rate)*1.30;
-
-              }else if($value->overtime_type == 'rest day/double holiday'){
-
-                $rest_double_holiday_hourly_rate = $hourly_rate*3;
-
-                $overtime_pay += ($value->overtime*$double_holiday_hourly_rate)*3;                   
-
-              }
-
-          }
-
-
-      }else if($value->attendance_status == 'absent'){
-
-
-
-
-      
-      }
-    }
-
-
-     echo "<strong>Ordinary overtime</strong> ".$ot_ordinary."<br><br>";
-     echo "<strong>Rest day overtime</strong> ".$ot_restday."<br><br>";
-     echo "<strong>Special holiday overtime</strong> ".$ot_special_holiday."<br><br>";
-     echo "<strong>regular holiday overtime</strong> ".$ot_regular_holiday."<br><br>";
-     echo "<strong>night differential overtime</strong> ".$ot_nightdiff."<br><br>";
-     echo "<strong>Total overtime pay</strong> ".$overtime_pay."<br><br>";
-
-  
-  
-
-  }
 
   public function reports_period(){
 
@@ -234,9 +90,9 @@
         $row[] = $reports->period;
            $row[] = date("F j,Y", strtotime($reports->date_from));
             $row[] = date("F j,Y", strtotime($reports->date_to));
-           $row[] = $reports->total_employee_share;
-            $row[] = $reports->total_employer_share;
-             $row[] = $reports->total_share;
+           $row[] = '&#x20B1; '.number_format($reports->total_employee_share,2,'.',',');
+            $row[] ='&#x20B1; '.number_format($reports->total_employer_share,2,'.',',');
+             $row[] = '&#x20B1; '.number_format($reports->total_share,2,'.',',');
       
                   //add html for action
             $row[] = '<a class="btn btn-sm btn-primary"  title="Edit" href="'.site_url('reports/reports/'.$reports->reports_period_id).'"><i class="glyphicon glyphicon-search"></i> View</a>
@@ -550,9 +406,9 @@ $pagibig_total_share = 0;
        $row[] = ucfirst($reports->lastname).', '.ucfirst($reports->firstname).' '.ucfirst(substr($reports->middlename,0,1)).'. ';
        $row[] = date("F j,Y", strtotime($reports->period));
          $row[] = $reports->philhealth_no;
-          $row[] = $reports->philhealth_employee;
-           $row[] = $reports->philhealth_employer;
-           $row[] = $reports->philhealth_total;
+             $row[] ='&#x20B1; '.number_format($reports->philhealth_employee,2,'.',',');
+           $row[] ='&#x20B1; '.number_format($reports->philhealth_employer,2,'.',',');
+           $row[] = '&#x20B1; '.number_format($reports->philhealth_total,2,'.',',');
       
            
          
@@ -631,9 +487,9 @@ $pagibig_total_share = 0;
        $row[] = ucfirst($reports->lastname).', '.ucfirst($reports->firstname).' '.ucfirst(substr($reports->middlename,0,1)).'. ';
        $row[] = date("F j,Y", strtotime($reports->period));
          $row[] = $reports->hdmf_no;
-          $row[] = $reports->pagibig_employee_share;
-           $row[] = $reports->pagibig_employer_share;
-           $row[] = $reports->pagibig_total_share;
+            $row[] ='&#x20B1; '.number_format($reports->pagibig_employee_share,2,'.',',');
+           $row[] ='&#x20B1; '.number_format($reports->pagibig_employee_share,2,'.',',');
+           $row[] = '&#x20B1; '.number_format($reports->pagibig_total_share,2,'.',',');
       
            
          
@@ -673,9 +529,9 @@ $pagibig_total_share = 0;
        $row[] = ucfirst($reports->lastname).', '.ucfirst($reports->firstname).' '.ucfirst(substr($reports->middlename,0,1)).'. ';
        $row[] = date("F j,Y", strtotime($reports->period));
          $row[] = $reports->sss_no;
-          $row[] = $reports->sss_employee;
-           $row[] = $reports->sss_employer;
-           $row[] = $reports->sss_total;
+          $row[] ='&#x20B1; '.number_format($reports->sss_employee,2,'.',',');
+           $row[] ='&#x20B1; '.number_format($reports->sss_employer,2,'.',',');
+           $row[] = '&#x20B1; '.number_format($reports->sss_total,2,'.',',');
       
            
          
