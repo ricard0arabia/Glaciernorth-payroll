@@ -112,6 +112,10 @@
         echo json_encode($output);
     }
 
+
+
+    
+
     public function add_reports_period(){
 
          $this->_validate();

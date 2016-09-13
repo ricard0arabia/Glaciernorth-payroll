@@ -74,7 +74,7 @@ define ('PDF_HEADER_LOGO', 'tcpdf_logo.png');
 /**
  * Header logo image width in user units.
  */
-define ('PDF_HEADER_LOGO_WIDTH', 37);
+define ('PDF_HEADER_LOGO_WIDTH', 25);
 
 /**
  * Cache directory for temporary files (full path).
@@ -89,7 +89,7 @@ define ('K_BLANK_IMAGE', '_blank.png');
 /**
  * Page format.
  */
-define ('PDF_PAGE_FORMAT', 'A4');
+define ('PDF_PAGE_FORMAT', 'A5');
 
 /**
  * Page orientation (P=portrait, L=landscape).
@@ -114,8 +114,8 @@ define ('PDF_HEADER_TITLE', 'TCPDF Example');
 /**
  * Header description string.
  */
-$date = date('D, M j, Y');
-define ('PDF_HEADER_STRING', "\nGlacier North Refrigeration Services Corporation\n200 Roosevelt Ave. cor Pitimini St, SFDM Del Monte Quezon City\n\nDate: {$date}");
+
+define ('PDF_HEADER_STRING', "\nGlacier North Refrigeration Services Corporation\n200 Roosevelt Ave. cor Pitimini St, SFDM Del Monte Quezon City");
 
 /**
  * Document unit of measure [pt=point, mm=millimeter, cm=centimeter, in=inch].
@@ -130,27 +130,27 @@ define ('PDF_MARGIN_HEADER', 5);
 /**
  * Footer margin.
  */
-define ('PDF_MARGIN_FOOTER', 18);
+define ('PDF_MARGIN_FOOTER', 15);
 
 /**
  * Top margin.
  */
-define ('PDF_MARGIN_TOP', 35);
+define ('PDF_MARGIN_TOP', 25);
 
 /**
  * Bottom margin.
  */
-define ('PDF_MARGIN_BOTTOM', 10);
+define ('PDF_MARGIN_BOTTOM', 8);
 
 /**
  * Left margin.
  */
-define ('PDF_MARGIN_LEFT', 15);
+define ('PDF_MARGIN_LEFT', 10);
 
 /**
  * Right margin.
  */
-define ('PDF_MARGIN_RIGHT', 15);
+define ('PDF_MARGIN_RIGHT', 10);
 
 /**
  * Default main font name.

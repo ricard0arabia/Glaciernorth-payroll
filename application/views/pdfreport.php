@@ -1,20 +1,21 @@
 <?php
 	tcpdf();
-if($this->uri->segment(4) == 'print'){
+
 
 $obj_pdf = new TCPDF('P', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 $obj_pdf->SetCreator(PDF_CREATOR);
 $title = "Payslip";
 $obj_pdf->SetTitle($title);
 $obj_pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, $title, PDF_HEADER_STRING);
-$obj_pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+$obj_pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', 9));
 $obj_pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 $obj_pdf->SetDefaultMonospacedFont('helvetica');
 $obj_pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
 
 $obj_pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
 $obj_pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-$obj_pdf->SetFont('helvetica', '', 9);
+$obj_pdf->SetFont('helvetica', '', 11.5);
+$obj_pdf->setCellHeightRatio(0.66);
 $obj_pdf->setFontSubsetting(false);
 
 
@@ -22,17 +23,17 @@ $obj_pdf->AddPage();
 ob_start();
     // we can have any view part here like HTML, PHP etc
 
-$basic_salary = $ov[0]['salary'] / 2;
+$basic_salary = $payslip->salary / 2;
 
 $basic_salary =  number_format($basic_salary, 2, '.', ',');
 
-$overtime =  number_format($ov[0]['rate'], 2, '.', ',');
+$overtime =  number_format($payslip->total_overtime_pay, 2, '.', ',');
 
-$netpay =  number_format($ov[0]['netpay'], 2, '.', ',');
+$netpay =  number_format($payslip->net_pay, 2, '.', ',');
 
-$wtax  = number_format($ov[0]['witholdingtax'], 2, '.', ',');
+$wtax  = number_format($payslip->withholding_tax, 2, '.', ',');
 
-$grosspay = number_format($ov[0]['grosspay'], 2, '.', ',');
+$grosspay = number_format($payslip->gross_salary, 2, '.', ',');
 
 
 
@@ -44,123 +45,125 @@ $html = <<<EOD
 	<tr>
 	<br>
 
-		<th><h3>Name:</h3></th><td align = "center"><h3>{$ov[0]['firstname']}  {$ov[0]['middlename']}  {$ov[0]['lastname']}</h3></td><th></th>
+		<th><h4>Name:</h4></th><td align = "center">{$payslip->lastname}  {$payslip->firstname}  {$payslip->middlename}</td><th></th>
 	</tr>
 	<br>
 	<tr>
-		<th><h3>Pay Period Covered:</h3></th><td align = "center"><h3>{$ov[0]['payfrom']} - {$ov[0]['payto']}</h3></td><th></th>
+		<th><h4>Pay Period Covered:</h4></th><td align = "center">{$payslip->period}</td><th></th>
 	</tr>
 	<tr>
 	<br>
-		<th align = "center"><h3>Particulars</h3></th><th align = "center"><h3>Hours</h3></th><th align = "center"><h3>Total</h3></th>
+		<th align = "center"><h4>Particulars</h4></th><th align = "center"><h4>Hours</h4></th><th align = "center"><h4>Total</h4></th>
 	</tr>
 	<tr>
 	<br>
-		<th><h3>Basic Salary</h3></th><th align = "center"><h4></h4></th><th align = "center"><h4>{$basic_salary}</h4></th>
+		<th><h4>Basic Salary</h4></th><th align = "center"><h4></h4></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php. {$basic_salary}</th>
 	</tr>
 	<tr>
 	<br>
-		<th><h4>Allowance</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>0</h4></th>
+		<th>Allowance</th><th align = "center"><h4></h4></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php. 0</th>
 	</tr>
 	<tr>
 	<br>
-		<th><h4>Adjustment</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>0</h4></th>
+		<th>Adjustment</th><th align = "center"><h4></h4></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php. 0</th>
 	</tr>
 	<tr>
 	<br>
-		<th><h4>Overtime</h4></th><th align = "center"><h4>{$ov[0]['hours']}</h4></th><th align = "center"><h4>{$overtime}</h4></th>
+		<th>Overtime</th><th align = "center"><h4>{$payslip->total_overtime_hours} Hrs.</h4></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php. {$overtime}</th>
 	</tr>
 	<tr>
 	<br>
-		<th align = "center"><h4>Regular</h4></th><th align = "center"><h4>0</h4></th><th align = "center"><h4>0</h4></th>
+		<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Regular</th><th align = "center"></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php. {$payslip->ordinary_ot_pay}</th>
 	</tr>
 	<tr>
 	<br>
-	<th align = "center"><h4>Sunday/Rest Day</h4></th><th align = "center"><h4>0</h4></th><th align = "center"><h4>0</h4></th>
+		<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sunday/Rest Day</th><th align = "center"></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php. {$payslip->rest_day_pay}</th>
 	</tr>
 	<tr>
 	<br>
-		<th align = "center"><h4>Special Holiday</h4></th><th align = "center"><h4>0</h4></th><th align = "center"><h4>0</h4></th>
+		<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Special Holiday</th><th align = "center"></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php. {$payslip->special_holiday_pay}</th>
 	</tr>
 	<tr>
 	<br>
-		<th align = "center"><h4>Legal Holiday</h4></th><th align = "center"><h4>0</h4></th><th align = "center"><h4>0</h4></th>
+		<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Legal Holiday</th><th align = "center"></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php. {$payslip->regular_holiday_pay}</th>
 	</tr>
 	<tr>
 	<br>
-		<th align = "center"><h4>Night Differential</h4></th><th align = "center"><h4>0</h4></th><th align = "center"><h4>0</h4></th>
+		<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Night Differential</th><th align = "center"></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php. {$payslip->night_diff_pay}</th>
 	</tr>
 	<tr>
 	<br>
-		<th><h3>Gross Salary</h3></th><th align = "center"><h4></h4></th><th align = "center"><h4>{$grosspay}</h4></th>
+		<th><h4>Gross Salary</h4></th><th align = "center"></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php.{$grosspay}</th>
 	</tr>
 	<tr>
 	<br>
-		<th><h4>Deductions</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4></h4></th>
+		<th>Deductions</th><th align = "center"></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
 	</tr>
 	<tr>
 	<br>
-	<th align = "center"><h4>SSS Contribution</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>{$ov[0]['sss']}</h4></th>
+	<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSS Contrib.</th><th align = "center"></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php. {$payslip->sss_contrib}</th>
 	</tr>
 	<tr>
 	<br>
-	<th align = "center"><h4>HDMF Contribution</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>{$ov[0]['pagibig']}</h4></th>
+	<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HDMF Contrib.</th><th align = "center"></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php. {$payslip->hdmf_contrib}</th>
 	</tr>
 	<tr>
 	<br>
-		<th align = "center"><h4>Philhealth Contribution</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>{$ov[0]['philhealth']}</h4></th>
+		<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Philhealth Contrib</th><th align = "center"></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php. {$payslip->philhealth_contrib}</th>
 	</tr>
 	<tr>
 	<br>
-	<th align = "center"><h4>With Holding Tax</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>{$wtax}</h4></th>
+	<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;With Holding Tax</th><th align = "center"></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php. {$wtax}</th>
 	</tr>
 	<tr>
 	<br>
-		<th align = "center"><h4>SSS Loan</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>0</h4></th>
+		<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSS Loan</th><th align = "center"></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php. 0</th>
 	</tr>
 	<tr>
 	<br>
-		<th align = "center"><h4>Pag-Ibig Loan</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>0</h4></th>
+		<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pag-Ibig Loan</th><th align = "center"></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php. 0</th>
 	</tr>
 	<tr>
 	<br>
-		<th align = "center"><h4>Savings Plan</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>0</h4></th>
+		<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Savings Plan</th><th align = "center"></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php. 0</th>
 	</tr>
 	<tr>
 	<br>
-		<th align = "center"><h4>Healthcard</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>0</h4></th>
+		<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Healthcard</th><th align = "center"></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php. 0</th>
 	</tr>
 	<tr>
 	<br>
-		<th align = "center"><h4>Uniform</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>0</h4></th>
+		<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Uniform</th><th align = "center"></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php. 0</th>
 	</tr>
 	<tr>
 	<br>
-		<th align = "center"><h4>Cash Advance</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>0</h4></th>
+		<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cash Advance</th><th align = "center"></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php. 0</th>
 	</tr>
 	<tr>
 	<br>
-		<th align = "center"><h4>Leave w/o Pay</h4></th><th align = "center"><h4>{$ov[0]['absent']}</h4></th><th align = "center"><h4>{$ov[0]['rate']}</h4></th>
+		<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Leave w/o Pay</th><th align = "center">{$payslip->deductions}</th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php. {$payslip->deductions}</th>
 	</tr>
 	<tr>
 	<br>
-		<th align = "center"><h4>Others</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>0</h4></th>
+		<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Others</th><th align = "center"></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php. 0</th>
 	</tr>
 	<tr>
 	<br><br>
-		<th><h4></h4></th><th align = "center"><h3>NET PAY</h3></th><th align = "center"><h4>{$netpay}</h4></th>
+		<th><h4></h4></th><th align = "center"><h4>NET PAY</h4></th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Php. {$netpay}</th>
 	</tr>
 	<tr>
 	<br>
-		<th align = "center"colspan = "3"><h4>I hereby acknowledge receipt of the above amount</h4></th>
+	<br>
+		<td align = "center"colspan = "3">I hereby acknowledge receipt of the above amount</td>
 	</tr>
 	<tr>
 	<br>
-		<th align = "center"><h4>Authenticated By:</h4></th><th></th><th align = "center"><h4>Received By:</h4></th>
+	<br>
+		<th align = "center"><h5>Authenticated By:</h5></th><th></th><th align = "center"><h5>Received By:</h5></th>
 	</tr>
 	<tr>
 	<br><br>
-		<th align = "center"><h4>________________________</h4></th><th></th><th align = "center"><h4>________________________</h4></th>
+		<td align = "center">__________________</td><td></td><td align = "center">__________________</td>
 	</tr>
 	</table>
 	
@@ -176,205 +179,5 @@ EOD;
 ob_end_clean();
 $obj_pdf->writeHTML($html, true, false, true, false, '');
 $obj_pdf->Output('output.pdf', 'I');
-}
-else{
 
-$obj_pdf = new TCPDF('P', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-$obj_pdf->SetCreator(PDF_CREATOR);
-$title = "Payslip";
-$obj_pdf->SetTitle($title);
-$obj_pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, $title, PDF_HEADER_STRING);
-$obj_pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$obj_pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-$obj_pdf->SetDefaultMonospacedFont('helvetica');
-$obj_pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-
-$obj_pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-$obj_pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-$obj_pdf->SetFont('helvetica', '', 9);
-$obj_pdf->setFontSubsetting(false);
-
-
-$obj_pdf->AddPage();
-ob_start();
-    // we can have any view part here like HTML, PHP etc
-
-
-	if(!empty($ov)) {
-							$i=0;
-							foreach($ov as $_ov) { 					
-								if($i%2==0) { 
-									$style = "odd";
-									$i++;
-								} else {
-									$style = "even"; 
-									$i++;
-								}					
-								$j++; 
-
-
-
-$basic_salary = $_ov['salary'] / 2;
-
-$basic_salary =  number_format($basic_salary, 2, '.', ',');
-
-$overtime =  number_format($_ov['overtime'], 2, '.', ',');
-
-$netpay =  number_format($_ov['netpay'], 2, '.', ',');
-
-$wtax  = number_format($_ov['witholdingtax'], 2, '.', ',');
-
-$grosspay = number_format($_ov['grosspay'], 2, '.', ',');
-
-
-
-
-$html .= <<<EOD
-
-	
-	<table>
-	<tr>
-	<br>
-
-		<th><h3>Name:</h3></th><td align = "center"><h3>{$_ov['firstname']}  {$_ov['middlename']}  {$_ov['lastname']}</h3></td><th></th>
-	</tr>
-	<br>
-	<tr>
-		<th><h3>Pay Period Covered:</h3></th><td align = "center"><h3>{$_ov['payfrom']} - {$_ov['payto']}</h3></td><th></th>
-	</tr>
-	<tr>
-	<br>
-		<th align = "center"><h3>Particulars</h3></th><th align = "center"><h3>Hours</h3></th><th align = "center"><h3>Total</h3></th>
-	</tr>
-	<tr>
-	<br>
-		<th><h3>Basic Salary</h3></th><th align = "center"><h4></h4></th><th align = "center"><h4>{$basic_salary}</h4></th>
-	</tr>
-	<tr>
-	<br>
-		<th><h4>Allowance</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>0</h4></th>
-	</tr>
-	<tr>
-	<br>
-		<th><h4>Adjustment</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>0</h4></th>
-	</tr>
-	<tr>
-	<br>
-		<th><h4>Overtime</h4></th><th align = "center"><h4>{$_ov['hours']}</h4></th><th align = "center"><h4>{$overtime}</h4></th>
-	</tr>
-	<tr>
-	<br>
-		<th align = "center"><h4>Regular</h4></th><th align = "center"><h4>0</h4></th><th align = "center"><h4>0</h4></th>
-	</tr>
-	<tr>
-	<br>
-	<th align = "center"><h4>Sunday/Rest Day</h4></th><th align = "center"><h4>0</h4></th><th align = "center"><h4>0</h4></th>
-	</tr>
-	<tr>
-	<br>
-		<th align = "center"><h4>Special Holiday</h4></th><th align = "center"><h4>0</h4></th><th align = "center"><h4>0</h4></th>
-	</tr>
-	<tr>
-	<br>
-		<th align = "center"><h4>Legal Holiday</h4></th><th align = "center"><h4>0</h4></th><th align = "center"><h4>0</h4></th>
-	</tr>
-	<tr>
-	<br>
-		<th align = "center"><h4>Night Differential</h4></th><th align = "center"><h4>0</h4></th><th align = "center"><h4>0</h4></th>
-	</tr>
-	<tr>
-	<br>
-		<th><h3>Gross Salary</h3></th><th align = "center"><h4></h4></th><th align = "center"><h4>{$grosspay}</h4></th>
-	</tr>
-	<tr>
-	<br>
-		<th><h4>Deductions</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4></h4></th>
-	</tr>
-	<tr>
-	<br>
-	<th align = "center"><h4>SSS Contribution</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>{$_ov['sss']}</h4></th>
-	</tr>
-	<tr>
-	<br>
-	<th align = "center"><h4>HDMF Contribution</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>{$_ov['pagibig']}</h4></th>
-	</tr>
-	<tr>
-	<br>
-		<th align = "center"><h4>Philhealth Contribution</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>{$_ov['philhealth']}</h4></th>
-	</tr>
-	<tr>
-	<br>
-	<th align = "center"><h4>With Holding Tax</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>{$wtax}</h4></th>
-	</tr>
-	<tr>
-	<br>
-		<th align = "center"><h4>SSS Loan</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>0</h4></th>
-	</tr>
-	<tr>
-	<br>
-		<th align = "center"><h4>Pag-Ibig Loan</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>0</h4></th>
-	</tr>
-	<tr>
-	<br>
-		<th align = "center"><h4>Savings Plan</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>0</h4></th>
-	</tr>
-	<tr>
-	<br>
-		<th align = "center"><h4>Healthcard</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>0</h4></th>
-	</tr>
-	<tr>
-	<br>
-		<th align = "center"><h4>Uniform</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>0</h4></th>
-	</tr>
-	<tr>
-	<br>
-		<th align = "center"><h4>Cash Advance</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>0</h4></th>
-	</tr>
-	<tr>
-	<br>
-		<th align = "center"><h4>Leave w/o Pay</h4></th><th align = "center"><h4>{$_ov['absent']}</h4></th><th align = "center"><h4>{$_ov['rate']}</h4></th>
-	</tr>
-	<tr>
-	<br>
-		<th align = "center"><h4>Others</h4></th><th align = "center"><h4></h4></th><th align = "center"><h4>0</h4></th>
-	</tr>
-	<tr>
-	<br><br>
-		<th><h4></h4></th><th align = "center"><h3>NET PAY</h3></th><th align = "center"><h4>{$netpay}</h4></th>
-	</tr>
-	<tr>
-	<br>
-		<th align = "center"colspan = "3"><h4>I hereby acknowledge receipt of the above amount</h4></th>
-	</tr>
-	<tr>
-	<br>
-		<th align = "center"><h4>Authenticated By:</h4></th><th></th><th align = "center"><h4>Received By:</h4></th>
-	</tr>
-	<tr>
-	<br><br>
-		<th align = "center"><h4>________________________</h4></th><th></th><th align = "center"><h4>________________________</h4></th>
-	
-	</tr>
-
-	</table>
-	<br>
-	<br>
-
-	
-EOD;
-
-
-
-
-}
-}
-
-
-
-    $content = ob_get_contents();
-ob_end_clean();
-$obj_pdf->writeHTML($html, true, false, true, false, '');
-$obj_pdf->Output('output.pdf', 'I');
-
-}
 ?>

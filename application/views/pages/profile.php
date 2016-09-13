@@ -1218,7 +1218,7 @@ function reload_table()
  $(document).ready(function () {
      // set default dates
             var start = new Date();
-            start.setDate(start.getDate() - 10);
+            start.setDate(start.getDate() - 11);
 
             // set end date to max one year period:
             var end = new Date(new Date().setYear(start.getFullYear()+1));

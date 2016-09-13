@@ -216,9 +216,9 @@ var period = "<?php echo $period->date_to;?>";
             },
              header: true,
                title: 'Glacier North Refrigeration Inc. \n SSS Contribution Table ',
-               orientation: 'portrait',
+                orientation: 'landscape',
                customize: function(doc) {
-                  doc.defaultStyle.fontSize = 16; //<-- set fontsize to 16 instead of 10 
+                  doc.defaultStyle.fontSize = 13; //<-- set fontsize to 16 instead of 10 
                }  
        },
        {
@@ -247,7 +247,7 @@ var period = "<?php echo $period->date_to;?>";
                 columns: [0,1,2,3,4,5,6]
             },
              header: true,
-               title: 'Glacier North Refrigeration Inc. \n Social Security System Reports Contribution Table ',
+               title: '<center>Glacier North Refrigeration Inc. </center><center> Social Security System Reports</center><center><?php echo $period->date_from;?> to <?php echo $period->date_to;?></center>',
        }          
         ],
  
@@ -283,9 +283,9 @@ var period = "<?php echo $period->date_to;?>";
             },
              header: true,
                title: 'Glacier North Refrigeration Inc. \n Philhealth Contribution Table ',
-               orientation: 'portrait',
+                 orientation: 'landscape',
                customize: function(doc) {
-                  doc.defaultStyle.fontSize = 16; //<-- set fontsize to 16 instead of 10 
+                  doc.defaultStyle.fontSize = 13; //<-- set fontsize to 16 instead of 10 
                }  
        },
        {
@@ -314,7 +314,7 @@ var period = "<?php echo $period->date_to;?>";
                 columns: [0,1,2,3,4,5,6]
             },
              header: true,
-               title: 'Glacier North Refrigeration Inc. \n Philhealth Contribution Table ',
+               title: '<center>Glacier North Refrigeration Inc. </center><center>Philhealth Reports</center><center> <?php echo $period->date_from;?> to <?php echo $period->date_to;?></center>',
        }          
         ],
  
@@ -350,9 +350,9 @@ var period = "<?php echo $period->date_to;?>";
             },
              header: true,
                title: 'Glacier North Refrigeration Inc. \n Home and Development Mutual Fund Contribution Table ',
-               orientation: 'portrait',
+              orientation: 'landscape',
                customize: function(doc) {
-                  doc.defaultStyle.fontSize = 16; //<-- set fontsize to 16 instead of 10 
+                  doc.defaultStyle.fontSize = 13; //<-- set fontsize to 16 instead of 10 
                }  
        },
        {
@@ -381,7 +381,7 @@ var period = "<?php echo $period->date_to;?>";
                 columns: [0,1,2,3,4,5,6]
             },
              header: true,
-               title: 'Glacier North Refrigeration Inc. \n Home and Development Mutual Fund Contribution Table ',
+               title: '<center>Glacier North Refrigeration Inc. </center><center>Home Development Fund Reports</center><center> <?php echo $period->date_from;?> to <?php echo $period->date_to;?></center>',
        }          
         ],
  
@@ -419,10 +419,10 @@ var period = "<?php echo $period->date_to;?>";
                 columns: [0,1,2,3,4,5]
             },
              header: true,
-               title: 'Glacier North Refrigeration Inc. \n Bir Tax Table ',
-               orientation: 'portrait',
+               title: '<center>Glacier North Refrigeration Inc. </center><br><center> Bir Tax Table</center>',
+               orientation: 'landscape',
                customize: function(doc) {
-                  doc.defaultStyle.fontSize = 16; //<-- set fontsize to 16 instead of 10 
+                  doc.defaultStyle.fontSize = 13; //<-- set fontsize to 16 instead of 10 
                }  
        },
        {

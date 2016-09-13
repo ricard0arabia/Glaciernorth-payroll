@@ -1956,19 +1956,36 @@ var $time_table = 'timesheet';
 
     }
 
-     public function get_distinct_employee(){
+     public function get_distinct_employee($startdate,$enddate){
 
       $query = $this->db->query("select *
                                     from attendance a
                                     LEFT JOIN employees b
                                     ON a.user_id = b.user_id
 
-                                    where a.date BETWEEN '2016-09-01' AND '2016-09-15'
+                                    where a.date BETWEEN '".$startdate."' AND '".$enddate."'
                                     group by a.user_id
                                     order by a.date");
                                         
         if($query->num_rows() > 0) {
             return $query->result();
+        } else {
+            return false;
+        }
+
+    }
+
+      public function get_payslip($id){
+
+      $query = $this->db->query("select *
+                                    from payslip a
+                                    LEFT JOIN employees b
+                                    ON a.user_id = b.user_id
+
+                                    where a.user_id = '".$id."' ");
+                                        
+        if($query->num_rows() > 0) {
+            return $query->row();
         } else {
             return false;
         }
@@ -2003,31 +2020,6 @@ var $time_table = 'timesheet';
         }
 
     }
-
-     public function get_salary(){
-
-      $query = $this->db->query("select salary
-                                    from employees 
-                                    where user_id = 2016093");
-                                        
-        if($query->num_rows() > 0) {
-            return $query->row();
-        } else {
-            return false;
-        }
-
-    }
-
-
-
-
-
-
-
-
-
-
-
 
 
 

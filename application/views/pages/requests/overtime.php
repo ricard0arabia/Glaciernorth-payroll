@@ -289,9 +289,11 @@ var table2;
     });
 
 
-        $('.datepicker').datetimepicker({
-        format: 'YYYY-MM-DD'
-    });
+      var dateToday = new Date(); 
+
+          $( ".datepicker" ).datepicker({
+              minDate: 0
+          });
  
             
     });
@@ -458,7 +460,7 @@ function reload_table2()
                          <div class="form-group">
                             <label class="control-label col-md-3">Date</label>
                             <div class="col-md-5">
-                             <input name="date" placeholder="yyyy-mm-dd" class="form-control datepicker" type="text">
+                             <input name="date" placeholder="yyyy-mm-dd" id="datepicker" class="form-control datepicker" type="text">
 
                                 <span class="help-block"></span>
                             </div>

@@ -105,7 +105,7 @@
 
            
             //add html for action
-            $row[] = '<a class="btn btn-sm btn-primary"  title="Edit" href="'.site_url('payroll/payroll/'.$payroll->user_id).'"><i class="glyphicon glyphicon-search"></i></a>
+            $row[] = '<a class="btn btn-sm btn-primary"  title="Edit" href="'.site_url('payroll/pdf/'.$payroll->user_id).'"><i class="glyphicon glyphicon-search"></i></a>
             <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_payperiod('."'".$payroll->user_id."'".')"><i class="glyphicon glyphicon-trash"></i></a>';
 
                   $data[] = $row;
@@ -337,7 +337,9 @@ $enddate = $this->input->post('enddate');
 //
 
 
- $distinct_emplist = $this->payroll->get_distinct_employee();
+ $distinct_emplist = $this->payroll->get_distinct_employee($startdate,$enddate);
+
+ if($distinct_emplist != false){
 
     foreach ($distinct_emplist as $employee) {
    
@@ -348,7 +350,7 @@ $enddate = $this->input->post('enddate');
       $daily_rate =  round(($basic_salary * 12)/261,2);
       $hourly_rate = round($daily_rate/8,2);
 
-
+      $total_overtime_hours = 0;
       $tax_status = "";
       $taxable_income = 0;
       $total_hours_worked = 0;
@@ -437,6 +439,9 @@ $enddate = $this->input->post('enddate');
                     $overtime_pay += ($value->overtime*$rest_double_holiday_hourly_rate)*3;                   
 
                   }
+
+                 $total_overtime_hours += $value->overtime;
+
               }
 
               if($value->sched_type == "night shift"){
@@ -500,6 +505,7 @@ $enddate = $this->input->post('enddate');
             'rest_double_holiday_pay' => $ot_rest_double,
             'night_diff_pay' => $ot_nightdiff,
             'total_overtime_pay' => $overtime_pay,
+            'total_overtime_hours' => $total_overtime_hours,
             'gross_salary' => $gross_salary,
             'deductions' => $total_deduction,
             'sss_contrib' => $sss,
@@ -517,6 +523,7 @@ $enddate = $this->input->post('enddate');
           $insert = $this->payroll->payslip_save($payslip_data);
 
     }
+  }
    
 //
 
@@ -581,51 +588,15 @@ $enddate = $this->input->post('enddate');
         }
     } 
 
-    public function generate_payroll(){
-
-
-           $data = array(
-                    'user_id' => 2,
-                    'period' => '2016-08-28',
-                    'basic_salary' => 22.22,
-                    'special_holiday_pay' => 33.33,
-                    'legal_holiday_pay' => 44.44,
-                    'night_diff_pay' => 11.11,
-                    'sss_loan' => 22.22,
-                    'pagibig_loan' => 33.33,
-                    'others' => 44.44,
-                    'payslip_status' => 'GG well played',
-
-                    'allowance' => 11.11,
-                    'overtime_pay' => 22.22,
-                    'gross_salary' => 33.33,
-                    'deductions' => 44.44,
-
-                    'sss_contrib' => 66.66,
-                    'philhealth_contrib' => 77.77,
-                    'hdmf_contrib' => 88.88,
-                    'net_pay' => 99.99,
-                    
-                    
-                );
-        
-            $insert = $this->payroll->payslip_update(array('user_id' => '2'),$data);
-
-
-
-
-
-
-
-
-        $data1 = array(
-
-            'hello' => 'hi',
-
-            );
-        echo json_encode($data1);
-
-    }
+    function pdf($id)
+  {
+    
+        $this->load->helper('pdf_helper');
+        $data['payslip'] = $this->payroll->get_payslip($id);
+      
+        $this->load->view('pdfreport',$data);
+      
+  }
 
 }
 ?>

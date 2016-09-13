@@ -60,42 +60,42 @@ var period = "<?php echo $payperiod->period; ?>";
             extend: 'pdf',
            footer: true,
            exportOptions: {
-                columns: [0,1,2,3,4]
+                columns: [0,1,2,3,4,5,6,7,8,9,10]
             },
              header: true,
-               title: 'Glacier North Refrigeration Inc. \n SSS Contribution Table ',
-               orientation: 'portrait',
+               title: 'Glacier North Refrigeration Inc. \n Payroll Report for <?php echo date("F j,Y", strtotime($payperiod->date_from)); ?> to <?php echo date("F j,Y", strtotime($payperiod->date_to)); ?>' ,
+               orientation: 'landscape',
                customize: function(doc) {
-                  doc.defaultStyle.fontSize = 16; //<-- set fontsize to 16 instead of 10 
+                  doc.defaultStyle.fontSize = 12; //<-- set fontsize to 16 instead of 10 
                }  
        },
        {
            extend: 'csv',
            footer: true,
            exportOptions: {
-                columns: [0,1,2,3,4]
+                columns: [0,1,2,3,4,5,6,7,8,9,10]
              },
              header: true,
-               title: 'Glacier North Refrigeration Inc. \n SSS Contribution Table ',
+               title: 'Glacier North Refrigeration Inc. \n Payroll Report for <?php echo date("F j,Y", strtotime($payperiod->date_from)); ?> to <?php echo date("F j,Y", strtotime($payperiod->date_to)); ?>' ,
           
        },
        {
            extend: 'excel',
            footer: true,
            exportOptions: {
-                columns: [0,1,2,3,4]
+                columns: [0,1,2,3,4,5,6,7,8,9,10]
              },
              header: true,
-               title: 'Glacier North Refrigeration Inc. \n SSS Contribution Table ',
+               title: 'Glacier North Refrigeration Inc. \n Payroll Report for <?php echo date("F j,Y", strtotime($payperiod->date_from)); ?> to <?php echo date("F j,Y", strtotime($payperiod->date_to)); ?>' ,
        },
        {
            extend: 'print',
            footer: true,
            exportOptions: {
-                columns: [0,1,2,3,4]
+                columns: [0,1,2,3,4,5,6,7,8,9,10]
             },
              header: true,
-               title: 'Glacier North Refrigeration Inc. \n SSS Contribution Table ',
+               title: '<center>Glacier North Refrigeration Inc.</center><center>Payroll Report for <?php echo date("F j,Y", strtotime($payperiod->date_from)); ?> to <?php echo date("F j,Y", strtotime($payperiod->date_to)); ?></center>' ,
        }          
         ],
  
